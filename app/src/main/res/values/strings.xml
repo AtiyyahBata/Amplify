@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Amplify</string>
+    <string name="tagline">A career companion for software engineering students — resources, real people, and an AI search that points you to sources instead of answers.</string>
+
+    <string-array name="post_formats">
+        <item>Blog / article</item>
+        <item>Video</item>
+        <item>Quick tip</item>
+    </string-array>
+
+    <string-array name="visibility_options">
+        <item>Public — visible to everyone</item>
+        <item>Followers only</item>
+    </string-array>
+</resources>

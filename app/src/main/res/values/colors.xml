@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ink">#12141C</color>
+    <color name="ink_soft">#2A2E3A</color>
+    <color name="paper">#EEF0F4</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="line">#DCDFE6</color>
+    <color name="line_soft">#E7E9EF</color>
+
+    <color name="accent">#5B4FE0</color>
+    <color name="accent_soft">#EFEDFC</color>
+
+    <color name="teal">#1B8F82</color>
+    <color name="teal_soft">#E4F4F1</color>
+
+    <color name="coral">#E85D4C</color>
+    <color name="coral_soft">#FDECEA</color>
+
+    <color name="muted">#6B7080</color>
+    <color name="white">#FFFFFF</color>
+</resources>

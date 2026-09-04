@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/paper"
+    android:orientation="vertical">
+
+    <include android:id="@+id/header" layout="@layout/header_back" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create your account"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/ink" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You can link GitHub and LinkedIn once you're in."
+                android:textSize="13sp"
+                android:textColor="@color/muted"
+                android:layout_marginBottom="18dp" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Email" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
+            <EditText android:id="@+id/etEmail" style="@style/Amplify.EditText"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="you@example.com" android:inputType="textEmailAddress" android:layout_marginBottom="12dp" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Password" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
+            <EditText android:id="@+id/etPassword" style="@style/Amplify.EditText"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="••••••••" android:inputType="textPassword" android:layout_marginBottom="12dp" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Field of study" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
+            <EditText android:id="@+id/etFieldOfStudy" style="@style/Amplify.EditText"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="e.g. Software Engineering" android:layout_marginBottom="18dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRegister"
+                style="@style/Amplify.Button.Primary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Register" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp">
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Already have an account? " android:textColor="@color/muted" android:textSize="13sp" />
+
+                <TextView android:id="@+id/tvGoLogin" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="Log in" android:textColor="@color/accent" android:textStyle="bold" android:textSize="13sp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

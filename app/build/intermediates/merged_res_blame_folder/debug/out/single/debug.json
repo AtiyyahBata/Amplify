@@ -1,0 +1,242 @@
+[
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_messages.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_messages.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_logo_mark.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_logo_mark.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_upload_box.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_upload_box.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_item_comment.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/item_comment.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_stat_box.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_stat_box.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_profile_other.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_profile_other.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_post.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_post.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_home.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_home.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_send_button.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_send_button.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_register.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_register.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_main.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_admin_main.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_admin_main.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_search.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_search.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_back.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_back.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_bubble_me.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_bubble_me.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_item_verify_request.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/item_verify_request.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_bubble_them.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_bubble_them.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_header_back.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/header_back.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_fragment_home.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_tab_inactive.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_tab_inactive.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_fragment_post.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/fragment_post.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_posting_details.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_posting_details.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_send.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_send.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_verified_mark.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_verified_mark.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_settings.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_settings.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/menu_bottom_nav_menu.xml.flat",
+        "source": "com.amplify.app-main-34:/menu/bottom_nav_menu.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_tab_active.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_tab_active.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_item_report.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/item_report.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_profile.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_profile.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_item_post.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/item_post.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_conversation.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_conversation.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_fragment_admin_home.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/fragment_admin_home.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_get_verified.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_get_verified.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_input_field.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_input_field.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_fragment_profile.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/fragment_profile.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_reset_password.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_reset_password.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.amplify.app-main-34:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_welcome.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_welcome.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_view_post.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_view_post.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_chip_status_verified.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_chip_status_verified.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_item_bubble_them.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/item_bubble_them.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_login.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_fragment_search.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/fragment_search.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_fragment_admin_reports.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/fragment_admin_reports.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_item_message_preview.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/item_message_preview.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_fragment_admin_verify.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/fragment_admin_verify.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_new_message.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_new_message.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_tag.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_tag.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_add.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_add.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/mipmap-anydpi-v26_ic_launcher_round.xml.flat",
+        "source": "com.amplify.app-main-34:/mipmap-anydpi-v26/ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_avatar_circle.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_avatar_circle.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_fragment_messages.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/fragment_messages.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_circle_button.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_circle_button.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_upload.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_upload.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_profile_settings.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_profile_settings.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_header_brand.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/header_brand.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_item_search_result.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/item_search_result.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_item_bubble_me.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/item_bubble_me.xml"
+    }
+]

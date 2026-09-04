@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Amplify">
+
+        <activity
+            android:name=".ui.onboarding.WelcomeActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".ui.onboarding.LoginActivity" android:exported="false" />
+        <activity android:name=".ui.onboarding.RegisterActivity" android:exported="false" />
+        <activity android:name=".ui.onboarding.ResetPasswordActivity" android:exported="false" />
+
+        <activity android:name=".ui.main.MainActivity" android:exported="false" />
+
+        <activity android:name=".ui.postflow.PostingDetailsActivity" android:exported="false" />
+
+        <activity android:name=".ui.content.ViewPostActivity" android:exported="false" />
+        <activity android:name=".ui.content.ProfileOtherActivity" android:exported="false" />
+
+        <activity android:name=".ui.messaging.NewMessageActivity" android:exported="false" />
+        <activity android:name=".ui.messaging.ConversationActivity" android:exported="false" />
+
+        <activity android:name=".ui.settings.ProfileSettingsActivity" android:exported="false" />
+        <activity android:name=".ui.settings.GetVerifiedActivity" android:exported="false" />
+
+        <activity android:name=".ui.admin.AdminMainActivity" android:exported="false" />
+
+    </application>
+
+</manifest>
