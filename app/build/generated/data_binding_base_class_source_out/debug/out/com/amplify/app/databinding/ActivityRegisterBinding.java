@@ -34,6 +34,9 @@ public final class ActivityRegisterBinding implements ViewBinding {
   public final EditText etPassword;
 
   @NonNull
+  public final EditText etfullName;
+
+  @NonNull
   public final HeaderBackBinding header;
 
   @NonNull
@@ -41,13 +44,14 @@ public final class ActivityRegisterBinding implements ViewBinding {
 
   private ActivityRegisterBinding(@NonNull LinearLayout rootView,
       @NonNull MaterialButton btnRegister, @NonNull EditText etEmail,
-      @NonNull EditText etFieldOfStudy, @NonNull EditText etPassword,
+      @NonNull EditText etFieldOfStudy, @NonNull EditText etPassword, @NonNull EditText etfullName,
       @NonNull HeaderBackBinding header, @NonNull TextView tvGoLogin) {
     this.rootView = rootView;
     this.btnRegister = btnRegister;
     this.etEmail = etEmail;
     this.etFieldOfStudy = etFieldOfStudy;
     this.etPassword = etPassword;
+    this.etfullName = etfullName;
     this.header = header;
     this.tvGoLogin = tvGoLogin;
   }
@@ -103,6 +107,12 @@ public final class ActivityRegisterBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.etfullName;
+      EditText etfullName = ViewBindings.findChildViewById(rootView, id);
+      if (etfullName == null) {
+        break missingId;
+      }
+
       id = R.id.header;
       View header = ViewBindings.findChildViewById(rootView, id);
       if (header == null) {
@@ -117,7 +127,7 @@ public final class ActivityRegisterBinding implements ViewBinding {
       }
 
       return new ActivityRegisterBinding((LinearLayout) rootView, btnRegister, etEmail,
-          etFieldOfStudy, etPassword, binding_header, tvGoLogin);
+          etFieldOfStudy, etPassword, etfullName, binding_header, tvGoLogin);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -2,10 +2,24 @@ package com.amplify.app.ui.onboarding;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.amplify.app.databinding.ActivityLoginBinding;
 import com.amplify.app.ui.main.MainActivity;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Log In screen (Use Case 2 in the reference document).
@@ -19,9 +33,23 @@ public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
 
+    // Supabase project URL
+    private static final String SUPABASE_URL =
+            "https://pggwokpdcqtigxmcrtxh.supabase.co";
+
+    // Supabase publishable key
+    private static final String SUPABASE_KEY =
+            "sb_publishable_yoqGxzzEd6H2iRWyWckd-g_RkHgxhqC";
+
+    private static final MediaType JSON =
+            MediaType.get("application/json; charset=utf-8");
+
+    private final OkHttpClient client = new OkHttpClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -34,9 +62,144 @@ public class LoginActivity extends AppCompatActivity {
         binding.tvGoRegister.setOnClickListener(v ->
                 startActivity(new Intent(this, RegisterActivity.class)));
 
-        binding.btnLogIn.setOnClickListener(v -> {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        });
+        binding.btnLogIn.setOnClickListener(v -> loginUser());
+        }
+
+    private void loginUser() {
+
+        String email = binding.etEmail.getText().toString().trim();
+        String password = binding.etPassword.getText().toString();
+
+        // Validate email
+        if (email.isEmpty()) {
+            binding.etEmail.setError("Please enter your email");
+            binding.etEmail.requestFocus();
+            return;
+        }
+
+        // Validate password
+        if (password.isEmpty()) {
+            binding.etPassword.setError("Please enter your password");
+            binding.etPassword.requestFocus();
+            return;
+        }
+
+        binding.btnLogIn.setEnabled(false);
+
+        try {
+
+            JSONObject body = new JSONObject();
+
+            body.put("email", email);
+            body.put("password", password);
+
+            RequestBody requestBody =
+                    RequestBody.create(body.toString(), JSON);
+
+            Request request = new Request.Builder()
+                    .url(SUPABASE_URL + "/auth/v1/token?grant_type=password")
+                    .addHeader("apikey", SUPABASE_KEY)
+                    .addHeader("Content-Type", "application/json")
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                    runOnUiThread(() -> {
+
+                        binding.btnLogIn.setEnabled(true);
+
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Unable to connect to Supabase",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    });
+                }
+
+                @Override
+                public void onResponse(Call call, Response response)
+                        throws IOException {
+
+                    String responseBody = response.body() != null
+                            ? response.body().string()
+                            : "";
+
+                    runOnUiThread(() -> {
+
+                        binding.btnLogIn.setEnabled(true);
+
+                        if (response.isSuccessful()) {
+
+                            Toast.makeText(
+                                    LoginActivity.this,
+                                    "Login successful!",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+
+                            Intent intent =
+                                    new Intent(
+                                            LoginActivity.this,
+                                            MainActivity.class
+                                    );
+
+                            startActivity(intent);
+                            finish();
+
+                        } else {
+
+                            String errorMessage =
+                                    "Invalid email or password";
+
+                            try {
+
+                                JSONObject error =
+                                        new JSONObject(responseBody);
+
+                                if (error.has("msg")) {
+                                    errorMessage =
+                                            error.getString("msg");
+
+                                } else if (error.has("message")) {
+                                    errorMessage =
+                                            error.getString("message");
+
+                                } else if (error.has("error_description")) {
+                                    errorMessage =
+                                            error.getString(
+                                                    "error_description"
+                                            );
+                                }
+
+                            } catch (Exception ignored) {
+                            }
+
+                            Toast.makeText(
+                                    LoginActivity.this,
+                                    errorMessage,
+                                    Toast.LENGTH_LONG
+                            ).show();
+                        }
+                    });
+                }
+            });
+
+        } catch (Exception e) {
+
+            binding.btnLogIn.setEnabled(true);
+
+            Toast.makeText(
+                    this,
+                    "Something went wrong. Please try again.",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
     }
 }
+
+
+
+

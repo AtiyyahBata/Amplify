@@ -34,10 +34,28 @@
                 android:layout_marginBottom="18dp" />
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Full Name" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
+
+            <EditText
+                android:id="@+id/etfullName"
+                style="@style/Amplify.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="John Smith"
+                android:inputType="textPersonName" />
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Email" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
-            <EditText android:id="@+id/etEmail" style="@style/Amplify.EditText"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="you@example.com" android:inputType="textEmailAddress" android:layout_marginBottom="12dp" />
+
+            <EditText
+                android:id="@+id/etEmail"
+                style="@style/Amplify.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="you@example.com"
+                android:inputType="textEmailAddress" />
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Password" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />

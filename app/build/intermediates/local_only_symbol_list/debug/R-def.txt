@@ -86,6 +86,7 @@ id etPassword
 id etRecipient
 id etSearchQuery
 id etTitle
+id etfullName
 id fragmentContainer
 id header
 id nav_home
