@@ -140,11 +140,27 @@ public class LoginActivity extends AppCompatActivity {
                                     Toast.LENGTH_SHORT
                             ).show();
 
+                            String accessToken = "";
+                            try {
+                                JSONObject json = new JSONObject(responseBody);
+                                accessToken = json.optString("access_token", "");
+                            } catch (Exception ignored) {
+                            }
+
+                            getSharedPreferences("app_prefs", MODE_PRIVATE)
+                                    .edit()
+                                    .putString("access_token", accessToken)
+                                    .apply();
+
                             Intent intent =
                                     new Intent(
                                             LoginActivity.this,
                                             MainActivity.class
                                     );
+
+                            if (!accessToken.isEmpty()) {
+                                intent.putExtra("access_token", accessToken);
+                            }
 
                             startActivity(intent);
                             finish();

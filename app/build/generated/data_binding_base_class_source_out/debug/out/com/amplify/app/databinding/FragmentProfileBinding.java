@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -36,15 +37,33 @@ public final class FragmentProfileBinding implements ViewBinding {
   @NonNull
   public final MaterialCardView cardMyPost;
 
+  @NonNull
+  public final TextView tvFieldOfStudy;
+
+  @NonNull
+  public final TextView tvProfileInitials;
+
+  @NonNull
+  public final TextView tvProfileName;
+
+  @NonNull
+  public final TextView tvVerificationLabel;
+
   private FragmentProfileBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnGithub,
       @NonNull MaterialButton btnLinkedIn, @NonNull ImageButton btnSettings,
-      @NonNull MaterialButton btnVerificationStatus, @NonNull MaterialCardView cardMyPost) {
+      @NonNull MaterialButton btnVerificationStatus, @NonNull MaterialCardView cardMyPost,
+      @NonNull TextView tvFieldOfStudy, @NonNull TextView tvProfileInitials,
+      @NonNull TextView tvProfileName, @NonNull TextView tvVerificationLabel) {
     this.rootView = rootView;
     this.btnGithub = btnGithub;
     this.btnLinkedIn = btnLinkedIn;
     this.btnSettings = btnSettings;
     this.btnVerificationStatus = btnVerificationStatus;
     this.cardMyPost = cardMyPost;
+    this.tvFieldOfStudy = tvFieldOfStudy;
+    this.tvProfileInitials = tvProfileInitials;
+    this.tvProfileName = tvProfileName;
+    this.tvVerificationLabel = tvVerificationLabel;
   }
 
   @Override
@@ -104,8 +123,33 @@ public final class FragmentProfileBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tvFieldOfStudy;
+      TextView tvFieldOfStudy = ViewBindings.findChildViewById(rootView, id);
+      if (tvFieldOfStudy == null) {
+        break missingId;
+      }
+
+      id = R.id.tvProfileInitials;
+      TextView tvProfileInitials = ViewBindings.findChildViewById(rootView, id);
+      if (tvProfileInitials == null) {
+        break missingId;
+      }
+
+      id = R.id.tvProfileName;
+      TextView tvProfileName = ViewBindings.findChildViewById(rootView, id);
+      if (tvProfileName == null) {
+        break missingId;
+      }
+
+      id = R.id.tvVerificationLabel;
+      TextView tvVerificationLabel = ViewBindings.findChildViewById(rootView, id);
+      if (tvVerificationLabel == null) {
+        break missingId;
+      }
+
       return new FragmentProfileBinding((LinearLayout) rootView, btnGithub, btnLinkedIn,
-          btnSettings, btnVerificationStatus, cardMyPost);
+          btnSettings, btnVerificationStatus, cardMyPost, tvFieldOfStudy, tvProfileInitials,
+          tvProfileName, tvVerificationLabel);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

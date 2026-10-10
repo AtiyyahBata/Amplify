@@ -3658,6 +3658,7 @@ id tvCommentAuthor
 id tvCommentBody
 id tvCommentTime
 id tvContactName
+id tvFieldOfStudy
 id tvForgotPassword
 id tvFormat
 id tvGithubStatus
@@ -3669,6 +3670,8 @@ id tvLinkedinStatus
 id tvName
 id tvPostBody
 id tvPostTitle
+id tvProfileInitials
+id tvProfileName
 id tvReason
 id tvRequestLabel
 id tvResultTitle
@@ -3678,6 +3681,7 @@ id tvTagOne
 id tvTagTwo
 id tvTime
 id tvUploadLabel
+id tvVerificationLabel
 id txtWelcomeDescription
 id unchecked
 id uniform

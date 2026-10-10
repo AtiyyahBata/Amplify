@@ -54,6 +54,7 @@
                 android:layout_marginBottom="16dp">
 
                 <TextView
+                    android:id="@+id/tvProfileInitials"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:background="@drawable/bg_avatar_circle"
@@ -65,17 +66,19 @@
                     android:layout_marginBottom="10dp" />
 
                 <TextView
+                    android:id="@+id/tvProfileName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Atiyyah Bata"
+                    android:text="Loading profile..."
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/ink" />
 
                 <TextView
+                    android:id="@+id/tvFieldOfStudy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Software Engineering student"
+                    android:text="Loading field of study..."
                     android:textSize="12.5sp"
                     android:textColor="@color/muted"
                     android:layout_marginBottom="6dp" />
@@ -93,9 +96,10 @@
                         android:layout_marginEnd="4dp" />
 
                     <TextView
+                        android:id="@+id/tvVerificationLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Verified"
+                        android:text="Checking status..."
                         android:textSize="12sp"
                         android:textColor="@color/teal"
                         android:textStyle="bold" />
