@@ -2980,6 +2980,7 @@ drawable abc_textfield_search_activated_mtrl_alpha
 drawable abc_textfield_search_default_mtrl_alpha
 drawable abc_textfield_search_material
 drawable abc_vector_test
+drawable amplify_welcome_illustration
 drawable avd_hide_password
 drawable avd_show_password
 drawable bg_avatar_circle
@@ -2994,6 +2995,8 @@ drawable bg_tab_active
 drawable bg_tab_inactive
 drawable bg_tag
 drawable bg_upload_box
+drawable bg_welcome_badge
+drawable bg_welcome_panel
 drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
@@ -3008,6 +3011,7 @@ drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
 drawable ic_add
+drawable ic_admin_shield
 drawable ic_arrow_back_black_24
 drawable ic_back
 drawable ic_clear_black_24
@@ -3372,6 +3376,7 @@ id ifRoom
 id ignore
 id ignoreRequest
 id image
+id imgWelcomeIllustration
 id immediateStop
 id included
 id indeterminate
@@ -3673,6 +3678,7 @@ id tvTagOne
 id tvTagTwo
 id tvTime
 id tvUploadLabel
+id txtWelcomeDescription
 id unchecked
 id uniform
 id unlabeled
@@ -3688,6 +3694,7 @@ id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible
 id visible_removing_fragment_view_tag
+id welcomePanel
 id west
 id withText
 id with_icon

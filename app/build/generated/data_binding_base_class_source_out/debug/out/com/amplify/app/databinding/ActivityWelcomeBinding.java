@@ -4,7 +4,9 @@ package com.amplify.app.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,10 +20,10 @@ import java.lang.String;
 
 public final class ActivityWelcomeBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final ScrollView rootView;
 
   @NonNull
-  public final TextView btnAdminLogin;
+  public final LinearLayout btnAdminLogin;
 
   @NonNull
   public final MaterialButton btnLogIn;
@@ -29,17 +31,31 @@ public final class ActivityWelcomeBinding implements ViewBinding {
   @NonNull
   public final MaterialButton btnRegister;
 
-  private ActivityWelcomeBinding(@NonNull LinearLayout rootView, @NonNull TextView btnAdminLogin,
-      @NonNull MaterialButton btnLogIn, @NonNull MaterialButton btnRegister) {
+  @NonNull
+  public final ImageView imgWelcomeIllustration;
+
+  @NonNull
+  public final TextView txtWelcomeDescription;
+
+  @NonNull
+  public final LinearLayout welcomePanel;
+
+  private ActivityWelcomeBinding(@NonNull ScrollView rootView, @NonNull LinearLayout btnAdminLogin,
+      @NonNull MaterialButton btnLogIn, @NonNull MaterialButton btnRegister,
+      @NonNull ImageView imgWelcomeIllustration, @NonNull TextView txtWelcomeDescription,
+      @NonNull LinearLayout welcomePanel) {
     this.rootView = rootView;
     this.btnAdminLogin = btnAdminLogin;
     this.btnLogIn = btnLogIn;
     this.btnRegister = btnRegister;
+    this.imgWelcomeIllustration = imgWelcomeIllustration;
+    this.txtWelcomeDescription = txtWelcomeDescription;
+    this.welcomePanel = welcomePanel;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public ScrollView getRoot() {
     return rootView;
   }
 
@@ -65,7 +81,7 @@ public final class ActivityWelcomeBinding implements ViewBinding {
     int id;
     missingId: {
       id = R.id.btnAdminLogin;
-      TextView btnAdminLogin = ViewBindings.findChildViewById(rootView, id);
+      LinearLayout btnAdminLogin = ViewBindings.findChildViewById(rootView, id);
       if (btnAdminLogin == null) {
         break missingId;
       }
@@ -82,8 +98,26 @@ public final class ActivityWelcomeBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityWelcomeBinding((LinearLayout) rootView, btnAdminLogin, btnLogIn,
-          btnRegister);
+      id = R.id.imgWelcomeIllustration;
+      ImageView imgWelcomeIllustration = ViewBindings.findChildViewById(rootView, id);
+      if (imgWelcomeIllustration == null) {
+        break missingId;
+      }
+
+      id = R.id.txtWelcomeDescription;
+      TextView txtWelcomeDescription = ViewBindings.findChildViewById(rootView, id);
+      if (txtWelcomeDescription == null) {
+        break missingId;
+      }
+
+      id = R.id.welcomePanel;
+      LinearLayout welcomePanel = ViewBindings.findChildViewById(rootView, id);
+      if (welcomePanel == null) {
+        break missingId;
+      }
+
+      return new ActivityWelcomeBinding((ScrollView) rootView, btnAdminLogin, btnLogIn, btnRegister,
+          imgWelcomeIllustration, txtWelcomeDescription, welcomePanel);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

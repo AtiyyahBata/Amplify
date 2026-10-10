@@ -16,6 +16,7 @@ color surface
 color teal
 color teal_soft
 color white
+drawable amplify_welcome_illustration
 drawable bg_avatar_circle
 drawable bg_bubble_me
 drawable bg_bubble_them
@@ -28,7 +29,10 @@ drawable bg_tab_active
 drawable bg_tab_inactive
 drawable bg_tag
 drawable bg_upload_box
+drawable bg_welcome_badge
+drawable bg_welcome_panel
 drawable ic_add
+drawable ic_admin_shield
 drawable ic_back
 drawable ic_home
 drawable ic_launcher_background
@@ -89,6 +93,7 @@ id etTitle
 id etfullName
 id fragmentContainer
 id header
+id imgWelcomeIllustration
 id nav_home
 id nav_messages
 id nav_post
@@ -135,7 +140,9 @@ id tvTagOne
 id tvTagTwo
 id tvTime
 id tvUploadLabel
+id txtWelcomeDescription
 id uploadBox
+id welcomePanel
 layout activity_admin_main
 layout activity_conversation
 layout activity_get_verified
