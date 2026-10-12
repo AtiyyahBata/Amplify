@@ -39,6 +39,12 @@ public class SearchFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         binding.rvResults.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.btnSearch.setOnClickListener(v -> runSearch());
+
+        View btnAiFloating = view.findViewById(com.amplify.app.R.id.btnAiFloating);
+        if (btnAiFloating != null) {
+            btnAiFloating.setOnClickListener(v ->
+                    startActivity(new Intent(getActivity(), com.amplify.app.ui.main.artificial_intelligence.Artificial_Intelligence.class)));
+        }
     }
 
     private void runSearch() {

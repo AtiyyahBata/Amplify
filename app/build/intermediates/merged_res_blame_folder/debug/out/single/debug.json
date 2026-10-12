@@ -4,12 +4,24 @@
         "source": "com.amplify.app-main-34:/drawable/ic_messages.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_trash.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_trash.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/drawable_ic_logo_mark.xml.flat",
         "source": "com.amplify.app-main-34:/drawable/ic_logo_mark.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_ai_chat.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_ai_chat.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/drawable_bg_upload_box.xml.flat",
         "source": "com.amplify.app-main-34:/drawable/bg_upload_box.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_ai_sparkle.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_ai_sparkle.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/layout_item_comment.xml.flat",
@@ -20,8 +32,16 @@
         "source": "com.amplify.app-main-34:/drawable/bg_welcome_badge.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_ai_bubble_them.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_ai_bubble_them.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/drawable_ic_admin_shield.xml.flat",
         "source": "com.amplify.app-main-34:/drawable/ic_admin_shield.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_admin_input.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_admin_input.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/drawable_bg_stat_box.xml.flat",
@@ -32,6 +52,10 @@
         "source": "com.amplify.app-main-34:/layout/activity_profile_other.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_ai_delete_history.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_ai_delete_history.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/drawable_ic_post.xml.flat",
         "source": "com.amplify.app-main-34:/drawable/ic_post.xml"
     },
@@ -40,8 +64,16 @@
         "source": "com.amplify.app-main-34:/drawable/ic_home.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_ai_history_icon.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_ai_history_icon.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/drawable_bg_send_button.xml.flat",
         "source": "com.amplify.app-main-34:/drawable/bg_send_button.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_chevron_right.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_chevron_right.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/layout_activity_register.xml.flat",
@@ -72,6 +104,10 @@
         "source": "com.amplify.app-main-34:/layout/item_verify_request.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_admin_login.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_admin_login.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/drawable_ic_launcher_foreground.xml.flat",
         "source": "com.amplify.app-main-34:/drawable/ic_launcher_foreground.xml"
     },
@@ -80,8 +116,20 @@
         "source": "com.amplify.app-main-34:/drawable/bg_bubble_them.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_admin_card.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_admin_card.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_more_dots.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_more_dots.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/layout_header_back.xml.flat",
         "source": "com.amplify.app-main-34:/layout/header_back.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_ai_bubble_me.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_ai_bubble_me.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/layout_fragment_home.xml.flat",
@@ -90,6 +138,10 @@
     {
         "merged": "com.amplify.app-merged_res-32:/drawable_bg_tab_inactive.xml.flat",
         "source": "com.amplify.app-main-34:/drawable/bg_tab_inactive.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_ai_chat_detail.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_ai_chat_detail.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/layout_fragment_post.xml.flat",
@@ -104,6 +156,10 @@
         "source": "com.amplify.app-main-34:/drawable/ic_send.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_ai_floating_button.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_ai_floating_button.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/drawable_ic_verified_mark.xml.flat",
         "source": "com.amplify.app-main-34:/drawable/ic_verified_mark.xml"
     },
@@ -116,12 +172,20 @@
         "source": "com.amplify.app-main-34:/menu/bottom_nav_menu.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/layout_item_chat_history.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/item_chat_history.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/drawable_amplify_welcome_illustration.png.flat",
         "source": "com.amplify.app-main-34:/drawable/amplify_welcome_illustration.png"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/drawable_bg_tab_active.xml.flat",
         "source": "com.amplify.app-main-34:/drawable/bg_tab_active.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_history_clock.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_history_clock.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/layout_item_report.xml.flat",
@@ -140,12 +204,24 @@
         "source": "com.amplify.app-main-34:/layout/item_post.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_ai_input.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_ai_input.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_ic_ai_robot_avatar.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/ic_ai_robot_avatar.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/layout_activity_conversation.xml.flat",
         "source": "com.amplify.app-main-34:/layout/activity_conversation.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/layout_fragment_admin_home.xml.flat",
         "source": "com.amplify.app-main-34:/layout/fragment_admin_home.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_ai_history_item.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_ai_history_item.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/layout_activity_get_verified.xml.flat",
@@ -162,6 +238,10 @@
     {
         "merged": "com.amplify.app-merged_res-32:/layout_activity_reset_password.xml.flat",
         "source": "com.amplify.app-main-34:/layout/activity_reset_password.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/layout_activity_ai_chat_history.xml.flat",
+        "source": "com.amplify.app-main-34:/layout/activity_ai_chat_history.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/mipmap-anydpi-v26_ic_launcher.xml.flat",
@@ -196,8 +276,16 @@
         "source": "com.amplify.app-main-34:/layout/fragment_admin_reports.xml"
     },
     {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_ai_badge.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_ai_badge.xml"
+    },
+    {
         "merged": "com.amplify.app-merged_res-32:/layout_item_message_preview.xml.flat",
         "source": "com.amplify.app-main-34:/layout/item_message_preview.xml"
+    },
+    {
+        "merged": "com.amplify.app-merged_res-32:/drawable_bg_ai_chip.xml.flat",
+        "source": "com.amplify.app-main-34:/drawable/bg_ai_chip.xml"
     },
     {
         "merged": "com.amplify.app-merged_res-32:/layout_fragment_admin_verify.xml.flat",

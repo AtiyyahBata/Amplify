@@ -23,7 +23,18 @@
     <color name="teal">#1B8F82</color>
     <color name="teal_soft">#E4F4F1</color>
     <color name="white">#FFFFFF</color>
+    <string name="ai_assistant_title">AI Assistant</string>
+    <string name="ai_chip_explain">Explain something</string>
+    <string name="ai_chip_ideas">Give me ideas</string>
+    <string name="ai_chip_summarize">Summarize this post</string>
+    <string name="ai_hello">Hello!</string>
+    <string name="ai_input_placeholder">Type your message…</string>
+    <string name="ai_prompt_subtitle">Ask me anything.\nI\'m here to help!</string>
     <string name="app_name">Amplify</string>
+    <string name="cd_back">Back</string>
+    <string name="cd_history">History</string>
+    <string name="cd_more_options">More options</string>
+    <string name="cd_send_message">Send message</string>
     <string name="tagline">A career companion for software engineering students — resources, real people, and an AI search that points you to sources instead of answers.</string>
     <style name="Amplify.Button.Outline" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeColor">@color/line</item>

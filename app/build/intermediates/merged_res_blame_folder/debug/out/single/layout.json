@@ -60,6 +60,14 @@
         "source": "com.amplify.app-main-34:/layout/activity_conversation.xml"
     },
     {
+        "merged": "com.amplify.app-mergeDebugResources-31:/layout/item_chat_history.xml",
+        "source": "com.amplify.app-main-34:/layout/item_chat_history.xml"
+    },
+    {
+        "merged": "com.amplify.app-mergeDebugResources-31:/layout/activity_ai_chat_history.xml",
+        "source": "com.amplify.app-main-34:/layout/activity_ai_chat_history.xml"
+    },
+    {
         "merged": "com.amplify.app-mergeDebugResources-31:/layout/activity_profile_settings.xml",
         "source": "com.amplify.app-main-34:/layout/activity_profile_settings.xml"
     },
@@ -84,6 +92,10 @@
         "source": "com.amplify.app-main-34:/layout/fragment_admin_home.xml"
     },
     {
+        "merged": "com.amplify.app-mergeDebugResources-31:/layout/activity_ai_chat_detail.xml",
+        "source": "com.amplify.app-main-34:/layout/activity_ai_chat_detail.xml"
+    },
+    {
         "merged": "com.amplify.app-mergeDebugResources-31:/layout/fragment_admin_reports.xml",
         "source": "com.amplify.app-main-34:/layout/fragment_admin_reports.xml"
     },
@@ -104,8 +116,20 @@
         "source": "com.amplify.app-main-34:/layout/activity_register.xml"
     },
     {
+        "merged": "com.amplify.app-mergeDebugResources-31:/layout/activity_ai_chat.xml",
+        "source": "com.amplify.app-main-34:/layout/activity_ai_chat.xml"
+    },
+    {
         "merged": "com.amplify.app-mergeDebugResources-31:/layout/activity_get_verified.xml",
         "source": "com.amplify.app-main-34:/layout/activity_get_verified.xml"
+    },
+    {
+        "merged": "com.amplify.app-mergeDebugResources-31:/layout/activity_ai_delete_history.xml",
+        "source": "com.amplify.app-main-34:/layout/activity_ai_delete_history.xml"
+    },
+    {
+        "merged": "com.amplify.app-mergeDebugResources-31:/layout/activity_admin_login.xml",
+        "source": "com.amplify.app-main-34:/layout/activity_admin_login.xml"
     },
     {
         "merged": "com.amplify.app-mergeDebugResources-31:/layout/activity_admin_main.xml",

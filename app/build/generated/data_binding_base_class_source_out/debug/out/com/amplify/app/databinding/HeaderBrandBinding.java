@@ -4,6 +4,7 @@ package com.amplify.app.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -20,10 +21,15 @@ public final class HeaderBrandBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final FrameLayout btnHeaderAiRobot;
+
+  @NonNull
   public final TextView tvBrandTitle;
 
-  private HeaderBrandBinding(@NonNull LinearLayout rootView, @NonNull TextView tvBrandTitle) {
+  private HeaderBrandBinding(@NonNull LinearLayout rootView, @NonNull FrameLayout btnHeaderAiRobot,
+      @NonNull TextView tvBrandTitle) {
     this.rootView = rootView;
+    this.btnHeaderAiRobot = btnHeaderAiRobot;
     this.tvBrandTitle = tvBrandTitle;
   }
 
@@ -54,13 +60,19 @@ public final class HeaderBrandBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnHeaderAiRobot;
+      FrameLayout btnHeaderAiRobot = ViewBindings.findChildViewById(rootView, id);
+      if (btnHeaderAiRobot == null) {
+        break missingId;
+      }
+
       id = R.id.tvBrandTitle;
       TextView tvBrandTitle = ViewBindings.findChildViewById(rootView, id);
       if (tvBrandTitle == null) {
         break missingId;
       }
 
-      return new HeaderBrandBinding((LinearLayout) rootView, tvBrandTitle);
+      return new HeaderBrandBinding((LinearLayout) rootView, btnHeaderAiRobot, tvBrandTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

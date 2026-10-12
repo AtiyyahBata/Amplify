@@ -72,6 +72,18 @@
         <activity
             android:name="com.amplify.app.ui.admin.AdminMainActivity"
             android:exported="false" />
+        <activity
+            android:name="com.amplify.app.ui.main.artificial_intelligence.Artificial_Intelligence"
+            android:exported="false" />
+        <activity
+            android:name="com.amplify.app.ui.main.artificial_intelligence.AiChatHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amplify.app.ui.main.artificial_intelligence.AiChatDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.amplify.app.ui.main.artificial_intelligence.AiDeleteHistoryActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.startup.InitializationProvider"

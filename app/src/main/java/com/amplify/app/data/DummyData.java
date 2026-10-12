@@ -88,4 +88,15 @@ public class DummyData {
         list.add(new Report("User flagged: @coder_x99", "Reported for: spam messages", "Suspend user"));
         return list;
     }
+
+    public static List<com.amplify.app.models.ChatHistoryItem> getAiChatHistory() {
+        List<com.amplify.app.models.ChatHistoryItem> list = new ArrayList<>();
+        list.add(new com.amplify.app.models.ChatHistoryItem("App Development", "How do I create a splash screen in Android...", "12 May 2025"));
+        list.add(new com.amplify.app.models.ChatHistoryItem("Data Structures", "Explain ArrayList vs LinkedList with examples...", "11 May 2025"));
+        list.add(new com.amplify.app.models.ChatHistoryItem("Debugging Help", "How to read NullPointerException stack traces...", "10 May 2025"));
+        list.add(new com.amplify.app.models.ChatHistoryItem("Career Advice", "How to prepare for junior dev interviews...", "8 May 2025"));
+        list.add(new com.amplify.app.models.ChatHistoryItem("Git & GitHub", "How to resolve merge conflicts in Git...", "5 May 2025"));
+        list.add(new com.amplify.app.models.ChatHistoryItem("Database Design", "What's the difference between SQL and NoSQL...", "2 May 2025"));
+        return list;
+    }
 }
