@@ -21,9 +21,15 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         void onItemClick(ChatHistoryItem item);
     }
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(ChatHistoryItem item);
+    }
+
     private final List<ChatHistoryItem> fullList;
     private final List<ChatHistoryItem> displayList;
     private final OnItemClickListener listener;
+    private OnItemLongClickListener longClickListener;
+    private String currentQuery = "";
 
     public ChatHistoryAdapter(List<ChatHistoryItem> list, OnItemClickListener listener) {
         this.fullList = new ArrayList<>(list);
@@ -31,12 +37,24 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
         this.listener = listener;
     }
 
+    public void setOnItemLongClickListener(OnItemLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
+    }
+
+    /** Replace the data (used when the list arrives from Supabase). Keeps the search filter. */
+    public void setItems(List<ChatHistoryItem> items) {
+        fullList.clear();
+        fullList.addAll(items);
+        filter(currentQuery);
+    }
+
     public void filter(String query) {
+        currentQuery = query == null ? "" : query;
         displayList.clear();
-        if (query == null || query.trim().isEmpty()) {
+        if (currentQuery.trim().isEmpty()) {
             displayList.addAll(fullList);
         } else {
-            String lower = query.toLowerCase().trim();
+            String lower = currentQuery.toLowerCase().trim();
             for (ChatHistoryItem item : fullList) {
                 if (item.getTitle().toLowerCase().contains(lower) ||
                         item.getPreview().toLowerCase().contains(lower)) {
@@ -71,6 +89,13 @@ public class ChatHistoryAdapter extends RecyclerView.Adapter<ChatHistoryAdapter.
             if (listener != null) {
                 listener.onItemClick(item);
             }
+        });
+        holder.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onItemLongClick(item);
+                return true;
+            }
+            return false;
         });
     }
 
