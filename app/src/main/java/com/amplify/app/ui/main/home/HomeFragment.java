@@ -10,10 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.amplify.app.R;
 import com.amplify.app.adapters.PostAdapter;
 import com.amplify.app.data.DummyData;
 import com.amplify.app.databinding.FragmentHomeBinding;
 import com.amplify.app.ui.content.ViewPostActivity;
+import com.amplify.app.ui.main.artificial_intelligence.Artificial_Intelligence;
 
 /**
  * Home tab (Use Case: Browse Available Content). Shows the community feed;
@@ -40,6 +42,18 @@ public class HomeFragment extends Fragment {
 
         binding.rvFeed.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.rvFeed.setAdapter(adapter);
+
+        View btnAiFloating = view.findViewById(R.id.btnAiFloating);
+        if (btnAiFloating != null) {
+            btnAiFloating.setOnClickListener(v ->
+                    startActivity(new Intent(getActivity(), Artificial_Intelligence.class)));
+        }
+
+        View btnHeaderAiRobot = view.findViewById(R.id.btnHeaderAiRobot);
+        if (btnHeaderAiRobot != null) {
+            btnHeaderAiRobot.setOnClickListener(v ->
+                    startActivity(new Intent(getActivity(), Artificial_Intelligence.class)));
+        }
     }
 
     @Override

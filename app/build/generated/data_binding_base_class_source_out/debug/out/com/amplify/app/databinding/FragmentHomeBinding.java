@@ -4,7 +4,7 @@ package com.amplify.app.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,7 +17,10 @@ import java.lang.String;
 
 public final class FragmentHomeBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final FrameLayout rootView;
+
+  @NonNull
+  public final FrameLayout btnAiFloating;
 
   @NonNull
   public final HeaderBrandBinding header;
@@ -25,16 +28,17 @@ public final class FragmentHomeBinding implements ViewBinding {
   @NonNull
   public final RecyclerView rvFeed;
 
-  private FragmentHomeBinding(@NonNull LinearLayout rootView, @NonNull HeaderBrandBinding header,
-      @NonNull RecyclerView rvFeed) {
+  private FragmentHomeBinding(@NonNull FrameLayout rootView, @NonNull FrameLayout btnAiFloating,
+      @NonNull HeaderBrandBinding header, @NonNull RecyclerView rvFeed) {
     this.rootView = rootView;
+    this.btnAiFloating = btnAiFloating;
     this.header = header;
     this.rvFeed = rvFeed;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -59,6 +63,12 @@ public final class FragmentHomeBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnAiFloating;
+      FrameLayout btnAiFloating = ViewBindings.findChildViewById(rootView, id);
+      if (btnAiFloating == null) {
+        break missingId;
+      }
+
       id = R.id.header;
       View header = ViewBindings.findChildViewById(rootView, id);
       if (header == null) {
@@ -72,7 +82,7 @@ public final class FragmentHomeBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentHomeBinding((LinearLayout) rootView, binding_header, rvFeed);
+      return new FragmentHomeBinding((FrameLayout) rootView, btnAiFloating, binding_header, rvFeed);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +19,7 @@ import java.lang.String;
 
 public final class ActivityRegisterBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final ScrollView rootView;
 
   @NonNull
   public final MaterialButton btnRegister;
@@ -42,10 +42,10 @@ public final class ActivityRegisterBinding implements ViewBinding {
   @NonNull
   public final TextView tvGoLogin;
 
-  private ActivityRegisterBinding(@NonNull LinearLayout rootView,
-      @NonNull MaterialButton btnRegister, @NonNull EditText etEmail,
-      @NonNull EditText etFieldOfStudy, @NonNull EditText etPassword, @NonNull EditText etfullName,
-      @NonNull HeaderBackBinding header, @NonNull TextView tvGoLogin) {
+  private ActivityRegisterBinding(@NonNull ScrollView rootView, @NonNull MaterialButton btnRegister,
+      @NonNull EditText etEmail, @NonNull EditText etFieldOfStudy, @NonNull EditText etPassword,
+      @NonNull EditText etfullName, @NonNull HeaderBackBinding header,
+      @NonNull TextView tvGoLogin) {
     this.rootView = rootView;
     this.btnRegister = btnRegister;
     this.etEmail = etEmail;
@@ -58,7 +58,7 @@ public final class ActivityRegisterBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public ScrollView getRoot() {
     return rootView;
   }
 
@@ -126,7 +126,7 @@ public final class ActivityRegisterBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityRegisterBinding((LinearLayout) rootView, btnRegister, etEmail,
+      return new ActivityRegisterBinding((ScrollView) rootView, btnRegister, etEmail,
           etFieldOfStudy, etPassword, etfullName, binding_header, tvGoLogin);
     }
     String missingId = rootView.getResources().getResourceName(id);
