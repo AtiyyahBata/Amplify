@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityLoginBinding;
 import com.amplify.app.ui.main.MainActivity;
 
@@ -63,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(this, RegisterActivity.class)));
 
         binding.btnLogIn.setOnClickListener(v -> loginUser());
-        }
+    }
 
     private void loginUser() {
 
@@ -141,16 +142,24 @@ public class LoginActivity extends AppCompatActivity {
                             ).show();
 
                             String accessToken = "";
+                            String refreshToken = "";
                             try {
                                 JSONObject json = new JSONObject(responseBody);
                                 accessToken = json.optString("access_token", "");
+                                refreshToken = json.optString("refresh_token", "");
                             } catch (Exception ignored) {
                             }
 
+                            // Kept as before, in case other screens read it from here.
                             getSharedPreferences("app_prefs", MODE_PRIVATE)
                                     .edit()
                                     .putString("access_token", accessToken)
                                     .apply();
+
+                            // Used by the AI chat (ChatRepository) to stay signed in
+                            // and to refresh the token when it expires.
+                            SessionManager.saveSession(
+                                    LoginActivity.this, accessToken, refreshToken);
 
                             Intent intent =
                                     new Intent(
@@ -215,7 +224,3 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 }
-
-
-
-
