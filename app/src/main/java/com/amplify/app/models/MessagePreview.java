@@ -1,6 +1,6 @@
 package com.amplify.app.models;
 
-/** One row in the Messages list - a preview of a conversation, not the full thread. */
+/** One row in the Messages list. */
 public class MessagePreview {
 
     private String name;
@@ -11,11 +11,9 @@ public class MessagePreview {
     private String otherUserId;
     private int unreadCount;
 
+    /** Old constructor, kept so any leftover dummy data still compiles. */
     public MessagePreview(String name, String initials, String lastMessage, String timeAgo) {
-        this.name = name;
-        this.initials = initials;
-        this.lastMessage = lastMessage;
-        this.timeAgo = timeAgo;
+        this(name, initials, lastMessage, timeAgo, null, null, 0);
     }
 
     public MessagePreview(String name, String initials, String lastMessage, String timeAgo,

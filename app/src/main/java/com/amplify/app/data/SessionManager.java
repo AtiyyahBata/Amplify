@@ -7,13 +7,13 @@ import android.util.Base64;
 import org.json.JSONObject;
 
 /**
- * Gives the AI chat the signed-in user's Supabase access token.
+ * Gives the AI chat and the private messages the signed-in user's Supabase access token.
  *
  * Your login code must call saveSession(...) after a successful login, passing the
  * "access_token" and "refresh_token" from Supabase's response.
  *
- * Access tokens only last about an hour. ChatRepository uses the refresh token to get a new
- * one automatically, and calls saveSession(...) again with the new pair.
+ * Access tokens only last about an hour. ChatRepository and SupabaseApi use the refresh
+ * token to get a new one automatically, and call saveSession(...) again with the new pair.
  */
 public final class SessionManager {
 
@@ -33,6 +33,15 @@ public final class SessionManager {
                 .apply();
     }
 
+    /**
+     * True when this phone holds a saved login. The app uses this at start-up to skip the
+     * Welcome screen. (The access token may be old; it is renewed on the first request.)
+     */
+    public static boolean isSignedIn(Context context) {
+        String refresh = getRefreshToken(context);
+        return refresh != null && !refresh.isEmpty();
+    }
+
     /** Returns the current access token, or null when nobody is signed in. */
     public static String getAccessToken(Context context) {
         return context.getApplicationContext()
@@ -47,17 +56,16 @@ public final class SessionManager {
                 .getString(KEY_REFRESH, null);
     }
 
-    /** Returns the user ID (sub) extracted from the JWT access token, or empty string if not available. */
+    /**
+     * The signed-in user's id (the same id as auth.users.id and profiles.id),
+     * or empty string when nobody is signed in. It is read from the "sub" value inside the token.
+     */
     public static String getUserId(Context context) {
         String token = getAccessToken(context);
         if (token == null) return "";
         try {
-            String[] parts = token.split("\\.");
-            if (parts.length < 2) return "";
-            byte[] decoded = Base64.decode(parts[1],
-                    Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
-            JSONObject payload = new JSONObject(new String(decoded, "UTF-8"));
-            return payload.optString("sub", "");
+            String sub = readPayload(token).optString("sub", "");
+            return sub != null ? sub : "";
         } catch (Exception e) {
             return "";
         }
@@ -72,12 +80,7 @@ public final class SessionManager {
         String token = getAccessToken(context);
         if (token == null) return false;
         try {
-            String[] parts = token.split("\\.");
-            if (parts.length < 2) return false;
-            byte[] decoded = Base64.decode(parts[1],
-                    Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
-            JSONObject payload = new JSONObject(new String(decoded, "UTF-8"));
-            long exp = payload.optLong("exp", 0);
+            long exp = readPayload(token).optLong("exp", 0);
             if (exp == 0) return false;
             long nowSeconds = System.currentTimeMillis() / 1000L;
             return exp - nowSeconds < 60;
@@ -86,10 +89,25 @@ public final class SessionManager {
         }
     }
 
-    /** Call this on logout. */
+    /** Opens the middle part of the token, which holds "sub" (user id) and "exp" (expiry). */
+    private static JSONObject readPayload(String token) throws Exception {
+        String[] parts = token.split("\\.");
+        if (parts.length < 2) throw new IllegalArgumentException("Not a token");
+        byte[] decoded = Base64.decode(parts[1],
+                Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
+        return new JSONObject(new String(decoded, "UTF-8"));
+    }
+
+    /**
+     * Call this on logout. Forgets the login on this phone (including the copy LoginActivity
+     * keeps in "app_prefs") and removes the message keys from this phone.
+     */
     public static void clear(Context context) {
-        context.getApplicationContext()
-                .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        Context app = context.getApplicationContext();
+        app.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                 .edit().clear().apply();
+        app.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+                .edit().remove("access_token").apply();
+        ChatKeyManager.clearLocal(app);
     }
 }
