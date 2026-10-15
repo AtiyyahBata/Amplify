@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +21,10 @@ import java.lang.String;
 
 public final class FragmentSearchBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final FrameLayout rootView;
+
+  @NonNull
+  public final FrameLayout btnAiFloating;
 
   @NonNull
   public final MaterialButton btnSearch;
@@ -38,10 +41,12 @@ public final class FragmentSearchBinding implements ViewBinding {
   @NonNull
   public final TextView tvAiSummary;
 
-  private FragmentSearchBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnSearch,
-      @NonNull MaterialCardView cardAiSummary, @NonNull EditText etSearchQuery,
-      @NonNull RecyclerView rvResults, @NonNull TextView tvAiSummary) {
+  private FragmentSearchBinding(@NonNull FrameLayout rootView, @NonNull FrameLayout btnAiFloating,
+      @NonNull MaterialButton btnSearch, @NonNull MaterialCardView cardAiSummary,
+      @NonNull EditText etSearchQuery, @NonNull RecyclerView rvResults,
+      @NonNull TextView tvAiSummary) {
     this.rootView = rootView;
+    this.btnAiFloating = btnAiFloating;
     this.btnSearch = btnSearch;
     this.cardAiSummary = cardAiSummary;
     this.etSearchQuery = etSearchQuery;
@@ -51,7 +56,7 @@ public final class FragmentSearchBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -76,6 +81,12 @@ public final class FragmentSearchBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnAiFloating;
+      FrameLayout btnAiFloating = ViewBindings.findChildViewById(rootView, id);
+      if (btnAiFloating == null) {
+        break missingId;
+      }
+
       id = R.id.btnSearch;
       MaterialButton btnSearch = ViewBindings.findChildViewById(rootView, id);
       if (btnSearch == null) {
@@ -106,8 +117,8 @@ public final class FragmentSearchBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentSearchBinding((LinearLayout) rootView, btnSearch, cardAiSummary,
-          etSearchQuery, rvResults, tvAiSummary);
+      return new FragmentSearchBinding((FrameLayout) rootView, btnAiFloating, btnSearch,
+          cardAiSummary, etSearchQuery, rvResults, tvAiSummary);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -23,6 +23,17 @@
             android:paddingEnd="20dp"
             android:layout_marginBottom="10dp" />
 
+        <TextView
+            android:id="@+id/tvFeedStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Loading posts..."
+            android:textSize="14sp"
+            android:textColor="@color/muted"
+            android:gravity="center"
+            android:padding="20dp"
+            android:visibility="visible" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvFeed"
             android:layout_width="match_parent"
