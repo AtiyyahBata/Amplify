@@ -3052,6 +3052,7 @@ int drawable ic_settings 0x7f0800bc
 int drawable ic_trash 0x7f0800bd
 int drawable ic_upload 0x7f0800be
 int drawable ic_verified_mark 0x7f0800bf
+int drawable lexi_logo 0x7f08010a
 int drawable m3_avd_hide_password 0x7f0800c0
 int drawable m3_avd_show_password 0x7f0800c1
 int drawable m3_bottom_sheet_drag_handle 0x7f0800c2

@@ -136,11 +136,13 @@
                     android:layout_gravity="top">
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_ai_robot_avatar"
-                        android:contentDescription="AI Avatar" />
+                        android:src="@drawable/lexi_logo"
+                        android:scaleType="fitCenter"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no" />
                 </FrameLayout>
 
                 <LinearLayout

@@ -3053,6 +3053,7 @@ drawable ic_settings
 drawable ic_trash
 drawable ic_upload
 drawable ic_verified_mark
+drawable lexi_logo
 drawable m3_avd_hide_password
 drawable m3_avd_show_password
 drawable m3_bottom_sheet_drag_handle
