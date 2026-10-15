@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F7F5FC"
+    android:fillViewport="true"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="28dp">
+
+        <!-- Top navigation -->
+        <ImageView
+            android:id="@+id/btnAdminBack"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:padding="12dp"
+            android:src="@drawable/ic_back"
+            android:scaleType="fitCenter"
+            android:contentDescription="Back"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless" />
+
+        <!-- Brand -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="18dp">
+
+            <ImageView
+                android:layout_width="68dp"
+                android:layout_height="68dp"
+                android:src="@mipmap/ic_launcher"
+                android:scaleType="fitCenter"
+                android:contentDescription="Amplify logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="AMPLIFY  /  ADMIN"
+                android:textColor="#6D4AFF"
+                android:textSize="11sp"
+                android:letterSpacing="0.12"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <!-- heading -->
+        <TextView
+            android:id="@+id/txtAdminWelcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:gravity="center"
+            android:text="Welcome back"
+            android:textColor="#29213D"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:background="@android:color/transparent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="Your workspace is waiting for you."
+            android:textColor="#777184"
+            android:textSize="14sp" />
+
+        <!-- Login card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical"
+            android:padding="22dp"
+            android:background="@drawable/bg_admin_card"
+            android:elevation="3dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ADMINISTRATOR SIGN IN"
+                android:textColor="#29213D"
+                android:textSize="12sp"
+                android:letterSpacing="0.06"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="24dp"
+                android:text="Enter your credentials to continue."
+                android:textColor="#858193"
+                android:textSize="13sp" />
+
+            <!-- Email -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email address"
+                android:textColor="#40384F"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etAdminEmail"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_admin_input"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:hint="admin@example.com"
+                android:textColor="#29213D"
+                android:textColorHint="#A09AAC"
+                android:textSize="14sp"
+                android:inputType="textEmailAddress"
+                android:autofillHints="emailAddress"
+                android:singleLine="true" />
+
+            <!-- Password -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Password"
+                android:textColor="#40384F"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etAdminPassword"
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_admin_input"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:hint="Enter your password"
+                android:textColor="#29213D"
+                android:textColorHint="#A09AAC"
+                android:textSize="14sp"
+                android:inputType="textPassword"
+                android:autofillHints="password"
+                android:singleLine="true" />
+
+
+            <!-- Sign in button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAdminSignIn"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="20dp"
+                android:text="Sign in to dashboard"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#6D4AFF"
+                app:cornerRadius="14dp"
+                app:elevation="2dp" />
+
+            <!-- Security note -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="●"
+                    android:textColor="#37A879"
+                    android:textSize="10sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Secure access for authorised administrators"
+                    android:textColor="#777184"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Footer branding -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:gravity="center"
+            android:text="CONNECT. LEARN. GROW."
+            android:textColor="#9690A5"
+            android:textSize="10sp"
+            android:letterSpacing="0.16" />
+
+    </LinearLayout>
+
+</ScrollView>
