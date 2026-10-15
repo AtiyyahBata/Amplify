@@ -108,118 +108,164 @@ public class ProfileFragment extends Fragment {
             return;
         }
 
-        String url = SUPABASE_URL
-                + "/rest/v1/profiles"
-                + "?select=full_name,field_of_study,user_type"
-                + "&limit=1";
+        final String token = accessToken;
 
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("apikey", SUPABASE_KEY)
-                .addHeader("Authorization", "Bearer " + accessToken)
-                .addHeader("Accept", "application/json")
+        // Step 1: Fetch authenticated user ID first, then fetch their profile
+        Request userRequest = new Request.Builder()
+                .url(SUPABASE_URL + "/auth/v1/user")
                 .get()
+                .addHeader("apikey", SUPABASE_KEY)
+                .addHeader("Authorization", "Bearer " + token)
+                .addHeader("Accept", "application/json")
                 .build();
 
-        client.newCall(request).enqueue(new Callback() {
-
+        client.newCall(userRequest).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 Activity act = getActivity();
                 if (act == null || !isAdded()) return;
-
                 act.runOnUiThread(() -> {
                     if (binding == null) return;
-                    showMessage("Could not connect to your profile.");
+                    showMessage("Could not connect to verify your account.");
                 });
             }
 
             @Override
-            public void onResponse(
-                    @NonNull Call call, @NonNull Response response) throws IOException {
-
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                String userBody;
                 try (Response res = response) {
-
-                    String responseBody = res.body() != null
-                            ? res.body().string()
-                            : "";
-
-                    Activity act = getActivity();
-                    if (act == null || !isAdded()) return;
-
+                    userBody = res.body() != null ? res.body().string() : "";
                     if (!res.isSuccessful()) {
+                        Activity act = getActivity();
+                        if (act == null || !isAdded()) return;
                         act.runOnUiThread(() -> {
                             if (binding == null) return;
+                            showMessage("Session expired. Please log in again.");
+                        });
+                        return;
+                    }
+                }
 
-                            showMessage(
-                                    "Could not load profile. "
-                                            + "Please log in again if your session expired.");
+                try {
+                    JSONObject userJson = new JSONObject(userBody);
+                    String userId = userJson.optString("id", "");
+
+                    if (userId.isEmpty()) {
+                        Activity act = getActivity();
+                        if (act == null || !isAdded()) return;
+                        act.runOnUiThread(() -> {
+                            if (binding == null) return;
+                            showMessage("Could not identify your user account.");
                         });
                         return;
                     }
 
-                    try {
-                        JSONArray profiles = new JSONArray(responseBody);
+                    // Step 2: Fetch profile specifically for this userId
+                    String encodedUserId = java.net.URLEncoder.encode(userId, "UTF-8");
+                    String profileUrl = SUPABASE_URL
+                            + "/rest/v1/profiles"
+                            + "?id=eq." + encodedUserId
+                            + "&select=full_name,field_of_study,user_type"
+                            + "&limit=1";
 
-                        if (profiles.length() == 0) {
+                    Request profileRequest = new Request.Builder()
+                            .url(profileUrl)
+                            .get()
+                            .addHeader("apikey", SUPABASE_KEY)
+                            .addHeader("Authorization", "Bearer " + token)
+                            .addHeader("Accept", "application/json")
+                            .build();
+
+                    client.newCall(profileRequest).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            Activity act = getActivity();
+                            if (act == null || !isAdded()) return;
                             act.runOnUiThread(() -> {
                                 if (binding == null) return;
-                                showMessage(
-                                        "No profile found for this account.");
+                                showMessage("Could not connect to your profile.");
                             });
-                            return;
                         }
 
-                        JSONObject profile = profiles.getJSONObject(0);
-
-                        String fullName = profile.optString(
-                                "full_name", "User");
-
-                        String fieldOfStudy = profile.optString(
-                                "field_of_study", "");
-
-                        String userType = profile.optString(
-                                "user_type", "Normal");
-
-                        if (fullName.trim().isEmpty()) {
-                            fullName = "User";
-                        }
-
-                        final String name = fullName.trim();
-                        final String study = fieldOfStudy.trim();
-                        final String type = userType.trim();
-
-                        act.runOnUiThread(() -> {
-                            if (binding == null) return;
-
-                            binding.tvProfileName.setText(name);
-                            binding.tvProfileInitials.setText(
-                                    getInitials(name));
-
-                            binding.tvFieldOfStudy.setText(
-                                    study.isEmpty()
-                                            ? "Field of study not provided"
-                                            : study);
-
-                            if (type.equalsIgnoreCase("Verified")) {
-                                binding.tvVerificationLabel.setText(
-                                        "Verified");
-                            } else if (
-                                    type.equalsIgnoreCase("Admin")) {
-                                binding.tvVerificationLabel.setText(
-                                        "Admin");
-                            } else {
-                                binding.tvVerificationLabel.setText(
-                                        "Not verified");
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response profileResponse) throws IOException {
+                            String responseBody;
+                            try (Response res = profileResponse) {
+                                responseBody = res.body() != null ? res.body().string() : "";
                             }
-                        });
 
-                    } catch (Exception e) {
-                        act.runOnUiThread(() -> {
-                            if (binding == null) return;
-                            showMessage("Unable to read profile information.");
-                        });
-                    }
+                            Activity act = getActivity();
+                            if (act == null || !isAdded()) return;
+
+                            if (!profileResponse.isSuccessful()) {
+                                act.runOnUiThread(() -> {
+                                    if (binding == null) return;
+                                    showMessage("Could not load profile. HTTP " + profileResponse.code());
+                                });
+                                return;
+                            }
+
+                            try {
+                                JSONArray profiles = new JSONArray(responseBody);
+
+                                if (profiles.length() == 0) {
+                                    act.runOnUiThread(() -> {
+                                        if (binding == null) return;
+                                        showMessage("No profile found for this account.");
+                                    });
+                                    return;
+                                }
+
+                                JSONObject profile = profiles.getJSONObject(0);
+
+                                String fullName = profile.optString("full_name", "User");
+                                String fieldOfStudy = profile.optString("field_of_study", "");
+                                String userType = profile.optString("user_type", "Normal");
+
+                                if (fullName.trim().isEmpty()) {
+                                    fullName = "User";
+                                }
+
+                                final String name = fullName.trim();
+                                final String study = fieldOfStudy.trim();
+                                final String type = userType.trim();
+
+                                act.runOnUiThread(() -> {
+                                    if (binding == null) return;
+
+                                    binding.tvProfileName.setText(name);
+                                    binding.tvProfileInitials.setText(getInitials(name));
+
+                                    binding.tvFieldOfStudy.setText(
+                                            study.isEmpty()
+                                                    ? "Field of study not provided"
+                                                    : study);
+
+                                    if (type.equalsIgnoreCase("Verified")) {
+                                        binding.tvVerificationLabel.setText("Verified");
+                                    } else if (type.equalsIgnoreCase("Admin")) {
+                                        binding.tvVerificationLabel.setText("Admin");
+                                    } else {
+                                        binding.tvVerificationLabel.setText("Not verified");
+                                    }
+                                });
+
+                            } catch (Exception e) {
+                                act.runOnUiThread(() -> {
+                                    if (binding == null) return;
+                                    showMessage("Unable to read profile information.");
+                                });
+                            }
+                        }
+                    });
+
+                } catch (Exception e) {
+                    Activity act = getActivity();
+                    if (act == null || !isAdded()) return;
+                    act.runOnUiThread(() -> {
+                        if (binding == null) return;
+                        showMessage("Unable to process user session.");
+                    });
                 }
             }
         });
