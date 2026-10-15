@@ -1,4 +1,3 @@
-
 package com.amplify.app.ui.main.home;
 
 import android.content.Context;
@@ -36,7 +35,6 @@ import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class HomeFragment extends Fragment {
@@ -50,9 +48,6 @@ public class HomeFragment extends Fragment {
             "sb_publishable_yoqGxzzEd6H2iRWyWckd-g_RkHgxhqC";
 
     private static final String BUCKET = "Amplify-media";
-
-    private static final MediaType JSON =
-            MediaType.get("application/json; charset=utf-8");
 
     private final OkHttpClient client = new OkHttpClient();
     private final List<Post> feedPosts = new ArrayList<>();
@@ -86,10 +81,7 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(
                     requireContext(), ViewPostActivity.class);
 
-            // We'll pass the selected post ID when we connect
-            // the full-post screen to Supabase.
             intent.putExtra("post_id", post.getId());
-
             startActivity(intent);
         });
 
@@ -305,11 +297,10 @@ public class HomeFragment extends Fragment {
                         String mediaType = item.optString("media_type", "");
                         String mediaPath = item.optString("media_path", "");
 
-                        // Only verified creators should be able to publish.
                         boolean verified =
                                 "Verified".equalsIgnoreCase(userType);
 
-                        result.add(new Post(
+                        Post post = new Post(
                                 item.optString("id", ""),
                                 userId,
                                 name,
@@ -322,7 +313,15 @@ public class HomeFragment extends Fragment {
                                 "community",
                                 mediaType,
                                 mediaPath
-                        ));
+                        );
+
+                        // Directly build and set the public URL correctly
+                        String publicUrl = buildPublicUrl(mediaPath);
+                        if (publicUrl != null) {
+                            post.setMediaUrl(publicUrl);
+                        }
+
+                        result.add(post);
                     }
 
                     displayPosts(result);
@@ -332,6 +331,39 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private String buildPublicUrl(String path) {
+        if (path == null || path.trim().isEmpty()) {
+            return null;
+        }
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+            return path;
+        }
+
+        // Clean up any leading slashes or accidental bucket prefixes saved in db
+        String cleanPath = path.startsWith("/") ? path.substring(1) : path;
+        if (cleanPath.startsWith(BUCKET + "/")) {
+            cleanPath = cleanPath.substring(BUCKET.length() + 1);
+        }
+
+        String[] parts = cleanPath.split("/");
+        StringBuilder encoded = new StringBuilder();
+
+        for (String part : parts) {
+            if (encoded.length() > 0) {
+                encoded.append("/");
+            }
+            try {
+                encoded.append(java.net.URLEncoder.encode(part, "UTF-8").replace("+", "%20"));
+            } catch (Exception e) {
+                encoded.append(part);
+            }
+        }
+
+        String finalUrl = SUPABASE_URL + "/storage/v1/object/public/" + BUCKET + "/" + encoded;
+        android.util.Log.d("AMPLIFY_IMAGE", "Constructed Public URL: " + finalUrl);
+        return finalUrl;
     }
 
     private String makeInitials(String name) {
@@ -361,136 +393,6 @@ public class HomeFragment extends Fragment {
 
             binding.tvFeedStatus.setVisibility(View.GONE);
             binding.rvFeed.setVisibility(View.VISIBLE);
-
-            // Request temporary URLs for private images.
-            for (Post post : feedPosts) {
-                String path = post.getMediaPath();
-
-                boolean imageFile = path != null && (
-                        path.toLowerCase().endsWith(".jpg")
-                                || path.toLowerCase().endsWith(".jpeg")
-                                || path.toLowerCase().endsWith(".png")
-                                || path.toLowerCase().endsWith(".webp"));
-
-                if (imageFile && !path.isEmpty()) {
-                    loadSignedImage(post);
-                }
-            }
-        });
-    }
-
-    private void loadSignedImage(Post post) {
-        android.util.Log.d("AMPLIFY_IMAGE", "loadSignedImage() was called");
-
-        String path = post.getMediaPath();
-        android.util.Log.d(
-                "AMPLIFY_IMAGE",
-                "Media path from post: " + path
-        );
-
-        android.util.Log.d("AMPLIFY_IMAGE", "Raw media path: [" + path + "]");
-
-        if (path == null || path.trim().isEmpty()) {
-            android.util.Log.e("AMPLIFY_IMAGE", "Media path is empty!");
-            return;
-        }
-
-        HttpUrl base = HttpUrl.parse(
-                SUPABASE_URL + "/storage/v1/object/sign/");
-
-        if (base == null) {
-            android.util.Log.e("AMPLIFY_IMAGE", "Invalid Supabase URL");
-            return;
-        }
-
-        HttpUrl.Builder urlBuilder = base.newBuilder()
-                .addPathSegment(BUCKET);
-
-        for (String segment : path.split("/")) {
-            urlBuilder.addPathSegment(segment);
-        }
-
-        String requestUrl = urlBuilder.build().toString();
-
-        android.util.Log.d("AMPLIFY_IMAGE", "Bucket: " + BUCKET);
-        android.util.Log.d("AMPLIFY_IMAGE", "Request URL: " + requestUrl);
-
-        RequestBody body = RequestBody.create(
-                "{\"expiresIn\":3600}", JSON);
-
-        Request request = authenticatedRequest(requestUrl)
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(
-                    @NonNull Call call,
-                    @NonNull IOException e) {
-                // Keep the post visible if its image can't load.
-            }
-
-            @Override
-            public void onResponse(
-                    @NonNull Call call,
-                    @NonNull Response response) {
-
-                try (Response res = response) {
-                    String responseText = res.body() != null
-                            ? res.body().string()
-                            : "";
-
-                    android.util.Log.d(
-                            "AMPLIFY_IMAGE",
-                            "HTTP status: " + res.code()
-                    );
-
-                    android.util.Log.d(
-                            "AMPLIFY_IMAGE",
-                            "Actual Supabase response: " + responseText
-                    );
-
-                    if (!res.isSuccessful()) {
-                        android.util.Log.e(
-                                "AMPLIFY_IMAGE",
-                                "Signed URL failed: " + responseText
-                        );
-                        return;
-                    }
-
-                    JSONObject json = new JSONObject(responseText);
-                    String signedURL = json.optString("signedURL", "");
-
-                    if (signedURL.isEmpty()) return;
-
-                    if (signedURL.startsWith("/")) {
-                        signedURL = SUPABASE_URL
-                                + "/storage/v1" + signedURL;
-                    }
-
-                    final String imageURL = signedURL;
-
-                    if (!isAdded()) return;
-
-                    requireActivity().runOnUiThread(() -> {
-                        if (binding == null) return;
-
-                        post.setMediaUrl(imageURL);
-
-                        int index = feedPosts.indexOf(post);
-                        if (index >= 0) {
-                            adapter.notifyItemChanged(index);
-                        }
-                    });
-
-                } catch (Exception e) {
-                    android.util.Log.e(
-                            "AMPLIFY_IMAGE",
-                            "Error reading signed URL response",
-                            e
-                    );
-                }
-            }
         });
     }
 
