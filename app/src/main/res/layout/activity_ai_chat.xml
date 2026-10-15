@@ -4,9 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F8F9FE">
+    android:background="#F8F7FC">
 
-    <!-- Top Bar -->
+    <!-- Header: existing IDs and controls preserved -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -14,7 +14,6 @@
         android:paddingStart="8dp"
         android:paddingEnd="8dp">
 
-        <!-- 48dp touch target, icon stays visually 28dp via padding -->
         <ImageView
             android:id="@+id/btnBack"
             android:layout_width="48dp"
@@ -55,7 +54,6 @@
             android:clickable="true"
             android:focusable="true">
 
-            <!-- Accent tint so the icon is visible on the light pill -->
             <ImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
@@ -65,7 +63,6 @@
                 android:contentDescription="@string/cd_history" />
         </FrameLayout>
 
-        <!-- Bounded on both sides so it can never overlap the buttons -->
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
@@ -82,199 +79,250 @@
             android:ellipsize="end" />
     </RelativeLayout>
 
-    <!-- Main Scrollable Content -->
+    <!-- Welcome screen -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            android:paddingTop="32dp"
+            android:paddingStart="22dp"
+            android:paddingEnd="22dp"
+            android:paddingTop="26dp"
             android:paddingBottom="24dp"
             android:gravity="center_horizontal">
 
-            <!-- Robot Graphic Container (decorative) -->
+            <!-- Lexi mascot -->
             <FrameLayout
-                android:layout_width="140dp"
-                android:layout_height="140dp"
-                android:background="@drawable/bg_ai_floating_button"
-                android:layout_marginBottom="20dp">
+                android:layout_width="124dp"
+                android:layout_height="124dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_ai_floating_button">
 
                 <ImageView
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_ai_robot_avatar"
-                    android:contentDescription="@null"
-                    android:importantForAccessibility="no" />
+                    android:src="@drawable/lexi_logo"
+                    android:scaleType="fitCenter"
+                    android:contentDescription="Lexi learning assistant" />
             </FrameLayout>
 
-            <!-- Hello Greeting -->
             <TextView
                 android:id="@+id/tvHello"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ai_hello"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                android:textColor="#1B115A"
-                android:layout_marginBottom="8dp" />
-
-            <!-- Subtitle -->
-            <TextView
-                android:id="@+id/tvSubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ai_prompt_subtitle"
-                android:textSize="15sp"
-                android:lineSpacingExtra="4dp"
-                android:textColor="#5C5E70"
-                android:gravity="center"
-                android:layout_marginBottom="36dp" />
-
-            <!-- Suggestion Chips Container -->
-            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="Hi, I'm Lexi! 💜"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="#29213D"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
 
-                <!-- Chip 1: Summarize this post -->
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your learning companion. Let's discover tutorials, resources and projects to help you grow."
+                android:textSize="14sp"
+                android:lineSpacingExtra="4dp"
+                android:textColor="#777184"
+                android:gravity="center"
+                android:layout_marginBottom="28dp" />
+
+            <!-- Suggestions heading -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="YOUR LEARNING JOURNEY"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08"
+                android:textColor="#777184"
+                android:layout_marginBottom="14dp" />
+
+            <!-- Existing suggestion ID: preserved -->
+            <LinearLayout
+                android:id="@+id/btnChipSummarize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="68dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_ai_chip"
+                android:padding="14dp"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_ai_badge"
+                    android:layout_marginEnd="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_ai_sparkle"
+                        app:tint="@color/accent"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no" />
+                </FrameLayout>
+
                 <LinearLayout
-                    android:id="@+id/btnChipSummarize"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:orientation="horizontal"
-                    android:background="@drawable/bg_ai_chip"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <FrameLayout
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/bg_ai_badge"
-                        android:layout_marginEnd="10dp">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_ai_sparkle"
-                            app:tint="@color/accent"
-                            android:contentDescription="@null"
-                            android:importantForAccessibility="no" />
-                    </FrameLayout>
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/ai_chip_summarize"
+                        android:textColor="#34245F"
                         android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#452CB8" />
-                </LinearLayout>
-
-                <!-- Chip 2: Explain something -->
-                <LinearLayout
-                    android:id="@+id/btnChipExplain"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:orientation="horizontal"
-                    android:background="@drawable/bg_ai_chip"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <FrameLayout
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/bg_ai_badge"
-                        android:layout_marginEnd="10dp">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_ai_sparkle"
-                            app:tint="@color/accent"
-                            android:contentDescription="@null"
-                            android:importantForAccessibility="no" />
-                    </FrameLayout>
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/ai_chip_explain"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#452CB8" />
-                </LinearLayout>
-
-                <!-- Chip 3: Give me ideas -->
-                <LinearLayout
-                    android:id="@+id/btnChipIdeas"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minHeight="48dp"
-                    android:orientation="horizontal"
-                    android:background="@drawable/bg_ai_chip"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <FrameLayout
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/bg_ai_badge"
-                        android:layout_marginEnd="10dp">
-
-                        <ImageView
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_ai_sparkle"
-                            app:tint="@color/accent"
-                            android:contentDescription="@null"
-                            android:importantForAccessibility="no" />
-                    </FrameLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/ai_chip_ideas"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="#452CB8" />
+                        android:layout_marginTop="4dp"
+                        android:text="Explore helpful learning material"
+                        android:textColor="#777184"
+                        android:textSize="12sp" />
                 </LinearLayout>
             </LinearLayout>
+
+            <!-- Existing suggestion ID: preserved -->
+            <LinearLayout
+                android:id="@+id/btnChipExplain"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="68dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_ai_chip"
+                android:padding="14dp"
+                android:layout_marginBottom="12dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_ai_badge"
+                    android:layout_marginEnd="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_ai_sparkle"
+                        app:tint="@color/accent"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ai_chip_explain"
+                        android:textColor="#34245F"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Find tutorials and explanations"
+                        android:textColor="#777184"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Existing suggestion ID: preserved -->
+            <LinearLayout
+                android:id="@+id/btnChipIdeas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="68dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/bg_ai_chip"
+                android:padding="14dp"
+                android:layout_marginBottom="18dp"
+                android:clickable="true"
+                android:focusable="true">
+
+                <FrameLayout
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/bg_ai_badge"
+                    android:layout_marginEnd="12dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_ai_sparkle"
+                        app:tint="@color/accent"
+                        android:contentDescription="@null"
+                        android:importantForAccessibility="no" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ai_chip_ideas"
+                        android:textColor="#34245F"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Discover projects and new skills"
+                        android:textColor="#777184"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Helpful tip -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="14dp"
+                android:background="#F0ECFF"
+                android:text="💡  Tip: Tell Lexi what you want to learn, and she'll help you find a place to start."
+                android:textColor="#5035B5"
+                android:textSize="12sp"
+                android:lineSpacingExtra="3dp" />
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- Bottom Message Input Bar -->
+    <!-- Bottom Message Input: existing IDs and styling resources preserved -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

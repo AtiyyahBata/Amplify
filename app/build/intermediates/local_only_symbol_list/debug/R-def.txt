@@ -62,6 +62,7 @@ drawable ic_settings
 drawable ic_trash
 drawable ic_upload
 drawable ic_verified_mark
+drawable lexi_logo
 id adminFragmentContainer
 id bottomNav
 id btnAdminBack
