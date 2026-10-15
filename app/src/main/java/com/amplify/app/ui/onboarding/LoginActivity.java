@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.amplify.app.data.ChatKeyManager;
 import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityLoginBinding;
 import com.amplify.app.ui.main.MainActivity;
@@ -64,6 +66,46 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(new Intent(this, RegisterActivity.class)));
 
         binding.btnLogIn.setOnClickListener(v -> loginUser());
+    }
+
+    /** Opens the main screen (the part that used to run straight after login). */
+    private void openMain(String accessToken) {
+        if (isFinishing() || isDestroyed()) return;
+
+        Intent intent = new Intent(this, MainActivity.class);
+
+        if (!accessToken.isEmpty()) {
+            intent.putExtra("access_token", accessToken);
+        }
+
+        // Clear everything behind (Welcome, Register...) so Back from the app leaves it
+        // instead of returning to the Welcome screen.
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Shown when the old message keys can't be opened with this password
+     * (usually after a password reset).
+     */
+    private void showFreshStartDialog(Runnable startFresh, Runnable skip) {
+        if (isFinishing() || isDestroyed()) {
+            skip.run();
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Start fresh with messages?")
+                .setMessage("We couldn't unlock your old private messages with this password. "
+                        + "This usually happens after a password reset.\n\n"
+                        + "If you continue, new message keys are created. Your old messages "
+                        + "can't be read again, but new ones will work normally.")
+                .setCancelable(false)
+                .setPositiveButton("Start fresh", (dialog, which) -> startFresh.run())
+                .setNegativeButton("Not now", (dialog, which) -> skip.run())
+                .show();
     }
 
     private void loginUser() {
@@ -161,18 +203,44 @@ public class LoginActivity extends AppCompatActivity {
                             SessionManager.saveSession(
                                     LoginActivity.this, accessToken, refreshToken);
 
-                            Intent intent =
-                                    new Intent(
-                                            LoginActivity.this,
-                                            MainActivity.class
-                                    );
+                            // Private messages: create the encryption keys on the first
+                            // login, or unlock them with this password on a new phone.
+                            // MainActivity opens as soon as that is done.
+                            final String finalAccessToken = accessToken;
+                            binding.btnLogIn.setEnabled(false);
+                            binding.btnLogIn.setText("Setting up secure messaging…");
 
-                            if (!accessToken.isEmpty()) {
-                                intent.putExtra("access_token", accessToken);
-                            }
+                            ChatKeyManager.prepareAfterLogin(
+                                    LoginActivity.this,
+                                    password,
+                                    new ChatKeyManager.Listener() {
 
-                            startActivity(intent);
-                            finish();
+                                        @Override
+                                        public void onReady() {
+                                            openMain(finalAccessToken);
+                                        }
+
+                                        @Override
+                                        public void onNeedsFreshStart(
+                                                Runnable startFresh,
+                                                Runnable skip
+                                        ) {
+                                            showFreshStartDialog(startFresh, skip);
+                                        }
+
+                                        @Override
+                                        public void onFailed(String message) {
+                                            if (isFinishing() || isDestroyed()) return;
+                                            Toast.makeText(
+                                                    LoginActivity.this,
+                                                    message,
+                                                    Toast.LENGTH_LONG
+                                            ).show();
+                                            // Login itself worked, so let them in.
+                                            // Private messages stay off until the next login.
+                                            openMain(finalAccessToken);
+                                        }
+                                    });
 
                         } else {
 

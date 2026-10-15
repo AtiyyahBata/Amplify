@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,11 +27,16 @@ public final class FragmentMessagesBinding implements ViewBinding {
   @NonNull
   public final RecyclerView rvConversations;
 
+  @NonNull
+  public final TextView tvEmpty;
+
   private FragmentMessagesBinding(@NonNull LinearLayout rootView,
-      @NonNull ImageButton btnNewMessage, @NonNull RecyclerView rvConversations) {
+      @NonNull ImageButton btnNewMessage, @NonNull RecyclerView rvConversations,
+      @NonNull TextView tvEmpty) {
     this.rootView = rootView;
     this.btnNewMessage = btnNewMessage;
     this.rvConversations = rvConversations;
+    this.tvEmpty = tvEmpty;
   }
 
   @Override
@@ -72,7 +78,14 @@ public final class FragmentMessagesBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentMessagesBinding((LinearLayout) rootView, btnNewMessage, rvConversations);
+      id = R.id.tvEmpty;
+      TextView tvEmpty = ViewBindings.findChildViewById(rootView, id);
+      if (tvEmpty == null) {
+        break missingId;
+      }
+
+      return new FragmentMessagesBinding((LinearLayout) rootView, btnNewMessage, rvConversations,
+          tvEmpty);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

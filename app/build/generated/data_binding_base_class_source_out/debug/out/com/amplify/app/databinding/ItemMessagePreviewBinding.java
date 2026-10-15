@@ -31,13 +31,18 @@ public final class ItemMessagePreviewBinding implements ViewBinding {
   @NonNull
   public final TextView tvTime;
 
+  @NonNull
+  public final TextView tvUnread;
+
   private ItemMessagePreviewBinding(@NonNull LinearLayout rootView, @NonNull TextView tvAvatar,
-      @NonNull TextView tvLastMessage, @NonNull TextView tvName, @NonNull TextView tvTime) {
+      @NonNull TextView tvLastMessage, @NonNull TextView tvName, @NonNull TextView tvTime,
+      @NonNull TextView tvUnread) {
     this.rootView = rootView;
     this.tvAvatar = tvAvatar;
     this.tvLastMessage = tvLastMessage;
     this.tvName = tvName;
     this.tvTime = tvTime;
+    this.tvUnread = tvUnread;
   }
 
   @Override
@@ -91,8 +96,14 @@ public final class ItemMessagePreviewBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tvUnread;
+      TextView tvUnread = ViewBindings.findChildViewById(rootView, id);
+      if (tvUnread == null) {
+        break missingId;
+      }
+
       return new ItemMessagePreviewBinding((LinearLayout) rootView, tvAvatar, tvLastMessage, tvName,
-          tvTime);
+          tvTime, tvUnread);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

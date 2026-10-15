@@ -6,12 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.amplify.app.R;
-import com.google.android.material.button.MaterialButton;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -21,25 +22,25 @@ public final class ActivityNewMessageBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final MaterialButton btnSend;
-
-  @NonNull
-  public final EditText etMessageBody;
-
-  @NonNull
-  public final EditText etRecipient;
+  public final EditText etSearchPeople;
 
   @NonNull
   public final HeaderBackBinding header;
 
-  private ActivityNewMessageBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnSend,
-      @NonNull EditText etMessageBody, @NonNull EditText etRecipient,
-      @NonNull HeaderBackBinding header) {
+  @NonNull
+  public final RecyclerView rvPeople;
+
+  @NonNull
+  public final TextView tvPeopleEmpty;
+
+  private ActivityNewMessageBinding(@NonNull LinearLayout rootView,
+      @NonNull EditText etSearchPeople, @NonNull HeaderBackBinding header,
+      @NonNull RecyclerView rvPeople, @NonNull TextView tvPeopleEmpty) {
     this.rootView = rootView;
-    this.btnSend = btnSend;
-    this.etMessageBody = etMessageBody;
-    this.etRecipient = etRecipient;
+    this.etSearchPeople = etSearchPeople;
     this.header = header;
+    this.rvPeople = rvPeople;
+    this.tvPeopleEmpty = tvPeopleEmpty;
   }
 
   @Override
@@ -69,21 +70,9 @@ public final class ActivityNewMessageBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.btnSend;
-      MaterialButton btnSend = ViewBindings.findChildViewById(rootView, id);
-      if (btnSend == null) {
-        break missingId;
-      }
-
-      id = R.id.etMessageBody;
-      EditText etMessageBody = ViewBindings.findChildViewById(rootView, id);
-      if (etMessageBody == null) {
-        break missingId;
-      }
-
-      id = R.id.etRecipient;
-      EditText etRecipient = ViewBindings.findChildViewById(rootView, id);
-      if (etRecipient == null) {
+      id = R.id.etSearchPeople;
+      EditText etSearchPeople = ViewBindings.findChildViewById(rootView, id);
+      if (etSearchPeople == null) {
         break missingId;
       }
 
@@ -94,8 +83,20 @@ public final class ActivityNewMessageBinding implements ViewBinding {
       }
       HeaderBackBinding binding_header = HeaderBackBinding.bind(header);
 
-      return new ActivityNewMessageBinding((LinearLayout) rootView, btnSend, etMessageBody,
-          etRecipient, binding_header);
+      id = R.id.rvPeople;
+      RecyclerView rvPeople = ViewBindings.findChildViewById(rootView, id);
+      if (rvPeople == null) {
+        break missingId;
+      }
+
+      id = R.id.tvPeopleEmpty;
+      TextView tvPeopleEmpty = ViewBindings.findChildViewById(rootView, id);
+      if (tvPeopleEmpty == null) {
+        break missingId;
+      }
+
+      return new ActivityNewMessageBinding((LinearLayout) rootView, etSearchPeople, binding_header,
+          rvPeople, tvPeopleEmpty);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

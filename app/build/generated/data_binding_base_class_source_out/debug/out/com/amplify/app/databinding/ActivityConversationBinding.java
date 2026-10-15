@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.amplify.app.R;
@@ -26,34 +26,38 @@ public final class ActivityConversationBinding implements ViewBinding {
   public final ImageButton btnBack;
 
   @NonNull
+  public final ImageButton btnChatMenu;
+
+  @NonNull
   public final ImageButton btnSendChat;
-
-  @NonNull
-  public final LinearLayout chatContainer;
-
-  @NonNull
-  public final ScrollView chatScroll;
 
   @NonNull
   public final EditText etChatInput;
 
   @NonNull
+  public final RecyclerView rvMessages;
+
+  @NonNull
   public final TextView tvAvatar;
+
+  @NonNull
+  public final TextView tvChatStatus;
 
   @NonNull
   public final TextView tvContactName;
 
   private ActivityConversationBinding(@NonNull LinearLayout rootView, @NonNull ImageButton btnBack,
-      @NonNull ImageButton btnSendChat, @NonNull LinearLayout chatContainer,
-      @NonNull ScrollView chatScroll, @NonNull EditText etChatInput, @NonNull TextView tvAvatar,
-      @NonNull TextView tvContactName) {
+      @NonNull ImageButton btnChatMenu, @NonNull ImageButton btnSendChat,
+      @NonNull EditText etChatInput, @NonNull RecyclerView rvMessages, @NonNull TextView tvAvatar,
+      @NonNull TextView tvChatStatus, @NonNull TextView tvContactName) {
     this.rootView = rootView;
     this.btnBack = btnBack;
+    this.btnChatMenu = btnChatMenu;
     this.btnSendChat = btnSendChat;
-    this.chatContainer = chatContainer;
-    this.chatScroll = chatScroll;
     this.etChatInput = etChatInput;
+    this.rvMessages = rvMessages;
     this.tvAvatar = tvAvatar;
+    this.tvChatStatus = tvChatStatus;
     this.tvContactName = tvContactName;
   }
 
@@ -90,21 +94,15 @@ public final class ActivityConversationBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btnChatMenu;
+      ImageButton btnChatMenu = ViewBindings.findChildViewById(rootView, id);
+      if (btnChatMenu == null) {
+        break missingId;
+      }
+
       id = R.id.btnSendChat;
       ImageButton btnSendChat = ViewBindings.findChildViewById(rootView, id);
       if (btnSendChat == null) {
-        break missingId;
-      }
-
-      id = R.id.chatContainer;
-      LinearLayout chatContainer = ViewBindings.findChildViewById(rootView, id);
-      if (chatContainer == null) {
-        break missingId;
-      }
-
-      id = R.id.chatScroll;
-      ScrollView chatScroll = ViewBindings.findChildViewById(rootView, id);
-      if (chatScroll == null) {
         break missingId;
       }
 
@@ -114,9 +112,21 @@ public final class ActivityConversationBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.rvMessages;
+      RecyclerView rvMessages = ViewBindings.findChildViewById(rootView, id);
+      if (rvMessages == null) {
+        break missingId;
+      }
+
       id = R.id.tvAvatar;
       TextView tvAvatar = ViewBindings.findChildViewById(rootView, id);
       if (tvAvatar == null) {
+        break missingId;
+      }
+
+      id = R.id.tvChatStatus;
+      TextView tvChatStatus = ViewBindings.findChildViewById(rootView, id);
+      if (tvChatStatus == null) {
         break missingId;
       }
 
@@ -126,8 +136,8 @@ public final class ActivityConversationBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityConversationBinding((LinearLayout) rootView, btnBack, btnSendChat,
-          chatContainer, chatScroll, etChatInput, tvAvatar, tvContactName);
+      return new ActivityConversationBinding((LinearLayout) rootView, btnBack, btnChatMenu,
+          btnSendChat, etChatInput, rvMessages, tvAvatar, tvChatStatus, tvContactName);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

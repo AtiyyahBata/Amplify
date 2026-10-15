@@ -11,8 +11,13 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
 
+import android.widget.Toast;
+
+import com.amplify.app.data.SessionExpiry;
+import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityWelcomeBinding;
 import com.amplify.app.ui.admin.AdminMainActivity;
+import com.amplify.app.ui.main.MainActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -21,6 +26,19 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Already signed in? Skip this screen and go straight into the app. The only ways
+        // to see Welcome again are Log out (Settings) or a login that can no longer be renewed.
+        if (SessionManager.isSignedIn(this)) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+
+        SessionExpiry.reset();
+        if (SessionExpiry.consumeNotice(this)) {
+            Toast.makeText(this, "Please log in again.", Toast.LENGTH_LONG).show();
+        }
 
         // Allow the welcome screen to draw behind the system bars.
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
