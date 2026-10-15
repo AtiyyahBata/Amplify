@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/paper"
     android:padding="20dp">
 
+    <!-- TOTAL USERS -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,9 +17,10 @@
         android:layout_marginBottom="16dp">
 
         <TextView
+            android:id="@+id/tvTotalUsers"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="312"
+            android:text="—"
             android:textSize="32sp"
             android:textStyle="bold"
             android:textColor="@color/white" />
@@ -25,11 +28,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="users active in the last 24 hours"
+            android:text="Total registered users"
             android:textSize="12sp"
             android:textColor="#B9BCC7" />
+
     </LinearLayout>
 
+    <!-- USER TYPES -->
     <com.google.android.material.card.MaterialCardView
         style="@style/Amplify.Card"
         android:layout_width="match_parent"
@@ -41,40 +46,138 @@
             android:orientation="vertical"
             android:padding="6dp">
 
+            <!-- NORMAL USERS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                    android:text="Pending verifications" android:textSize="13.5sp" android:textColor="@color/ink" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="4" android:textSize="13.5sp" android:textStyle="bold" android:textColor="@color/accent" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Normal users"
+                    android:textSize="13.5sp"
+                    android:textColor="@color/ink" />
+
+                <TextView
+                    android:id="@+id/tvNormalUsers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent" />
+
             </LinearLayout>
 
+            <!-- VERIFIED USERS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                    android:text="Open reports" android:textSize="13.5sp" android:textColor="@color/ink" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="2" android:textSize="13.5sp" android:textStyle="bold" android:textColor="@color/coral" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Verified users"
+                    android:textSize="13.5sp"
+                    android:textColor="@color/ink" />
+
+                <TextView
+                    android:id="@+id/tvVerifiedUsers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent" />
+
             </LinearLayout>
 
+            <!-- PENDING VERIFICATIONS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:padding="10dp">
-                <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
-                    android:text="Posts published today" android:textSize="13.5sp" android:textColor="@color/ink" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:text="18" android:textSize="13.5sp" android:textStyle="bold" android:textColor="@color/ink" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Pending verifications"
+                    android:textSize="13.5sp"
+                    android:textColor="@color/ink" />
+
+                <TextView
+                    android:id="@+id/tvPendingVerifications"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/accent" />
+
+            </LinearLayout>
+
+            <!-- OPEN REPORTS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Open reports"
+                    android:textSize="13.5sp"
+                    android:textColor="@color/ink" />
+
+                <TextView
+                    android:id="@+id/tvOpenReports"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/coral" />
+
+            </LinearLayout>
+
+            <!-- POSTS PUBLISHED TODAY -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Posts published today"
+                    android:textSize="13.5sp"
+                    android:textColor="@color/ink" />
+
+                <TextView
+                    android:id="@+id/tvPostsToday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textSize="13.5sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/ink" />
+
             </LinearLayout>
 
         </LinearLayout>
+
     </com.google.android.material.card.MaterialCardView>
 
 </LinearLayout>

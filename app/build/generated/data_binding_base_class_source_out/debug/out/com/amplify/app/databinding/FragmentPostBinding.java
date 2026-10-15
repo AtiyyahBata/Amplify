@@ -5,8 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -19,32 +20,42 @@ import java.lang.String;
 
 public final class FragmentPostBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final ScrollView rootView;
 
   @NonNull
-  public final MaterialButton btnContinue;
+  public final MaterialButton btnPreviewPost;
 
   @NonNull
-  public final EditText etBody;
+  public final MaterialButton btnSelectMedia;
 
   @NonNull
-  public final EditText etTitle;
+  public final EditText etCaption;
 
   @NonNull
-  public final Spinner spinnerFormat;
+  public final EditText etPostTitle;
 
-  private FragmentPostBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnContinue,
-      @NonNull EditText etBody, @NonNull EditText etTitle, @NonNull Spinner spinnerFormat) {
+  @NonNull
+  public final ProgressBar progressUpload;
+
+  @NonNull
+  public final TextView tvSelectedMedia;
+
+  private FragmentPostBinding(@NonNull ScrollView rootView, @NonNull MaterialButton btnPreviewPost,
+      @NonNull MaterialButton btnSelectMedia, @NonNull EditText etCaption,
+      @NonNull EditText etPostTitle, @NonNull ProgressBar progressUpload,
+      @NonNull TextView tvSelectedMedia) {
     this.rootView = rootView;
-    this.btnContinue = btnContinue;
-    this.etBody = etBody;
-    this.etTitle = etTitle;
-    this.spinnerFormat = spinnerFormat;
+    this.btnPreviewPost = btnPreviewPost;
+    this.btnSelectMedia = btnSelectMedia;
+    this.etCaption = etCaption;
+    this.etPostTitle = etPostTitle;
+    this.progressUpload = progressUpload;
+    this.tvSelectedMedia = tvSelectedMedia;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public ScrollView getRoot() {
     return rootView;
   }
 
@@ -69,32 +80,44 @@ public final class FragmentPostBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.btnContinue;
-      MaterialButton btnContinue = ViewBindings.findChildViewById(rootView, id);
-      if (btnContinue == null) {
+      id = R.id.btnPreviewPost;
+      MaterialButton btnPreviewPost = ViewBindings.findChildViewById(rootView, id);
+      if (btnPreviewPost == null) {
         break missingId;
       }
 
-      id = R.id.etBody;
-      EditText etBody = ViewBindings.findChildViewById(rootView, id);
-      if (etBody == null) {
+      id = R.id.btnSelectMedia;
+      MaterialButton btnSelectMedia = ViewBindings.findChildViewById(rootView, id);
+      if (btnSelectMedia == null) {
         break missingId;
       }
 
-      id = R.id.etTitle;
-      EditText etTitle = ViewBindings.findChildViewById(rootView, id);
-      if (etTitle == null) {
+      id = R.id.etCaption;
+      EditText etCaption = ViewBindings.findChildViewById(rootView, id);
+      if (etCaption == null) {
         break missingId;
       }
 
-      id = R.id.spinnerFormat;
-      Spinner spinnerFormat = ViewBindings.findChildViewById(rootView, id);
-      if (spinnerFormat == null) {
+      id = R.id.etPostTitle;
+      EditText etPostTitle = ViewBindings.findChildViewById(rootView, id);
+      if (etPostTitle == null) {
         break missingId;
       }
 
-      return new FragmentPostBinding((LinearLayout) rootView, btnContinue, etBody, etTitle,
-          spinnerFormat);
+      id = R.id.progressUpload;
+      ProgressBar progressUpload = ViewBindings.findChildViewById(rootView, id);
+      if (progressUpload == null) {
+        break missingId;
+      }
+
+      id = R.id.tvSelectedMedia;
+      TextView tvSelectedMedia = ViewBindings.findChildViewById(rootView, id);
+      if (tvSelectedMedia == null) {
+        break missingId;
+      }
+
+      return new FragmentPostBinding((ScrollView) rootView, btnPreviewPost, btnSelectMedia,
+          etCaption, etPostTitle, progressUpload, tvSelectedMedia);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

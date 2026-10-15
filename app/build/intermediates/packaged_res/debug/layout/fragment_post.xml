@@ -1,76 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/paper">
+    android:background="@color/paper"
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New post"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        android:textColor="@color/ink"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="16dp"
-        android:layout_marginBottom="4dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Share something the community can learn from."
-        android:textSize="13sp"
-        android:textColor="@color/muted"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:layout_marginBottom="14dp" />
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
 
-        <LinearLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create a post"
+            android:textColor="@color/ink"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
+            android:text="Share your knowledge with the Amplify community."
+            android:textColor="@color/ink"
+            android:textSize="14sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="16dp"
+            app:strokeWidth="1dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@mipmap/ic_launcher"
+                    android:contentDescription="Amplify logo" />
+
+                <TextView
+                    android:id="@+id/tvSelectedMedia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
+                    android:text="No media selected"
+                    android:textColor="@color/ink"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSelectMedia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Choose photo or video" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+                <!-- TITLE LABEL -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textColor="@color/ink"
+            android:textStyle="bold"
+            android:textSize="15sp" />
+
+        <!-- TITLE INPUT -->
+        <EditText
+            android:id="@+id/etPostTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp">
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_admin_input"
+            android:hint="Enter a title for your post"
+            android:inputType="textCapSentences"
+            android:maxLines="2"
+            android:padding="14dp" />
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Title" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
-            <EditText android:id="@+id/etTitle" style="@style/Amplify.EditText"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="What are you sharing?" android:layout_marginBottom="12dp" />
+        <!-- CAPTION LABEL -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Caption"
+            android:textColor="@color/ink"
+            android:textStyle="bold"
+            android:textSize="15sp" />
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Format" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
-            <Spinner
-                android:id="@+id/spinnerFormat"
-                android:layout_width="match_parent"
-                android:layout_height="46dp"
-                android:background="@drawable/bg_input_field"
-                android:layout_marginBottom="12dp"
-                android:padding="10dp"
-                android:entries="@array/post_formats" />
+        <!-- CAPTION INPUT -->
+        <EditText
+            android:id="@+id/etCaption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_admin_input"
+            android:gravity="top|start"
+            android:hint="What would you like to share?"
+            android:inputType="textCapSentences|textMultiLine"
+            android:minHeight="120dp"
+            android:padding="14dp" />
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Body" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
-            <EditText android:id="@+id/etBody" style="@style/Amplify.EditText"
-                android:layout_width="match_parent" android:layout_height="120dp"
-                android:hint="Write or paste your content here..." android:gravity="top|start"
-                android:inputType="textMultiLine" android:layout_marginBottom="18dp" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnContinue"
-                style="@style/Amplify.Button.Primary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Continue"
-                android:layout_marginBottom="20dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPreviewPost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Preview post" />
 
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressUpload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -46,6 +46,9 @@
             android:name="com.amplify.app.ui.onboarding.ResetPasswordActivity"
             android:exported="false" />
         <activity
+            android:name="com.amplify.app.ui.admin.AdminLogin"
+            android:exported="false" />
+        <activity
             android:name="com.amplify.app.ui.main.MainActivity"
             android:exported="false" />
         <activity

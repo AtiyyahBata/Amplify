@@ -1,35 +1,36 @@
-com.amplify.app-annotation-experimental-1.3.0-0 C:\Users\rlent\.gradle\caches\transforms-3\002f368096e5e707e4667cca38377906\transformed\annotation-experimental-1.3.0\res
-com.amplify.app-core-runtime-2.2.0-1 C:\Users\rlent\.gradle\caches\transforms-3\00e51715982b78af096ea2b29d7737a5\transformed\core-runtime-2.2.0\res
-com.amplify.app-lifecycle-livedata-core-2.6.1-2 C:\Users\rlent\.gradle\caches\transforms-3\0d9a8031e0f4e09347bdd3318aa5400c\transformed\lifecycle-livedata-core-2.6.1\res
-com.amplify.app-startup-runtime-1.1.1-3 C:\Users\rlent\.gradle\caches\transforms-3\16f46285e260867b48cfc4acfaf6f5a8\transformed\startup-runtime-1.1.1\res
-com.amplify.app-fragment-1.6.2-4 C:\Users\rlent\.gradle\caches\transforms-3\17fb37b4516608eb01680cd2a862bcd1\transformed\fragment-1.6.2\res
-com.amplify.app-transition-1.2.0-5 C:\Users\rlent\.gradle\caches\transforms-3\2688ef3ea6e6e427bb763c581a4ea0f9\transformed\transition-1.2.0\res
-com.amplify.app-viewpager2-1.1.0-beta02-6 C:\Users\rlent\.gradle\caches\transforms-3\2770f53d31688ea174d193b35ddcffab\transformed\viewpager2-1.1.0-beta02\res
-com.amplify.app-appcompat-1.6.1-7 C:\Users\rlent\.gradle\caches\transforms-3\325647bcc56b267234c89550169b04cc\transformed\appcompat-1.6.1\res
-com.amplify.app-material-1.11.0-8 C:\Users\rlent\.gradle\caches\transforms-3\375d77e3bac5523f6a4d9c17a7b2806c\transformed\material-1.11.0\res
-com.amplify.app-profileinstaller-1.3.0-9 C:\Users\rlent\.gradle\caches\transforms-3\3ccd445729405f568cd28f8a324d0091\transformed\profileinstaller-1.3.0\res
-com.amplify.app-constraintlayout-2.1.4-10 C:\Users\rlent\.gradle\caches\transforms-3\4986230a3613e9c8878387b9e002f926\transformed\constraintlayout-2.1.4\res
-com.amplify.app-coordinatorlayout-1.1.0-11 C:\Users\rlent\.gradle\caches\transforms-3\4dd287c9e959375dcd5b85d1a2ea3286\transformed\coordinatorlayout-1.1.0\res
-com.amplify.app-recyclerview-1.3.2-12 C:\Users\rlent\.gradle\caches\transforms-3\4fe0dd632fb97ea5194ceec69f750c7c\transformed\recyclerview-1.3.2\res
-com.amplify.app-core-ktx-1.9.0-13 C:\Users\rlent\.gradle\caches\transforms-3\520b17da3355092918304c371ac09e94\transformed\core-ktx-1.9.0\res
-com.amplify.app-customview-poolingcontainer-1.0.0-14 C:\Users\rlent\.gradle\caches\transforms-3\5d81308da1634738efcf790c2c16884d\transformed\customview-poolingcontainer-1.0.0\res
-com.amplify.app-lifecycle-livedata-2.6.1-15 C:\Users\rlent\.gradle\caches\transforms-3\6840225e4d6337057c5406a5126237d8\transformed\lifecycle-livedata-2.6.1\res
-com.amplify.app-core-1.9.0-16 C:\Users\rlent\.gradle\caches\transforms-3\761d68ccdd62ecb8703967694e2fec50\transformed\core-1.9.0\res
-com.amplify.app-lifecycle-viewmodel-savedstate-2.6.1-17 C:\Users\rlent\.gradle\caches\transforms-3\80e5d8a83449eef3856e4e2e61010170\transformed\lifecycle-viewmodel-savedstate-2.6.1\res
-com.amplify.app-cardview-1.0.0-18 C:\Users\rlent\.gradle\caches\transforms-3\82a5c5a65c7b536c87d9f811caae18d2\transformed\cardview-1.0.0\res
-com.amplify.app-lifecycle-process-2.6.1-19 C:\Users\rlent\.gradle\caches\transforms-3\8fc731c6f0564268defe97f71ca1bd99\transformed\lifecycle-process-2.6.1\res
-com.amplify.app-emoji2-1.2.0-20 C:\Users\rlent\.gradle\caches\transforms-3\8fe26b8a71591694ef070937dfcc4c24\transformed\emoji2-1.2.0\res
-com.amplify.app-activity-1.8.0-21 C:\Users\rlent\.gradle\caches\transforms-3\a1ebd21ec441f375efe7979e47f6da1e\transformed\activity-1.8.0\res
-com.amplify.app-savedstate-1.2.1-22 C:\Users\rlent\.gradle\caches\transforms-3\a697481200fedd6e74a400c0811904f4\transformed\savedstate-1.2.1\res
-com.amplify.app-lifecycle-runtime-2.6.1-23 C:\Users\rlent\.gradle\caches\transforms-3\c7e17e37a5320930873d60815f459bf6\transformed\lifecycle-runtime-2.6.1\res
-com.amplify.app-lifecycle-viewmodel-2.6.1-24 C:\Users\rlent\.gradle\caches\transforms-3\de7146ccfa72f9edb394decd215ced33\transformed\lifecycle-viewmodel-2.6.1\res
-com.amplify.app-emoji2-views-helper-1.2.0-25 C:\Users\rlent\.gradle\caches\transforms-3\e172b44c4672e51c085662bb1bf12485\transformed\emoji2-views-helper-1.2.0\res
-com.amplify.app-appcompat-resources-1.6.1-26 C:\Users\rlent\.gradle\caches\transforms-3\e27fb5200da26533242d35fada05a7af\transformed\appcompat-resources-1.6.1\res
-com.amplify.app-drawerlayout-1.1.1-27 C:\Users\rlent\.gradle\caches\transforms-3\ed3d2cbbd0b7adc69330f4f5d5203a98\transformed\drawerlayout-1.1.1\res
-com.amplify.app-pngs-28 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\generated\res\pngs\debug
-com.amplify.app-resValues-29 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\generated\res\resValues\debug
-com.amplify.app-packageDebugResources-30 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.amplify.app-packageDebugResources-31 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.amplify.app-merged_res-32 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\intermediates\merged_res\debug
-com.amplify.app-debug-33 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\src\debug\res
-com.amplify.app-main-34 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\src\main\res
+com.amplify.app-core-1.9.0-0 C:\Users\rlent\.gradle\caches\8.14.5\transforms\088d62f00d2fdc7d3f12a8d0870dcb8a\transformed\core-1.9.0\res
+com.amplify.app-annotation-experimental-1.3.0-1 C:\Users\rlent\.gradle\caches\8.14.5\transforms\0befd006225298bb973e6103f6503988\transformed\annotation-experimental-1.3.0\res
+com.amplify.app-viewpager2-1.1.0-beta02-2 C:\Users\rlent\.gradle\caches\8.14.5\transforms\121fcb678e68aa86675f393eaebf5495\transformed\viewpager2-1.1.0-beta02\res
+com.amplify.app-emoji2-1.2.0-3 C:\Users\rlent\.gradle\caches\8.14.5\transforms\196f1a25ff6afc5f3645c516497a8f28\transformed\emoji2-1.2.0\res
+com.amplify.app-glide-4.16.0-4 C:\Users\rlent\.gradle\caches\8.14.5\transforms\19ff70cc995f8b4a3aaa75b4bdcee7bc\transformed\glide-4.16.0\res
+com.amplify.app-coordinatorlayout-1.1.0-5 C:\Users\rlent\.gradle\caches\8.14.5\transforms\1a46168233e215ceb53f998276a117d2\transformed\coordinatorlayout-1.1.0\res
+com.amplify.app-lifecycle-livedata-2.6.1-6 C:\Users\rlent\.gradle\caches\8.14.5\transforms\1c05a59fea66adc46d0336abe470cbb1\transformed\lifecycle-livedata-2.6.1\res
+com.amplify.app-lifecycle-viewmodel-savedstate-2.6.1-7 C:\Users\rlent\.gradle\caches\8.14.5\transforms\294ede390ab3f5e88eae66b9e00041b6\transformed\lifecycle-viewmodel-savedstate-2.6.1\res
+com.amplify.app-emoji2-views-helper-1.2.0-8 C:\Users\rlent\.gradle\caches\8.14.5\transforms\444e9ee5d555735c409098d94c433231\transformed\emoji2-views-helper-1.2.0\res
+com.amplify.app-drawerlayout-1.1.1-9 C:\Users\rlent\.gradle\caches\8.14.5\transforms\47efe28f3339332131d4a8061d23fa19\transformed\drawerlayout-1.1.1\res
+com.amplify.app-startup-runtime-1.1.1-10 C:\Users\rlent\.gradle\caches\8.14.5\transforms\51396a5847232c631d65531782083036\transformed\startup-runtime-1.1.1\res
+com.amplify.app-lifecycle-process-2.6.1-11 C:\Users\rlent\.gradle\caches\8.14.5\transforms\59c761c26ad7e9a5ebe2a1233dfd613f\transformed\lifecycle-process-2.6.1\res
+com.amplify.app-cardview-1.0.0-12 C:\Users\rlent\.gradle\caches\8.14.5\transforms\5aa469802001dfa3b5817570314a415b\transformed\cardview-1.0.0\res
+com.amplify.app-core-runtime-2.2.0-13 C:\Users\rlent\.gradle\caches\8.14.5\transforms\6137f36b6b87b4cebe4f04c07211f1d3\transformed\core-runtime-2.2.0\res
+com.amplify.app-customview-poolingcontainer-1.0.0-14 C:\Users\rlent\.gradle\caches\8.14.5\transforms\648ef51087ea6e73a65d683cc3cf5a5d\transformed\customview-poolingcontainer-1.0.0\res
+com.amplify.app-fragment-1.6.2-15 C:\Users\rlent\.gradle\caches\8.14.5\transforms\6a85dbbcacfd9a3adec73da47c4bae7d\transformed\fragment-1.6.2\res
+com.amplify.app-lifecycle-runtime-2.6.1-16 C:\Users\rlent\.gradle\caches\8.14.5\transforms\87f57587be21b3ad6ec4948f33cb0436\transformed\lifecycle-runtime-2.6.1\res
+com.amplify.app-appcompat-1.6.1-17 C:\Users\rlent\.gradle\caches\8.14.5\transforms\9a7a0b6b97c032efc6dd28ae15347342\transformed\appcompat-1.6.1\res
+com.amplify.app-appcompat-resources-1.6.1-18 C:\Users\rlent\.gradle\caches\8.14.5\transforms\9d1caa13c78e9f4512bd6ea7494bd9fb\transformed\appcompat-resources-1.6.1\res
+com.amplify.app-savedstate-1.2.1-19 C:\Users\rlent\.gradle\caches\8.14.5\transforms\9f821a0d2c5794f6ec3fcb66bb647dcc\transformed\savedstate-1.2.1\res
+com.amplify.app-lifecycle-viewmodel-2.6.1-20 C:\Users\rlent\.gradle\caches\8.14.5\transforms\a6032fc7d882f4b4c1d0e5b418137367\transformed\lifecycle-viewmodel-2.6.1\res
+com.amplify.app-material-1.11.0-21 C:\Users\rlent\.gradle\caches\8.14.5\transforms\a6993fb47378d5a2ad6f70f640358bd4\transformed\material-1.11.0\res
+com.amplify.app-core-ktx-1.9.0-22 C:\Users\rlent\.gradle\caches\8.14.5\transforms\ac4090ab380ac4a251280754c075ed5c\transformed\core-ktx-1.9.0\res
+com.amplify.app-activity-1.8.0-23 C:\Users\rlent\.gradle\caches\8.14.5\transforms\af5101aa63a2b41ff1b863efa61a6b13\transformed\activity-1.8.0\res
+com.amplify.app-recyclerview-1.3.2-24 C:\Users\rlent\.gradle\caches\8.14.5\transforms\d06bf063e2d553018334094712963961\transformed\recyclerview-1.3.2\res
+com.amplify.app-profileinstaller-1.3.0-25 C:\Users\rlent\.gradle\caches\8.14.5\transforms\eaa61158e1703d770b0de2fe359ee22d\transformed\profileinstaller-1.3.0\res
+com.amplify.app-constraintlayout-2.1.4-26 C:\Users\rlent\.gradle\caches\8.14.5\transforms\f0d6ce9bb1287af62c3d46411b9b5412\transformed\constraintlayout-2.1.4\res
+com.amplify.app-lifecycle-livedata-core-2.6.1-27 C:\Users\rlent\.gradle\caches\8.14.5\transforms\fd20df3f8b89bcdd813989c6f0881067\transformed\lifecycle-livedata-core-2.6.1\res
+com.amplify.app-transition-1.2.0-28 C:\Users\rlent\.gradle\caches\8.14.5\transforms\feea7793e41b4575f1f5171e4e5a5c4e\transformed\transition-1.2.0\res
+com.amplify.app-pngs-29 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\generated\res\pngs\debug
+com.amplify.app-resValues-30 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\generated\res\resValues\debug
+com.amplify.app-packageDebugResources-31 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.amplify.app-packageDebugResources-32 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.amplify.app-merged_res-33 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\build\intermediates\merged_res\debug
+com.amplify.app-debug-34 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\src\debug\res
+com.amplify.app-main-35 C:\Users\rlent\Music\Reabetsoe Molakeng Profile Applications\Amplify new\app\src\main\res

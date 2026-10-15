@@ -4,6 +4,8 @@ package com.amplify.app.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,6 +20,12 @@ import java.lang.String;
 public final class ItemPostBinding implements ViewBinding {
   @NonNull
   private final MaterialCardView rootView;
+
+  @NonNull
+  public final ImageView ivPostMedia;
+
+  @NonNull
+  public final TextView tvAuthorField;
 
   @NonNull
   public final TextView tvAuthorName;
@@ -37,16 +45,23 @@ public final class ItemPostBinding implements ViewBinding {
   @NonNull
   public final TextView tvTagTwo;
 
-  private ItemPostBinding(@NonNull MaterialCardView rootView, @NonNull TextView tvAuthorName,
-      @NonNull TextView tvAvatar, @NonNull TextView tvPostBody, @NonNull TextView tvPostTitle,
-      @NonNull TextView tvTagOne, @NonNull TextView tvTagTwo) {
+  @NonNull
+  public final LinearLayout verifiedContainer;
+
+  private ItemPostBinding(@NonNull MaterialCardView rootView, @NonNull ImageView ivPostMedia,
+      @NonNull TextView tvAuthorField, @NonNull TextView tvAuthorName, @NonNull TextView tvAvatar,
+      @NonNull TextView tvPostBody, @NonNull TextView tvPostTitle, @NonNull TextView tvTagOne,
+      @NonNull TextView tvTagTwo, @NonNull LinearLayout verifiedContainer) {
     this.rootView = rootView;
+    this.ivPostMedia = ivPostMedia;
+    this.tvAuthorField = tvAuthorField;
     this.tvAuthorName = tvAuthorName;
     this.tvAvatar = tvAvatar;
     this.tvPostBody = tvPostBody;
     this.tvPostTitle = tvPostTitle;
     this.tvTagOne = tvTagOne;
     this.tvTagTwo = tvTagTwo;
+    this.verifiedContainer = verifiedContainer;
   }
 
   @Override
@@ -76,6 +91,18 @@ public final class ItemPostBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.ivPostMedia;
+      ImageView ivPostMedia = ViewBindings.findChildViewById(rootView, id);
+      if (ivPostMedia == null) {
+        break missingId;
+      }
+
+      id = R.id.tvAuthorField;
+      TextView tvAuthorField = ViewBindings.findChildViewById(rootView, id);
+      if (tvAuthorField == null) {
+        break missingId;
+      }
+
       id = R.id.tvAuthorName;
       TextView tvAuthorName = ViewBindings.findChildViewById(rootView, id);
       if (tvAuthorName == null) {
@@ -112,8 +139,14 @@ public final class ItemPostBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemPostBinding((MaterialCardView) rootView, tvAuthorName, tvAvatar, tvPostBody,
-          tvPostTitle, tvTagOne, tvTagTwo);
+      id = R.id.verifiedContainer;
+      LinearLayout verifiedContainer = ViewBindings.findChildViewById(rootView, id);
+      if (verifiedContainer == null) {
+        break missingId;
+      }
+
+      return new ItemPostBinding((MaterialCardView) rootView, ivPostMedia, tvAuthorField,
+          tvAuthorName, tvAvatar, tvPostBody, tvPostTitle, tvTagOne, tvTagTwo, verifiedContainer);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

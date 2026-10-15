@@ -4,14 +4,19 @@ package com.amplify.app.ui.onboarding;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.amplify.app.ui.admin.AdminLogin;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.graphics.Insets;
 
+import com.amplify.app.R;
 import com.amplify.app.databinding.ActivityWelcomeBinding;
+import com.amplify.app.ui.admin.AdminLogin;
 import com.amplify.app.ui.admin.AdminMainActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -74,7 +79,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         // Admin portal
         binding.btnAdminLogin.setOnClickListener(v ->
-                startActivity(new Intent(this, AdminMainActivity.class)));
+                startActivity(new Intent(this, AdminLogin.class)));
     }
 }
 

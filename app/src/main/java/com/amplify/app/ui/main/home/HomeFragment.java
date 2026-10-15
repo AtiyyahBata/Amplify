@@ -1,50 +1,517 @@
+
 package com.amplify.app.ui.main.home;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.amplify.app.adapters.PostAdapter;
-import com.amplify.app.data.DummyData;
 import com.amplify.app.databinding.FragmentHomeBinding;
+import com.amplify.app.models.Post;
 import com.amplify.app.ui.content.ViewPostActivity;
 
-/**
- * Home tab (Use Case: Browse Available Content). Shows the community feed;
- * tapping a post opens ViewPostActivity. Data comes from DummyData for now.
- */
+import android.content.Intent;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
+    private static final String SUPABASE_URL =
+            "https://pggwokpdcqtigxmcrtxh.supabase.co";
+
+    private static final String SUPABASE_KEY =
+            "sb_publishable_yoqGxzzEd6H2iRWyWckd-g_RkHgxhqC";
+
+    private static final String BUCKET = "Amplify-media";
+
+    private static final MediaType JSON =
+            MediaType.get("application/json; charset=utf-8");
+
+    private final OkHttpClient client = new OkHttpClient();
+    private final List<Post> feedPosts = new ArrayList<>();
+
+    private PostAdapter adapter;
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                              @Nullable Bundle savedInstanceState) {
-        binding = FragmentHomeBinding.inflate(inflater, container, false);
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+
+        binding = FragmentHomeBinding.inflate(
+                inflater, container, false);
+
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(
+            @NonNull View view,
+            @Nullable Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
 
-        PostAdapter adapter = new PostAdapter(DummyData.getFeedPosts(), post ->
-                startActivity(new Intent(getActivity(), ViewPostActivity.class)));
+        binding.rvFeed.setLayoutManager(
+                new LinearLayoutManager(requireContext()));
 
-        binding.rvFeed.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new PostAdapter(feedPosts, post -> {
+            Intent intent = new Intent(
+                    requireContext(), ViewPostActivity.class);
+
+            // We'll pass the selected post ID when we connect
+            // the full-post screen to Supabase.
+            intent.putExtra("post_id", post.getId());
+
+            startActivity(intent);
+        });
+
         binding.rvFeed.setAdapter(adapter);
+
+        loadPosts();
+    }
+
+    private String getAccessToken() {
+        return requireContext()
+                .getSharedPreferences(
+                        "app_prefs", Context.MODE_PRIVATE)
+                .getString("access_token", "");
+    }
+
+    private Request.Builder authenticatedRequest(String url) {
+        return new Request.Builder()
+                .url(url)
+                .addHeader("apikey", SUPABASE_KEY)
+                .addHeader("Authorization", "Bearer " + getAccessToken())
+                .addHeader("Accept", "application/json");
+    }
+
+    private void loadPosts() {
+        if (binding == null) return;
+
+        String token = getAccessToken();
+
+        if (token.isEmpty()) {
+            showMessage("Please log in to view posts.");
+            return;
+        }
+
+        binding.tvFeedStatus.setVisibility(View.VISIBLE);
+        binding.tvFeedStatus.setText("Loading posts...");
+        binding.rvFeed.setVisibility(View.GONE);
+
+        HttpUrl url = HttpUrl.parse(SUPABASE_URL + "/rest/v1/posts");
+
+        if (url == null) {
+            showMessage("Invalid Supabase URL.");
+            return;
+        }
+
+        url = url.newBuilder()
+                .addQueryParameter(
+                        "select",
+                        "id,user_id,title,caption,media_type,media_path,status,created_at")
+                .addQueryParameter("status", "eq.published")
+                .addQueryParameter("order", "created_at.desc")
+                .build();
+
+        Request request = authenticatedRequest(url.toString())
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(
+                    @NonNull Call call,
+                    @NonNull IOException e) {
+                postMessage("Unable to connect. Check your internet.");
+            }
+
+            @Override
+            public void onResponse(
+                    @NonNull Call call,
+                    @NonNull Response response) throws IOException {
+
+                String body;
+                int code = response.code();
+
+                try (Response res = response) {
+                    body = res.body() != null
+                            ? res.body().string() : "";
+                }
+
+                if (code < 200 || code >= 300) {
+                    postMessage("Couldn't load posts. HTTP " + code);
+                    return;
+                }
+
+                try {
+                    JSONArray posts = new JSONArray(body);
+
+                    if (posts.length() == 0) {
+                        postMessage(
+                                "No published posts yet. Be the first to share!");
+                        return;
+                    }
+
+                    fetchProfiles(posts);
+
+                } catch (Exception e) {
+                    postMessage("Couldn't read posts from Supabase.");
+                }
+            }
+        });
+    }
+
+    private void fetchProfiles(JSONArray rawPosts) {
+        Set<String> ids = new LinkedHashSet<>();
+
+        for (int i = 0; i < rawPosts.length(); i++) {
+            String userId = rawPosts.optJSONObject(i)
+                    .optString("user_id", "");
+
+            if (!userId.isEmpty()) {
+                ids.add(userId);
+            }
+        }
+
+        if (ids.isEmpty()) {
+            postMessage("No creator profiles were found.");
+            return;
+        }
+
+        StringBuilder filter = new StringBuilder("in.(");
+        int count = 0;
+
+        for (String id : ids) {
+            if (count++ > 0) filter.append(",");
+            filter.append(id);
+        }
+
+        filter.append(")");
+
+        HttpUrl url = HttpUrl.parse(
+                SUPABASE_URL + "/rest/v1/profiles");
+
+        if (url == null) {
+            postMessage("Invalid profiles URL.");
+            return;
+        }
+
+        url = url.newBuilder()
+                .addQueryParameter(
+                        "select",
+                        "id,full_name,user_type,field_of_study")
+                .addQueryParameter("id", filter.toString())
+                .build();
+
+        Request request = authenticatedRequest(url.toString())
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(
+                    @NonNull Call call,
+                    @NonNull IOException e) {
+                postMessage("Unable to load creator profiles.");
+            }
+
+            @Override
+            public void onResponse(
+                    @NonNull Call call,
+                    @NonNull Response response) throws IOException {
+
+                String body;
+                int code = response.code();
+
+                try (Response res = response) {
+                    body = res.body() != null
+                            ? res.body().string() : "";
+                }
+
+                if (code < 200 || code >= 300) {
+                    postMessage(
+                            "Couldn't load profiles. HTTP " + code);
+                    return;
+                }
+
+                try {
+                    JSONArray profiles = new JSONArray(body);
+                    Map<String, JSONObject> profileMap = new HashMap<>();
+
+                    for (int i = 0; i < profiles.length(); i++) {
+                        JSONObject profile = profiles.getJSONObject(i);
+                        profileMap.put(
+                                profile.optString("id"), profile);
+                    }
+
+                    List<Post> result = new ArrayList<>();
+
+                    for (int i = 0; i < rawPosts.length(); i++) {
+                        JSONObject item = rawPosts.getJSONObject(i);
+
+                        String userId = item.optString("user_id", "");
+                        JSONObject profile = profileMap.get(userId);
+
+                        String name = profile == null
+                                ? "Amplify creator"
+                                : profile.optString(
+                                "full_name", "Amplify creator");
+
+                        if (name.trim().isEmpty()) {
+                            name = "Amplify creator";
+                        }
+
+                        String userType = profile == null
+                                ? "" : profile.optString("user_type", "");
+
+                        String field = profile == null
+                                ? "" : profile.optString("field_of_study", "");
+
+                        String initials = makeInitials(name);
+
+                        String title = item.optString(
+                                "title", "Untitled post");
+
+                        String caption = item.optString("caption", "");
+                        String mediaType = item.optString("media_type", "");
+                        String mediaPath = item.optString("media_path", "");
+
+                        // Only verified creators should be able to publish.
+                        boolean verified =
+                                "Verified".equalsIgnoreCase(userType);
+
+                        result.add(new Post(
+                                item.optString("id", ""),
+                                userId,
+                                name,
+                                initials,
+                                verified,
+                                field,
+                                title,
+                                caption,
+                                mediaType,
+                                "community",
+                                mediaType,
+                                mediaPath
+                        ));
+                    }
+
+                    displayPosts(result);
+
+                } catch (Exception e) {
+                    postMessage("Couldn't process creator profiles.");
+                }
+            }
+        });
+    }
+
+    private String makeInitials(String name) {
+        if (name == null || name.trim().isEmpty()) return "AC";
+
+        String[] parts = name.trim().split("\\s+");
+
+        if (parts.length == 1) {
+            return parts[0].substring(
+                    0, Math.min(2, parts[0].length())).toUpperCase();
+        }
+
+        return (parts[0].substring(0, 1)
+                + parts[parts.length - 1].substring(0, 1))
+                .toUpperCase();
+    }
+
+    private void displayPosts(List<Post> posts) {
+        if (!isAdded()) return;
+
+        requireActivity().runOnUiThread(() -> {
+            if (binding == null) return;
+
+            feedPosts.clear();
+            feedPosts.addAll(posts);
+            adapter.notifyDataSetChanged();
+
+            binding.tvFeedStatus.setVisibility(View.GONE);
+            binding.rvFeed.setVisibility(View.VISIBLE);
+
+            // Request temporary URLs for private images.
+            for (Post post : feedPosts) {
+                String path = post.getMediaPath();
+
+                boolean imageFile = path != null && (
+                        path.toLowerCase().endsWith(".jpg")
+                                || path.toLowerCase().endsWith(".jpeg")
+                                || path.toLowerCase().endsWith(".png")
+                                || path.toLowerCase().endsWith(".webp"));
+
+                if (imageFile && !path.isEmpty()) {
+                    loadSignedImage(post);
+                }
+            }
+        });
+    }
+
+    private void loadSignedImage(Post post) {
+        android.util.Log.d("AMPLIFY_IMAGE", "loadSignedImage() was called");
+
+        String path = post.getMediaPath();
+        android.util.Log.d(
+                "AMPLIFY_IMAGE",
+                "Media path from post: " + path
+        );
+
+        android.util.Log.d("AMPLIFY_IMAGE", "Raw media path: [" + path + "]");
+
+        if (path == null || path.trim().isEmpty()) {
+            android.util.Log.e("AMPLIFY_IMAGE", "Media path is empty!");
+            return;
+        }
+
+        HttpUrl base = HttpUrl.parse(
+                SUPABASE_URL + "/storage/v1/object/sign/");
+
+        if (base == null) {
+            android.util.Log.e("AMPLIFY_IMAGE", "Invalid Supabase URL");
+            return;
+        }
+
+        HttpUrl.Builder urlBuilder = base.newBuilder()
+                .addPathSegment(BUCKET);
+
+        for (String segment : path.split("/")) {
+            urlBuilder.addPathSegment(segment);
+        }
+
+        String requestUrl = urlBuilder.build().toString();
+
+        android.util.Log.d("AMPLIFY_IMAGE", "Bucket: " + BUCKET);
+        android.util.Log.d("AMPLIFY_IMAGE", "Request URL: " + requestUrl);
+
+        RequestBody body = RequestBody.create(
+                "{\"expiresIn\":3600}", JSON);
+
+        Request request = authenticatedRequest(requestUrl)
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(
+                    @NonNull Call call,
+                    @NonNull IOException e) {
+                // Keep the post visible if its image can't load.
+            }
+
+            @Override
+            public void onResponse(
+                    @NonNull Call call,
+                    @NonNull Response response) {
+
+                try (Response res = response) {
+                    String responseText = res.body() != null
+                            ? res.body().string()
+                            : "";
+
+                    android.util.Log.d(
+                            "AMPLIFY_IMAGE",
+                            "HTTP status: " + res.code()
+                    );
+
+                    android.util.Log.d(
+                            "AMPLIFY_IMAGE",
+                            "Actual Supabase response: " + responseText
+                    );
+
+                    if (!res.isSuccessful()) {
+                        android.util.Log.e(
+                                "AMPLIFY_IMAGE",
+                                "Signed URL failed: " + responseText
+                        );
+                        return;
+                    }
+
+                    JSONObject json = new JSONObject(responseText);
+                    String signedURL = json.optString("signedURL", "");
+
+                    if (signedURL.isEmpty()) return;
+
+                    if (signedURL.startsWith("/")) {
+                        signedURL = SUPABASE_URL
+                                + "/storage/v1" + signedURL;
+                    }
+
+                    final String imageURL = signedURL;
+
+                    if (!isAdded()) return;
+
+                    requireActivity().runOnUiThread(() -> {
+                        if (binding == null) return;
+
+                        post.setMediaUrl(imageURL);
+
+                        int index = feedPosts.indexOf(post);
+                        if (index >= 0) {
+                            adapter.notifyItemChanged(index);
+                        }
+                    });
+
+                } catch (Exception e) {
+                    android.util.Log.e(
+                            "AMPLIFY_IMAGE",
+                            "Error reading signed URL response",
+                            e
+                    );
+                }
+            }
+        });
+    }
+
+    private void postMessage(String message) {
+        if (!isAdded()) return;
+
+        requireActivity().runOnUiThread(() -> showMessage(message));
+    }
+
+    private void showMessage(String message) {
+        if (binding == null) return;
+
+        binding.tvFeedStatus.setText(message);
+        binding.tvFeedStatus.setVisibility(View.VISIBLE);
+        binding.rvFeed.setVisibility(View.GONE);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        adapter = null;
     }
 }

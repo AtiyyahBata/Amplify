@@ -2,74 +2,133 @@ package com.amplify.app.ui.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.amplify.app.R;
 import com.amplify.app.databinding.ActivityAdminMainBinding;
 import com.amplify.app.ui.admin.home.AdminHomeFragment;
-import com.amplify.app.ui.admin.reports.AdminReportsFragment;
 import com.amplify.app.ui.admin.verify.AdminVerifyFragment;
+import com.amplify.app.ui.admin.reports.AdminReportsFragment;
 import com.amplify.app.ui.onboarding.WelcomeActivity;
 
-/**
- * Hosts the Admin panel described in Part G.5 of the reference document.
- * This is a separate frontend on the same backend (Part H.5) - here it is
- * simply a separate Activity with its own top tab bar and its own fragments,
- * completely independent of the regular user's bottom navigation.
- */
 public class AdminMainActivity extends AppCompatActivity {
 
     private ActivityAdminMainBinding binding;
 
+    private String accessToken;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityAdminMainBinding.inflate(getLayoutInflater());
+
+        binding = ActivityAdminMainBinding.inflate(
+                getLayoutInflater()
+        );
+
         setContentView(binding.getRoot());
 
-        binding.btnExitAdmin.setOnClickListener(v -> {
-            Intent intent = new Intent(this, WelcomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
-        });
+        // Receive the token from AdminLogin.
+        accessToken = getIntent().getStringExtra("access_token");
 
+        // Return to the welcome screen if no token was provided.
+        if (accessToken == null || accessToken.trim().isEmpty()) {
+            goToWelcome();
+            return;
+        }
+
+        // Set up the dashboard tabs.
         binding.tabHome.setOnClickListener(v -> selectTab(0));
         binding.tabVerify.setOnClickListener(v -> selectTab(1));
         binding.tabReports.setOnClickListener(v -> selectTab(2));
 
+        // Exit the admin dashboard.
+        binding.btnExitAdmin.setOnClickListener(v -> goToWelcome());
+
+        // Show Home when the dashboard opens.
         selectTab(0);
     }
 
-    private void selectTab(int index) {
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void selectTab(int tabIndex) {
+
         Fragment fragment;
-        if (index == 0) {
-            fragment = new AdminHomeFragment();
-        } else if (index == 1) {
-            fragment = new AdminVerifyFragment();
-        } else {
-            fragment = new AdminReportsFragment();
+
+        switch (tabIndex) {
+            case 1:
+                fragment = new AdminVerifyFragment();
+                break;
+
+            case 2:
+                fragment = new AdminReportsFragment();
+                break;
+
+            case 0:
+            default:
+                fragment = new AdminHomeFragment();
+                break;
         }
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.adminFragmentContainer, fragment)
+                .replace(
+                        binding.adminFragmentContainer.getId(),
+                        fragment
+                )
                 .commit();
 
-        styleTab(binding.tabHome, index == 0);
-        styleTab(binding.tabVerify, index == 1);
-        styleTab(binding.tabReports, index == 2);
+        // Update the selected tab's visual state.
+        updateTabAppearance(tabIndex);
     }
 
-    private void styleTab(TextView tab, boolean active) {
-        if (active) {
-            tab.setBackgroundResource(R.drawable.bg_tab_active);
-            tab.setTextColor(getColor(R.color.white));
-        } else {
-            tab.setBackgroundResource(R.drawable.bg_tab_inactive);
-            tab.setTextColor(getColor(R.color.muted));
+    private void updateTabAppearance(int selectedTab) {
+
+        // Reset all tab labels to their normal state.
+        binding.tabHome.setAlpha(0.65f);
+        binding.tabVerify.setAlpha(0.65f);
+        binding.tabReports.setAlpha(0.65f);
+
+        // Highlight the selected tab.
+        switch (selectedTab) {
+            case 0:
+                binding.tabHome.setAlpha(1.0f);
+                break;
+
+            case 1:
+                binding.tabVerify.setAlpha(1.0f);
+                break;
+
+            case 2:
+                binding.tabReports.setAlpha(1.0f);
+                break;
         }
+    }
+
+    private void goToWelcome() {
+
+        Intent intent = new Intent(
+                AdminMainActivity.this,
+                WelcomeActivity.class
+        );
+
+        // Prevent returning to the dashboard using the Back button.
+        intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK
+        );
+
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }

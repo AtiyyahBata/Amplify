@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,11 +26,15 @@ public final class FragmentHomeBinding implements ViewBinding {
   @NonNull
   public final RecyclerView rvFeed;
 
+  @NonNull
+  public final TextView tvFeedStatus;
+
   private FragmentHomeBinding(@NonNull LinearLayout rootView, @NonNull HeaderBrandBinding header,
-      @NonNull RecyclerView rvFeed) {
+      @NonNull RecyclerView rvFeed, @NonNull TextView tvFeedStatus) {
     this.rootView = rootView;
     this.header = header;
     this.rvFeed = rvFeed;
+    this.tvFeedStatus = tvFeedStatus;
   }
 
   @Override
@@ -72,7 +77,13 @@ public final class FragmentHomeBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentHomeBinding((LinearLayout) rootView, binding_header, rvFeed);
+      id = R.id.tvFeedStatus;
+      TextView tvFeedStatus = ViewBindings.findChildViewById(rootView, id);
+      if (tvFeedStatus == null) {
+        break missingId;
+      }
+
+      return new FragmentHomeBinding((LinearLayout) rootView, binding_header, rvFeed, tvFeedStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

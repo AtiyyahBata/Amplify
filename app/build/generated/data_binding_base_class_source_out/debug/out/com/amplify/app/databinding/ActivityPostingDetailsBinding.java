@@ -4,8 +4,10 @@ package com.amplify.app.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.Spinner;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
@@ -18,7 +20,10 @@ import java.lang.String;
 
 public final class ActivityPostingDetailsBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final ScrollView rootView;
+
+  @NonNull
+  public final MaterialButton btnEditPost;
 
   @NonNull
   public final MaterialButton btnPublish;
@@ -27,20 +32,39 @@ public final class ActivityPostingDetailsBinding implements ViewBinding {
   public final HeaderBackBinding header;
 
   @NonNull
-  public final Spinner spinnerVisibility;
+  public final ImageView ivPostPreview;
 
-  private ActivityPostingDetailsBinding(@NonNull LinearLayout rootView,
-      @NonNull MaterialButton btnPublish, @NonNull HeaderBackBinding header,
-      @NonNull Spinner spinnerVisibility) {
+  @NonNull
+  public final ProgressBar progressPublish;
+
+  @NonNull
+  public final TextView tvPreviewCaption;
+
+  @NonNull
+  public final TextView tvPreviewMediaType;
+
+  @NonNull
+  public final TextView tvPreviewTitle;
+
+  private ActivityPostingDetailsBinding(@NonNull ScrollView rootView,
+      @NonNull MaterialButton btnEditPost, @NonNull MaterialButton btnPublish,
+      @NonNull HeaderBackBinding header, @NonNull ImageView ivPostPreview,
+      @NonNull ProgressBar progressPublish, @NonNull TextView tvPreviewCaption,
+      @NonNull TextView tvPreviewMediaType, @NonNull TextView tvPreviewTitle) {
     this.rootView = rootView;
+    this.btnEditPost = btnEditPost;
     this.btnPublish = btnPublish;
     this.header = header;
-    this.spinnerVisibility = spinnerVisibility;
+    this.ivPostPreview = ivPostPreview;
+    this.progressPublish = progressPublish;
+    this.tvPreviewCaption = tvPreviewCaption;
+    this.tvPreviewMediaType = tvPreviewMediaType;
+    this.tvPreviewTitle = tvPreviewTitle;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public ScrollView getRoot() {
     return rootView;
   }
 
@@ -65,6 +89,12 @@ public final class ActivityPostingDetailsBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btnEditPost;
+      MaterialButton btnEditPost = ViewBindings.findChildViewById(rootView, id);
+      if (btnEditPost == null) {
+        break missingId;
+      }
+
       id = R.id.btnPublish;
       MaterialButton btnPublish = ViewBindings.findChildViewById(rootView, id);
       if (btnPublish == null) {
@@ -78,14 +108,39 @@ public final class ActivityPostingDetailsBinding implements ViewBinding {
       }
       HeaderBackBinding binding_header = HeaderBackBinding.bind(header);
 
-      id = R.id.spinnerVisibility;
-      Spinner spinnerVisibility = ViewBindings.findChildViewById(rootView, id);
-      if (spinnerVisibility == null) {
+      id = R.id.ivPostPreview;
+      ImageView ivPostPreview = ViewBindings.findChildViewById(rootView, id);
+      if (ivPostPreview == null) {
         break missingId;
       }
 
-      return new ActivityPostingDetailsBinding((LinearLayout) rootView, btnPublish, binding_header,
-          spinnerVisibility);
+      id = R.id.progressPublish;
+      ProgressBar progressPublish = ViewBindings.findChildViewById(rootView, id);
+      if (progressPublish == null) {
+        break missingId;
+      }
+
+      id = R.id.tvPreviewCaption;
+      TextView tvPreviewCaption = ViewBindings.findChildViewById(rootView, id);
+      if (tvPreviewCaption == null) {
+        break missingId;
+      }
+
+      id = R.id.tvPreviewMediaType;
+      TextView tvPreviewMediaType = ViewBindings.findChildViewById(rootView, id);
+      if (tvPreviewMediaType == null) {
+        break missingId;
+      }
+
+      id = R.id.tvPreviewTitle;
+      TextView tvPreviewTitle = ViewBindings.findChildViewById(rootView, id);
+      if (tvPreviewTitle == null) {
+        break missingId;
+      }
+
+      return new ActivityPostingDetailsBinding((ScrollView) rootView, btnEditPost, btnPublish,
+          binding_header, ivPostPreview, progressPublish, tvPreviewCaption, tvPreviewMediaType,
+          tvPreviewTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
