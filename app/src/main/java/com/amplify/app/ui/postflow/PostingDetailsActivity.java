@@ -39,7 +39,11 @@ public class PostingDetailsActivity extends AppCompatActivity {
 
     private static final String STORAGE_BUCKET = "Amplify-media";
 
-    private final OkHttpClient client = new OkHttpClient();
+    private final OkHttpClient client = new OkHttpClient.Builder()
+            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .writeTimeout(120, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(120, java.util.concurrent.TimeUnit.SECONDS)
+            .build();
     private final ExecutorService executor =
             Executors.newSingleThreadExecutor();
 
@@ -133,6 +137,7 @@ public class PostingDetailsActivity extends AppCompatActivity {
         mediaType = intent.getStringExtra("media_type");
         postTitle = intent.getStringExtra("post_title");
         postCaption = intent.getStringExtra("post_caption");
+        mimeType = intent.getStringExtra("media_mime_type");
 
         accessToken = getAccessToken();
 
@@ -483,9 +488,20 @@ public class PostingDetailsActivity extends AppCompatActivity {
                 return ".mp4";
             case "video/webm":
                 return ".webm";
+            case "video/quicktime":
+                return ".mov";
+            case "video/3gpp":
+                return ".3gp";
+            case "video/x-matroska":
+                return ".mkv";
             case "image/gif":
                 return ".gif";
             default:
+                if (contentType.startsWith("video/")) {
+                    return ".mp4";
+                } else if (contentType.startsWith("image/")) {
+                    return ".jpg";
+                }
                 return ".bin";
         }
     }
