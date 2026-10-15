@@ -56,34 +56,18 @@ public final class SessionManager {
                 .getString(KEY_REFRESH, null);
     }
 
-    /** Returns the user ID (sub) extracted from the JWT access token, or empty string if not available. */
+    /**
+     * The signed-in user's id (the same id as auth.users.id and profiles.id),
+     * or empty string when nobody is signed in. It is read from the "sub" value inside the token.
+     */
     public static String getUserId(Context context) {
         String token = getAccessToken(context);
         if (token == null) return "";
         try {
-            String[] parts = token.split("\\.");
-            if (parts.length < 2) return "";
-            byte[] decoded = Base64.decode(parts[1],
-                    Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
-            JSONObject payload = new JSONObject(new String(decoded, "UTF-8"));
-            return payload.optString("sub", "");
+            String sub = readPayload(token).optString("sub", "");
+            return sub != null ? sub : "";
         } catch (Exception e) {
             return "";
-        }
-    }
-
-    /**
-     * The signed-in user's id (the same id as auth.users.id and profiles.id),
-     * or null when nobody is signed in. It is read from the "sub" value inside the token.
-     */
-    public static String getUserId(Context context) {
-        String token = getAccessToken(context);
-        if (token == null) return null;
-        try {
-            String sub = readPayload(token).optString("sub", "");
-            return sub.isEmpty() ? null : sub;
-        } catch (Exception e) {
-            return null;
         }
     }
 

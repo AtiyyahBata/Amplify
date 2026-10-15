@@ -7,6 +7,8 @@
     <string name="cd_more_options">More options</string>
     <string name="cd_history">Chat history</string>
     <string name="ai_assistant_title">Lexi AI Assistant</string>
+    <string name="ai_hello">Hello!</string>
+    <string name="ai_prompt_subtitle">Ask me anything.\nI\'m here to help!</string>
     <string name="ai_chip_summarize">Summarize article</string>
     <string name="ai_chip_explain">Explain concept</string>
     <string name="ai_chip_ideas">Brainstorm project ideas</string>
@@ -23,17 +25,4 @@
         <item>Public — visible to everyone</item>
         <item>Followers only</item>
     </string-array>
-
-    <!-- AI Chat Screen -->
-    <string name="ai_assistant_title">AI Assistant</string>
-    <string name="ai_hello">Hello!</string>
-    <string name="ai_prompt_subtitle">Ask me anything.\nI\'m here to help!</string>
-    <string name="ai_chip_summarize">Summarize this post</string>
-    <string name="ai_chip_explain">Explain something</string>
-    <string name="ai_chip_ideas">Give me ideas</string>
-    <string name="ai_input_placeholder">Type your message…</string>
-    <string name="cd_back">Back</string>
-    <string name="cd_history">History</string>
-    <string name="cd_more_options">More options</string>
-    <string name="cd_send_message">Send message</string>
 </resources>

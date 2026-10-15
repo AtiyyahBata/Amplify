@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="#7C4DFF" />
-    <corners android:radius="16dp" />
-=======
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <solid android:color="@color/accent" />
     <corners android:radius="18dp" />
->>>>>>> c24378f95aed93600144d59d0cab837be94911c6
 </shape>

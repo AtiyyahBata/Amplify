@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
-    <solid android:color="#F3EFFF" />
-=======
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <solid android:color="@color/surface" />
     <corners android:radius="8dp" />
->>>>>>> c24378f95aed93600144d59d0cab837be94911c6
 </shape>
