@@ -37,13 +37,11 @@
         android:focusable="true">
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center"
-            android:src="@drawable/lexi_logo"
-            android:scaleType="fitCenter"
-            android:contentDescription="@null"
-            android:importantForAccessibility="no" />
+            android:src="@drawable/ic_ai_robot_avatar"
+            android:contentDescription="Open AI Chat" />
     </FrameLayout>
 
 </LinearLayout>

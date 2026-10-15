@@ -47,6 +47,23 @@ public final class SessionManager {
                 .getString(KEY_REFRESH, null);
     }
 
+    /** Returns the current user's ID (UUID from the access token), or null if not signed in. */
+    public static String getUserId(Context context) {
+        String token = getAccessToken(context);
+        if (token == null) return null;
+        try {
+            String[] parts = token.split("\\.");
+            if (parts.length < 2) return null;
+            byte[] decoded = Base64.decode(parts[1],
+                    Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
+            JSONObject payload = new JSONObject(new String(decoded, "UTF-8"));
+            String sub = payload.optString("sub", "");
+            return sub.isEmpty() ? null : sub;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     /**
      * True when the access token has expired or will expire within the next minute.
      * Reads the "exp" time stored inside the token. If it cannot be read, returns false
