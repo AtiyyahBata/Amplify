@@ -3,6 +3,16 @@
     <string name="app_name">Amplify</string>
     <string name="tagline">A career companion for software engineering students — resources, real people, and an AI search that points you to sources instead of answers.</string>
 
+    <string name="cd_back">Go back</string>
+    <string name="cd_more_options">More options</string>
+    <string name="cd_history">Chat history</string>
+    <string name="ai_assistant_title">Lexi AI Assistant</string>
+    <string name="ai_chip_summarize">Summarize article</string>
+    <string name="ai_chip_explain">Explain concept</string>
+    <string name="ai_chip_ideas">Brainstorm project ideas</string>
+    <string name="ai_input_placeholder">Ask Lexi anything...</string>
+    <string name="cd_send_message">Send message</string>
+
     <string-array name="post_formats">
         <item>Blog / article</item>
         <item>Video</item>

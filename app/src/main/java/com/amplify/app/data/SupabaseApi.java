@@ -155,6 +155,38 @@ public class SupabaseApi {
         }
     }
 
+    /**
+     * Logs this phone out on Supabase (only this phone, not other devices). Best effort:
+     * the callback always runs on the main thread with onSuccess, even if there was no
+     * connection, so the caller can carry on with the local sign out. Uses the saved token as
+     * it is and never triggers the "session expired" screen.
+     */
+    public void signOut(Callback<Boolean> callback) {
+        final String token = SessionManager.getAccessToken(context);
+        POOL.execute(() -> {
+            if (!TextUtils.isEmpty(token)) {
+                try {
+                    Request request = new Request.Builder()
+                            .url(SupabaseConfig.PROJECT_URL + "/auth/v1/logout?scope=local")
+                            .header("apikey", SupabaseConfig.ANON_KEY)
+                            .header("Authorization", "Bearer " + token)
+                            .header("Content-Type", "application/json")
+                            .post(RequestBody.create("{}", JSON_TYPE))
+                            .build();
+                    OkHttpClient quick = CLIENT.newBuilder()
+                            .callTimeout(6, TimeUnit.SECONDS)
+                            .build();
+                    try (Response response = quick.newCall(request).execute()) {
+                        Log.d(TAG, "Server sign out: HTTP " + response.code());
+                    }
+                } catch (Exception e) {
+                    Log.w(TAG, "Server sign out skipped: " + e);
+                }
+            }
+            MAIN.post(() -> callback.onSuccess(Boolean.TRUE));
+        });
+    }
+
     /** Same as the private refresh below, for the live-updates connection. Background threads only. */
     public String getFreshAccessToken() throws ApiException {
         return freshAccessToken();
@@ -175,6 +207,7 @@ public class SupabaseApi {
 
             String refreshToken = SessionManager.getRefreshToken(context);
             if (TextUtils.isEmpty(refreshToken)) {
+                SessionExpiry.handle(context);
                 throw new ApiException(401, "Your session expired. Please log in again.");
             }
 
@@ -190,7 +223,6 @@ public class SupabaseApi {
                 try (Response response = CLIENT.newCall(request).execute()) {
                     String body = response.body() != null ? response.body().string() : "";
                     if (!response.isSuccessful()) {
-                        Log.e(TAG, "Token refresh failed. HTTP " + response.code() + ": " + body);
                         throw new ApiException(401, "Your session expired. Please log in again.");
                     }
                     JSONObject o = new JSONObject(body);

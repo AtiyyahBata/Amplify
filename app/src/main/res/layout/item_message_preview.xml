@@ -45,11 +45,34 @@
             android:ellipsize="end" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvTime"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="11.5sp"
-        android:textColor="@color/muted" />
+        android:layout_marginStart="8dp"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11.5sp"
+            android:textColor="@color/muted" />
+
+        <TextView
+            android:id="@+id/tvUnread"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:minWidth="20dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_unread_badge"
+            android:gravity="center"
+            android:paddingStart="6dp"
+            android:paddingEnd="6dp"
+            android:textColor="#FFFFFF"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </LinearLayout>
 
 </LinearLayout>

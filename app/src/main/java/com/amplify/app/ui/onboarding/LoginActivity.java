@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityLoginBinding;
 import com.amplify.app.ui.main.MainActivity;
 
@@ -64,6 +66,46 @@ public class LoginActivity extends AppCompatActivity {
 
         binding.btnLogIn.setOnClickListener(v -> loginUser());
         }
+
+    /** Opens the main screen (the part that used to run straight after login). */
+    private void openMain(String accessToken) {
+        if (isFinishing() || isDestroyed()) return;
+
+        Intent intent = new Intent(this, MainActivity.class);
+
+        if (!accessToken.isEmpty()) {
+            intent.putExtra("access_token", accessToken);
+        }
+
+        // Clear everything behind (Welcome, Register...) so Back from the app leaves it
+        // instead of returning to the Welcome screen.
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Shown when the old message keys can't be opened with this password
+     * (usually after a password reset).
+     */
+    private void showFreshStartDialog(Runnable startFresh, Runnable skip) {
+        if (isFinishing() || isDestroyed()) {
+            skip.run();
+            return;
+        }
+
+        new AlertDialog.Builder(this)
+                .setTitle("Start fresh with messages?")
+                .setMessage("We couldn't unlock your old private messages with this password. "
+                        + "This usually happens after a password reset.\n\n"
+                        + "If you continue, new message keys are created. Your old messages "
+                        + "can't be read again, but new ones will work normally.")
+                .setCancelable(false)
+                .setPositiveButton("Start fresh", (dialog, which) -> startFresh.run())
+                .setNegativeButton("Not now", (dialog, which) -> skip.run())
+                .show();
+    }
 
     private void loginUser() {
 
@@ -141,9 +183,11 @@ public class LoginActivity extends AppCompatActivity {
                             ).show();
 
                             String accessToken = "";
+                            String refreshToken = "";
                             try {
                                 JSONObject json = new JSONObject(responseBody);
                                 accessToken = json.optString("access_token", "");
+                                refreshToken = json.optString("refresh_token", "");
                             } catch (Exception ignored) {
                             }
 
@@ -152,18 +196,12 @@ public class LoginActivity extends AppCompatActivity {
                                     .putString("access_token", accessToken)
                                     .apply();
 
-                            Intent intent =
-                                    new Intent(
-                                            LoginActivity.this,
-                                            MainActivity.class
-                                    );
+                            // Used by the AI chat (ChatRepository) to stay signed in
+                            // and to refresh the token when it expires.
+                            SessionManager.saveSession(
+                                    LoginActivity.this, accessToken, refreshToken);
 
-                            if (!accessToken.isEmpty()) {
-                                intent.putExtra("access_token", accessToken);
-                            }
-
-                            startActivity(intent);
-                            finish();
+                            openMain(accessToken);
 
                         } else {
 

@@ -13,25 +13,39 @@
         android:orientation="vertical"
         android:padding="20dp">
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="To" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
-        <EditText android:id="@+id/etRecipient" style="@style/Amplify.EditText"
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:hint="Search a username" android:layout_marginBottom="12dp" />
-
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Message" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
-        <EditText android:id="@+id/etMessageBody" style="@style/Amplify.EditText"
-            android:layout_width="match_parent" android:layout_height="120dp"
-            android:hint="Write your message..." android:gravity="top|start"
-            android:inputType="textMultiLine" android:layout_marginBottom="18dp" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSend"
-            style="@style/Amplify.Button.Primary"
+        <EditText
+            android:id="@+id/etSearchPeople"
+            style="@style/Amplify.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Send" />
+            android:hint="Search a name…"
+            android:inputType="textPersonName"
+            android:layout_marginBottom="12dp" />
 
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPeople"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false" />
+
+        <TextView
+            android:id="@+id/tvPeopleEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Search for someone by their name."
+            android:textColor="@color/muted"
+            android:textSize="14sp"
+            android:visibility="visible" />
+    </FrameLayout>
+
 </LinearLayout>
