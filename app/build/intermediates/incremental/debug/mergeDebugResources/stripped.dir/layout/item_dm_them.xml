@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="start"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp">
+
+    <TextView
+        android:id="@+id/tvDmText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="280dp"
+        android:background="@drawable/bg_dm_bubble_them"
+        android:paddingStart="13dp"
+        android:paddingEnd="13dp"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp"
+        android:textColor="@color/ink"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/tvDmMeta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="4dp"
+        android:textColor="@color/muted"
+        android:textSize="10.5sp" />
+
+</LinearLayout>
