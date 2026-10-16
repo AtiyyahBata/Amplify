@@ -34,7 +34,10 @@
                 style="@style/Amplify.EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ask about a topic, e.g. RecyclerView vs ListView"
+                android:hint="Search people, posts or topics"
+                android:inputType="text"
+                android:maxLines="1"
+                android:imeOptions="actionSearch"
                 android:layout_marginBottom="12dp" />
 
             <com.google.android.material.button.MaterialButton
@@ -78,6 +81,18 @@
                     android:lineSpacingMultiplier="1.3" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tvSearchStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:textSize="13.5sp"
+            android:textColor="@color/muted" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvResults"
