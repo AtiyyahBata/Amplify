@@ -1,7 +1,7 @@
-
 package com.amplify.app.ui.content;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -67,6 +67,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private String postId;
     private String creatorUserId;
+    private String creatorName = "Amplify creator";
     private String currentUserId;
 
     private boolean isVerifiedCreator;
@@ -105,9 +106,10 @@ public class ViewPostActivity extends AppCompatActivity {
                 return;
             }
 
-            startActivity(
-                    new android.content.Intent(this, NewMessageActivity.class)
-            );
+            Intent intent = new Intent(this, NewMessageActivity.class);
+            intent.putExtra("recipient_id", creatorUserId);
+            intent.putExtra("recipient_name", creatorName);
+            startActivity(intent);
         });
 
         binding.btnSubmitComment.setOnClickListener(v -> submitComment());
@@ -141,7 +143,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private void initUserId() {
         currentUserId = SessionManager.getUserId(this);
-        if (currentUserId.isEmpty()) {
+        if (currentUserId == null || currentUserId.isEmpty()) {
             loadCurrentUser();
         }
     }
@@ -369,6 +371,10 @@ public class ViewPostActivity extends AppCompatActivity {
                     String initials = makeInitials(name);
 
                     final String finalName = name;
+
+                    // Remember the creator's name so the Message button
+                    // can pass it to NewMessageActivity.
+                    creatorName = finalName;
 
                     runOnUiThread(() -> {
                         binding.tvAuthorName.setText(finalName);
@@ -903,11 +909,9 @@ public class ViewPostActivity extends AppCompatActivity {
             return;
         }
 
-        android.content.Intent intent = new android.content.Intent(
-                this, ProfileOtherActivity.class
-        );
-
+        Intent intent = new Intent(this, ProfileOtherActivity.class);
         intent.putExtra("user_id", creatorUserId);
+        intent.putExtra("access_token", getAccessToken());
         startActivity(intent);
     }
 

@@ -5,11 +5,15 @@
     android:background="@color/paper"
     android:orientation="vertical">
 
-    <include android:id="@+id/header" layout="@layout/header_back" />
+    <include
+        android:id="@+id/header"
+        layout="@layout/header_back" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -17,128 +21,131 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
+            <!-- Avatar -->
+            <TextView
+                android:id="@+id/tvProfileInitials"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_avatar_circle"
                 android:gravity="center"
-                android:layout_marginBottom="16dp">
+                android:text="U"
+                android:textColor="@color/accent"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Name -->
+            <TextView
+                android:id="@+id/tvProfileName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:text="Amplify user"
+                android:textColor="@color/ink"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!-- Field of study -->
+            <TextView
+                android:id="@+id/tvFieldOfStudy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="2dp"
+                android:text="Field of study not provided"
+                android:textColor="@color/muted"
+                android:textSize="13sp" />
+
+            <!-- Verification -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="9dp"
+                    android:layout_marginEnd="4dp"
+                    android:contentDescription="Verification status"
+                    android:src="@drawable/ic_verified_mark" />
 
                 <TextView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:background="@drawable/bg_avatar_circle"
-                    android:gravity="center"
-                    android:text="RM"
-                    android:textColor="@color/accent"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:layout_marginBottom="10dp" />
-
-                <TextView
+                    android:id="@+id/tvVerificationLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Reabetsoe Molakeng"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/ink" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Software Engineering student"
-                    android:textSize="12.5sp"
-                    android:textColor="@color/muted"
-                    android:layout_marginBottom="6dp" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="10dp"
-                        android:src="@drawable/ic_verified_mark"
-                        android:layout_marginEnd="4dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Verified"
-                        android:textSize="12sp"
-                        android:textColor="@color/teal"
-                        android:textStyle="bold" />
-                </LinearLayout>
+                    android:text="Not verified"
+                    android:textColor="@color/teal"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
+            <!-- GitHub / LinkedIn -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="14dp">
+                android:layout_marginTop="18dp"
+                android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnGithub"
-                    style="@style/Amplify.Button.Outline"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginEnd="6dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:textSize="12.5sp"
+                    android:layout_weight="1"
                     android:text="GitHub ↗" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnLinkedIn"
-                    style="@style/Amplify.Button.Outline"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="6dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"
-                    android:textSize="12.5sp"
+                    android:layout_weight="1"
                     android:text="LinkedIn ↗" />
             </LinearLayout>
 
+            <!-- Message -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMessage"
                 style="@style/Amplify.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Message"
-                android:layout_marginBottom="18dp" />
+                android:layout_marginTop="12dp"
+                android:text="Message" />
 
+            <!-- Posts -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="10dp"
                 android:text="Posts"
-                android:textSize="13sp"
-                android:textStyle="bold"
                 android:textColor="@color/ink"
-                android:layout_marginBottom="8dp" />
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardPost"
-                style="@style/Amplify.Card"
+            <TextView
+                android:id="@+id/tvNoPosts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="12dp"
+                android:text="No posts yet."
+                android:textColor="@color/ink_soft"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/postsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="14dp"
-                    android:text="Reading a stack trace like a story, not a wall of text"
-                    android:textSize="13.5sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/ink" />
-            </com.google.android.material.card.MaterialCardView>
+                android:orientation="vertical" />
 
         </LinearLayout>
     </ScrollView>
+
 </LinearLayout>
