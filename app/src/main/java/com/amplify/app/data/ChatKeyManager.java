@@ -115,6 +115,30 @@ public final class ChatKeyManager {
         cachedUserId = null;
     }
 
+    /**
+     * Re-locks the password backup with a NEW password, using the keys already on this phone.
+     * Call it right after a password reset while this phone is still logged in, so old private
+     * messages stay readable. Does nothing when this phone has no keys. "done" (optional) runs
+     * on the main thread when it has finished, whether or not it worked.
+     */
+    public static void relockBackup(Context context, String newPassword, Runnable done) {
+        final Context app = context.getApplicationContext();
+        final char[] pw = newPassword.toCharArray();
+        WORKER.execute(() -> {
+            try {
+                String userId = SessionManager.getUserId(app);
+                KeyPair local = userId.isEmpty() ? null : loadLocal(app, userId);
+                if (local != null) {
+                    upload(new SupabaseApi(app), userId, local, pw);
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Could not re-lock the backup: " + e);
+            } finally {
+                if (done != null) MAIN.post(done);
+            }
+        });
+    }
+
     // ------------------------------------------------------------------
     // The login-time flow (runs on a background thread)
     // ------------------------------------------------------------------

@@ -137,8 +137,65 @@ public class SupabaseApi {
             case "DELETE":
                 builder.delete();
                 break;
+            case "PATCH":
+                builder.patch(RequestBody.create(jsonBody == null ? "{}" : jsonBody, JSON_TYPE));
+                break;
+            case "PUT":
+                builder.put(RequestBody.create(jsonBody == null ? "{}" : jsonBody, JSON_TYPE));
+                break;
             default:
                 throw new IllegalArgumentException("Unsupported method " + method);
+        }
+
+        try (Response response = CLIENT.newCall(builder.build()).execute()) {
+            String text = response.body() != null ? response.body().string() : "";
+            if (!response.isSuccessful()) {
+                throw new ApiException(response.code(), friendlyError(response.code(), text));
+            }
+            return text;
+        } catch (SocketTimeoutException e) {
+            throw new ApiException(0, "The server is taking too long. Please try again.");
+        } catch (IOException e) {
+            Log.e(TAG, "Network failure: " + e);
+            throw new ApiException(0, "No connection. Check your internet and try again.");
+        }
+    }
+
+    /** Same as anonBlocking, but answers on the main thread. */
+    public void anon(String method, String pathAndQuery, String json, String bearer,
+                     Callback<String> callback) {
+        POOL.execute(() -> {
+            try {
+                String result = anonBlocking(method, pathAndQuery, json, bearer);
+                MAIN.post(() -> callback.onSuccess(result));
+            } catch (ApiException e) {
+                MAIN.post(() -> callback.onError(e.getMessage()));
+            } catch (RuntimeException e) {
+                Log.e(TAG, "Unexpected problem: " + e);
+                MAIN.post(() -> callback.onError("Something went wrong. Please try again."));
+            }
+        });
+    }
+
+    /**
+     * Calls Supabase WITHOUT the saved login (apikey only, plus an optional token such as the
+     * one from a reset-password link). POST or PUT. Never call on the main thread.
+     * Used for: the reset-password email, checking a password, and the reset-link screen.
+     */
+    public String anonBlocking(String method, String pathAndQuery, String json, String bearer)
+            throws ApiException {
+        Request.Builder builder = new Request.Builder()
+                .url(SupabaseConfig.PROJECT_URL + pathAndQuery)
+                .header("apikey", SupabaseConfig.ANON_KEY)
+                .header("Content-Type", "application/json");
+        if (bearer != null) {
+            builder.header("Authorization", "Bearer " + bearer);
+        }
+        RequestBody body = RequestBody.create(json == null ? "{}" : json, JSON_TYPE);
+        if ("PUT".equals(method)) {
+            builder.put(body);
+        } else {
+            builder.post(body);
         }
 
         try (Response response = CLIENT.newCall(builder.build()).execute()) {

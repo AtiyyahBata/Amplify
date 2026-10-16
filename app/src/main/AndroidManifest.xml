@@ -22,6 +22,18 @@
         <activity android:name=".ui.onboarding.LoginActivity" android:exported="false" />
         <activity android:name=".ui.onboarding.RegisterActivity" android:exported="false" />
         <activity android:name=".ui.onboarding.ResetPasswordActivity" android:exported="false" />
+        <activity android:name=".ui.onboarding.SetNewPasswordActivity" android:exported="false" />
+
+        <!-- Supabase sends the browser back to amplify://auth-callback/... (GitHub link,
+             email change, reset-password link). -->
+        <activity android:name=".ui.onboarding.AuthCallbackActivity" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="amplify" android:host="auth-callback" />
+            </intent-filter>
+        </activity>
 
         <activity android:name=".ui.admin.AdminLogin" android:exported="false" />
 

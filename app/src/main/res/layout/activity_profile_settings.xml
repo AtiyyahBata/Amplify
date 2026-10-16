@@ -22,17 +22,42 @@
                 android:text="Account" android:textSize="13sp" android:textStyle="bold" android:textColor="@color/ink" android:layout_marginBottom="8dp" />
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Email" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="5dp" />
-            <EditText android:id="@+id/etEmail" style="@style/Amplify.EditText"
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="atiyyah.bata@example.com" android:layout_marginBottom="14dp" />
+                android:text="Email" android:textSize="12sp" android:textStyle="bold" android:textColor="@color/muted" android:layout_marginBottom="3dp" />
+
+            <!-- Read-only. The real email is filled in by ProfileSettingsActivity. -->
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Loading…"
+                android:textSize="14sp"
+                android:textColor="@color/ink"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvEmailPending"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/muted"
+                android:visibility="gone"
+                android:layout_marginBottom="4dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnChangeEmail"
+                style="@style/Amplify.Button.Outline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Change email"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnChangePassword"
                 style="@style/Amplify.Button.Outline"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Change password"
+                android:text="Send password reset link"
                 android:layout_marginBottom="24dp" />
 
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"

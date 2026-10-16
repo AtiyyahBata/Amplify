@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="12dp">
+
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="Open your LinkedIn profile, copy the link and paste it here."
+        android:textSize="12.5sp" android:textColor="@color/muted" android:layout_marginBottom="12dp" />
+
+    <EditText android:id="@+id/etUrl" style="@style/Amplify.EditText"
+        android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:hint="linkedin.com/in/your-name" android:inputType="textUri" />
+
+</LinearLayout>

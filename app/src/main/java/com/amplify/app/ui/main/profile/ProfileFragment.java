@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.amplify.app.data.LinkUtils;
 import com.amplify.app.databinding.FragmentProfileBinding;
 import com.amplify.app.ui.content.ViewPostActivity;
 import com.amplify.app.ui.settings.GetVerifiedActivity;
@@ -76,19 +77,18 @@ public class ProfileFragment extends Fragment {
                         requireContext(),
                         ViewPostActivity.class)));
 
-        binding.btnGithub.setOnClickListener(v ->
-                Toast.makeText(
-                        requireContext(),
-                        "GitHub link coming soon",
-                        Toast.LENGTH_SHORT).show());
+    }
 
-        binding.btnLinkedIn.setOnClickListener(v ->
-                Toast.makeText(
-                        requireContext(),
-                        "LinkedIn link coming soon",
-                        Toast.LENGTH_SHORT).show());
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Reload every time the screen is shown, so changes made in Settings show up.
+        if (binding != null) loadUserProfile();
+    }
 
-        loadUserProfile();
+    private void openSettings() {
+        Context c = getContext();
+        if (c != null) startActivity(new Intent(c, ProfileSettingsActivity.class));
     }
 
     private void loadUserProfile() {
@@ -165,7 +165,7 @@ public class ProfileFragment extends Fragment {
                     String profileUrl = SUPABASE_URL
                             + "/rest/v1/profiles"
                             + "?id=eq." + encodedUserId
-                            + "&select=full_name,field_of_study,user_type"
+                            + "&select=full_name,field_of_study,user_type,github_url,linkedin_url"
                             + "&limit=1";
 
                     Request profileRequest = new Request.Builder()
@@ -219,7 +219,13 @@ public class ProfileFragment extends Fragment {
                                 JSONObject profile = profiles.getJSONObject(0);
 
                                 String fullName = profile.optString("full_name", "User");
-                                String fieldOfStudy = profile.optString("field_of_study", "");
+                                // optString turns a database null into the text "null", so check first.
+                                String fieldOfStudy = profile.isNull("field_of_study")
+                                        ? "" : profile.optString("field_of_study", "");
+                                final String github = profile.isNull("github_url")
+                                        ? "" : profile.optString("github_url", "");
+                                final String linkedin = profile.isNull("linkedin_url")
+                                        ? "" : profile.optString("linkedin_url", "");
                                 String userType = profile.optString("user_type", "Normal");
 
                                 if (fullName.trim().isEmpty()) {
@@ -248,6 +254,15 @@ public class ProfileFragment extends Fragment {
                                     } else {
                                         binding.tvVerificationLabel.setText("Not verified");
                                     }
+
+                                    // Linked: opens the browser. Not linked: grey, and a tap
+                                    // opens Settings so you can link it.
+                                    LinkUtils.bindSocialButton(binding.btnGithub, github,
+                                            "github.com",
+                                            () -> ProfileFragment.this.openSettings());
+                                    LinkUtils.bindSocialButton(binding.btnLinkedIn, linkedin,
+                                            "linkedin.com",
+                                            () -> ProfileFragment.this.openSettings());
                                 });
 
                             } catch (Exception e) {

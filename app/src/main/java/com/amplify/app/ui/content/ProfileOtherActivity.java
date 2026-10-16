@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.amplify.app.data.LinkUtils;
 import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityProfileOtherBinding;
 import com.amplify.app.databinding.ItemPostBinding;
@@ -74,13 +75,9 @@ public class ProfileOtherActivity extends AppCompatActivity {
 
         binding.btnMessage.setOnClickListener(v -> startChat());
 
-        binding.btnGithub.setOnClickListener(v ->
-                Toast.makeText(this, "GitHub link coming soon",
-                        Toast.LENGTH_SHORT).show());
-
-        binding.btnLinkedIn.setOnClickListener(v ->
-                Toast.makeText(this, "LinkedIn link coming soon",
-                        Toast.LENGTH_SHORT).show());
+        // Grey until the profile has loaded and shows which links this person has.
+        LinkUtils.bindSocialButton(binding.btnGithub, null, "github.com", null);
+        LinkUtils.bindSocialButton(binding.btnLinkedIn, null, "linkedin.com", null);
 
         loadProfile();
         loadPosts();
@@ -144,7 +141,8 @@ public class ProfileOtherActivity extends AppCompatActivity {
         if (base == null) return;
 
         HttpUrl url = base.newBuilder()
-                .addQueryParameter("select", "id,full_name,field_of_study,user_type")
+                .addQueryParameter("select",
+                        "id,full_name,field_of_study,user_type,github_url,linkedin_url")
                 .addQueryParameter("id", "eq." + userId)
                 .build();
 
@@ -181,7 +179,13 @@ public class ProfileOtherActivity extends AppCompatActivity {
                     String name = p.optString("full_name", "").trim();
                     if (name.isEmpty()) name = "Amplify user";
 
-                    String study = p.optString("field_of_study", "").trim();
+                    // optString turns a database null into the text "null", so check first.
+                    String study = p.isNull("field_of_study")
+                            ? "" : p.optString("field_of_study", "").trim();
+                    final String github = p.isNull("github_url")
+                            ? "" : p.optString("github_url", "");
+                    final String linkedin = p.isNull("linkedin_url")
+                            ? "" : p.optString("linkedin_url", "");
                     String type = p.optString("user_type", "").trim();
 
                     final String finalName = name;
@@ -199,6 +203,12 @@ public class ProfileOtherActivity extends AppCompatActivity {
                         binding.tvFieldOfStudy.setText(study.isEmpty()
                                 ? "Field of study not provided" : study);
                         binding.tvVerificationLabel.setText(label);
+
+                        // Linked: opens the browser. Not linked: grey and disabled.
+                        LinkUtils.bindSocialButton(binding.btnGithub, github,
+                                "github.com", null);
+                        LinkUtils.bindSocialButton(binding.btnLinkedIn, linkedin,
+                                "linkedin.com", null);
                     });
 
                 } catch (Exception e) {
