@@ -2,20 +2,24 @@ package com.amplify.app.ui.content;
 
 import android.content.Context;
 import android.content.Intent;
+import android.app.Dialog;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.amplify.app.data.SessionManager;
@@ -26,6 +30,10 @@ import com.amplify.app.data.MessagingRepository;
 import com.amplify.app.data.SupabaseApi;
 import com.amplify.app.ui.messaging.ConversationActivity;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -277,6 +285,7 @@ public class ViewPostActivity extends AppCompatActivity {
                                 type.trim().isEmpty() ? "community" : type
                         );
                         binding.tvTagTwo.setText("community");
+                        binding.tagContainer.setVisibility(View.VISIBLE);
 
                         displayMedia(type, mediaUrl);
                     });
@@ -393,29 +402,86 @@ public class ViewPostActivity extends AppCompatActivity {
         });
     }
 
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    /**
+     * Sizes the media box to the picture's own shape: tall for portrait,
+     * wide for landscape. Very tall pictures are capped so the comments
+     * stay reachable (tap the picture to see it full screen).
+     */
+    private void fitMediaHeight(int srcWidth, int srcHeight) {
+        if (srcWidth <= 0 || srcHeight <= 0) {
+            return;
+        }
+
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int availableWidth = dm.widthPixels - dp(40);   // 20dp padding each side
+        int maxHeight = Math.round(dm.heightPixels * 0.65f);
+        int height = Math.round(availableWidth * (float) srcHeight / srcWidth);
+        height = Math.max(dp(120), Math.min(height, maxHeight));
+
+        ViewGroup.LayoutParams params = binding.mediaContainer.getLayoutParams();
+        params.height = height;
+        binding.mediaContainer.setLayoutParams(params);
+    }
+
     private void displayMedia(String type, String url) {
         binding.ivPostMedia.setVisibility(View.GONE);
         binding.videoPostMedia.setVisibility(View.GONE);
+        binding.mediaContainer.setVisibility(View.GONE);
 
         if (url == null || url.trim().isEmpty()) {
             return;
         }
 
-        if ("image".equalsIgnoreCase(type)
-                || type.toLowerCase(Locale.ROOT).contains("image")) {
+        String kind = type == null ? "" : type.toLowerCase(Locale.ROOT);
 
+        if (kind.contains("image")) {
+
+            binding.mediaContainer.setVisibility(View.VISIBLE);
+            binding.mediaContainer.setBackgroundColor(Color.TRANSPARENT);
             binding.ivPostMedia.setVisibility(View.VISIBLE);
 
             Glide.with(this)
                     .load(url)
+                    .override(1600, 1600)
                     .fitCenter()
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(
+                                @Nullable GlideException e,
+                                Object model,
+                                Target<Drawable> target,
+                                boolean isFirstResource
+                        ) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(
+                                Drawable resource,
+                                Object model,
+                                Target<Drawable> target,
+                                DataSource dataSource,
+                                boolean isFirstResource
+                        ) {
+                            fitMediaHeight(
+                                    resource.getIntrinsicWidth(),
+                                    resource.getIntrinsicHeight()
+                            );
+                            return false;
+                        }
+                    })
                     .into(binding.ivPostMedia);
 
             binding.ivPostMedia.setOnClickListener(v -> openFullSizeImage(url));
 
-        } else if ("video".equalsIgnoreCase(type)
-                || type.toLowerCase(Locale.ROOT).contains("video")) {
+        } else if (kind.contains("video")) {
 
+            binding.mediaContainer.setVisibility(View.VISIBLE);
+            binding.mediaContainer.setBackgroundColor(Color.BLACK);
             binding.videoPostMedia.setVisibility(View.VISIBLE);
 
             MediaController controller = new MediaController(this);
@@ -424,37 +490,58 @@ public class ViewPostActivity extends AppCompatActivity {
             binding.videoPostMedia.setMediaController(controller);
             binding.videoPostMedia.setVideoURI(Uri.parse(url));
             binding.videoPostMedia.requestFocus();
-            binding.videoPostMedia.setOnPreparedListener(mp -> mp.start());
+            binding.videoPostMedia.setOnPreparedListener(mp -> {
+                fitMediaHeight(mp.getVideoWidth(), mp.getVideoHeight());
+                mp.setOnVideoSizeChangedListener(
+                        (player, w, h) -> fitMediaHeight(w, h)
+                );
+                mp.start();
+            });
         }
     }
 
+    /** Full-screen viewer: pinch to zoom, drag to move, double-tap to zoom in or out. */
     private void openFullSizeImage(String url) {
-        ImageView imageView = new ImageView(this);
-        imageView.setBackgroundColor(Color.BLACK);
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        imageView.setAdjustViewBounds(true);
+        Dialog dialog = new Dialog(
+                this,
+                android.R.style.Theme_Black_NoTitleBar_Fullscreen
+        );
+
+        FrameLayout root = new FrameLayout(this);
+        root.setBackgroundColor(Color.BLACK);
+
+        ZoomImageView zoom = new ZoomImageView(this);
+        root.addView(zoom, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+
+        GradientDrawable circle = new GradientDrawable();
+        circle.setShape(GradientDrawable.OVAL);
+        circle.setColor(0x99000000);
+
+        TextView close = new TextView(this);
+        close.setText("\u2715");
+        close.setTextColor(Color.WHITE);
+        close.setTextSize(20);
+        close.setGravity(Gravity.CENTER);
+        close.setBackground(circle);
+        close.setOnClickListener(v -> dialog.dismiss());
+
+        FrameLayout.LayoutParams closeParams = new FrameLayout.LayoutParams(
+                dp(44), dp(44), Gravity.TOP | Gravity.END
+        );
+        closeParams.setMargins(0, dp(32), dp(16), 0);
+        root.addView(close, closeParams);
 
         Glide.with(this)
                 .load(url)
+                .override(2400, 2400)
                 .fitCenter()
-                .into(imageView);
+                .into(zoom);
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(imageView)
-                .setPositiveButton("Close", (d, which) -> d.dismiss())
-                .create();
-
+        dialog.setContentView(root);
         dialog.show();
-
-        Window window = dialog.getWindow();
-
-        if (window != null) {
-            window.setLayout(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-            );
-            window.setBackgroundDrawableResource(android.R.color.black);
-        }
     }
 
     private String buildPublicUrl(String path) {
