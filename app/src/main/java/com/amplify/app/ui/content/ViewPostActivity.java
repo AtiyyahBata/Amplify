@@ -22,7 +22,9 @@ import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityViewPostBinding;
 import com.amplify.app.databinding.ItemCommentBinding;
 import com.amplify.app.models.Comment;
-import com.amplify.app.ui.messaging.NewMessageActivity;
+import com.amplify.app.data.MessagingRepository;
+import com.amplify.app.data.SupabaseApi;
+import com.amplify.app.ui.messaging.ConversationActivity;
 import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
@@ -106,10 +108,7 @@ public class ViewPostActivity extends AppCompatActivity {
                 return;
             }
 
-            Intent intent = new Intent(this, NewMessageActivity.class);
-            intent.putExtra("recipient_id", creatorUserId);
-            intent.putExtra("recipient_name", creatorName);
-            startActivity(intent);
+            startChatWithCreator();
         });
 
         binding.btnSubmitComment.setOnClickListener(v -> submitComment());
@@ -913,6 +912,47 @@ public class ViewPostActivity extends AppCompatActivity {
         intent.putExtra("user_id", creatorUserId);
         intent.putExtra("access_token", getAccessToken());
         startActivity(intent);
+    }
+
+    /**
+     * Finds (or creates) the private chat with the post's creator and opens it
+     * straight away. No people search in between.
+     */
+    private void startChatWithCreator() {
+        String me = SessionManager.getUserId(this);
+        if (me != null && me.equals(creatorUserId)) {
+            showToast("This is your own post.");
+            return;
+        }
+
+        final String otherId = creatorUserId;
+        final String otherName = creatorName;
+
+        binding.btnMessageCreator.setEnabled(false);
+
+        new MessagingRepository(this).startConversation(
+                otherId,
+                new SupabaseApi.Callback<String>() {
+                    @Override
+                    public void onSuccess(String conversationId) {
+                        if (isFinishing() || isDestroyed()) return;
+                        binding.btnMessageCreator.setEnabled(true);
+                        ConversationActivity.open(
+                                ViewPostActivity.this,
+                                conversationId,
+                                otherId,
+                                otherName
+                        );
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        if (isFinishing() || isDestroyed()) return;
+                        binding.btnMessageCreator.setEnabled(true);
+                        showToast(message);
+                    }
+                }
+        );
     }
 
     private void showToast(String message) {

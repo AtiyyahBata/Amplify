@@ -12,7 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityProfileOtherBinding;
 import com.amplify.app.databinding.ItemPostBinding;
-import com.amplify.app.ui.messaging.NewMessageActivity;
+import com.amplify.app.data.MessagingRepository;
+import com.amplify.app.data.SupabaseApi;
+import com.amplify.app.ui.messaging.ConversationActivity;
 import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
@@ -64,12 +66,13 @@ public class ProfileOtherActivity extends AppCompatActivity {
             return;
         }
 
-        binding.btnMessage.setOnClickListener(v -> {
-            Intent intent = new Intent(this, NewMessageActivity.class);
-            intent.putExtra("recipient_id", userId);
-            intent.putExtra("recipient_name", displayName);
-            startActivity(intent);
-        });
+        // You can't message yourself, so hide the button on your own profile.
+        String me = SessionManager.getUserId(this);
+        if (me != null && me.equals(userId)) {
+            binding.btnMessage.setVisibility(View.GONE);
+        }
+
+        binding.btnMessage.setOnClickListener(v -> startChat());
 
         binding.btnGithub.setOnClickListener(v ->
                 Toast.makeText(this, "GitHub link coming soon",
@@ -81,6 +84,38 @@ public class ProfileOtherActivity extends AppCompatActivity {
 
         loadProfile();
         loadPosts();
+    }
+
+    /** Finds (or creates) the private chat with this person and opens it. */
+    private void startChat() {
+        final String otherId = userId;
+        final String otherName = displayName;
+
+        binding.btnMessage.setEnabled(false);
+
+        new MessagingRepository(this).startConversation(
+                otherId,
+                new SupabaseApi.Callback<String>() {
+                    @Override
+                    public void onSuccess(String conversationId) {
+                        if (isFinishing() || isDestroyed()) return;
+                        binding.btnMessage.setEnabled(true);
+                        ConversationActivity.open(
+                                ProfileOtherActivity.this,
+                                conversationId,
+                                otherId,
+                                otherName
+                        );
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        if (isFinishing() || isDestroyed()) return;
+                        binding.btnMessage.setEnabled(true);
+                        showToast(message);
+                    }
+                }
+        );
     }
 
     private String getToken() {
