@@ -31,6 +31,12 @@ public final class SessionManager {
                 .putString(KEY_ACCESS, accessToken)
                 .putString(KEY_REFRESH, refreshToken)
                 .apply();
+
+        // Some older screens still read the token from "app_prefs". Keep that copy fresh too,
+        // so a token renewed anywhere in the app is also used by those screens.
+        context.getApplicationContext()
+                .getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+                .edit().putString("access_token", accessToken).apply();
     }
 
     /**

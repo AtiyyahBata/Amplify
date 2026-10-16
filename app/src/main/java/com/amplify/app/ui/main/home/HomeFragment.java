@@ -1,53 +1,63 @@
 package com.amplify.app.ui.main.home;
 
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.amplify.app.R;
 import com.amplify.app.adapters.PostAdapter;
+import com.amplify.app.data.SessionManager;
+import com.amplify.app.data.SupabaseApi;
+import com.amplify.app.data.SupabaseConfig;
 import com.amplify.app.databinding.FragmentHomeBinding;
 import com.amplify.app.models.Post;
 import com.amplify.app.ui.content.ViewPostActivity;
-
-import android.content.Intent;
+import com.amplify.app.ui.main.artificial_intelligence.Artificial_Intelligence;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * The Community feed.
+ *
+ * Every time the feed loads, it first asks SupabaseApi for a FRESH login token (the token is
+ * renewed automatically when it is about to expire). That is what stops the "HTTP 401" error
+ * after the app is closed and opened again.
+ *
+ * Pull down on the feed to reload the posts.
+ */
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
-    private static final String SUPABASE_URL =
-            "https://pggwokpdcqtigxmcrtxh.supabase.co";
-
-    private static final String SUPABASE_KEY =
-            "sb_publishable_yoqGxzzEd6H2iRWyWckd-g_RkHgxhqC";
-
     private static final String BUCKET = "Amplify-media";
+
+    private static final ExecutorService BACKGROUND = Executors.newSingleThreadExecutor();
 
     private final OkHttpClient client = new OkHttpClient();
     private final List<Post> feedPosts = new ArrayList<>();
@@ -87,42 +97,73 @@ public class HomeFragment extends Fragment {
 
         binding.rvFeed.setAdapter(adapter);
 
+        // Pull down on the feed to reload the posts.
+        binding.swipeRefresh.setColorSchemeResources(R.color.accent);
+        binding.swipeRefresh.setOnRefreshListener(this::loadPosts);
+
+        setUpAiButtons();
+
         loadPosts();
     }
 
-    private String getAccessToken() {
-        return requireContext()
-                .getSharedPreferences(
-                        "app_prefs", Context.MODE_PRIVATE)
-                .getString("access_token", "");
+    /** Both purple robot buttons (top right and floating) open the AI start screen. */
+    private void setUpAiButtons() {
+        View.OnClickListener openAi = v ->
+                startActivity(new Intent(requireContext(), Artificial_Intelligence.class));
+
+        binding.header.btnHeaderAiRobot.setOnClickListener(openAi);
+        binding.btnAiFloating.setOnClickListener(openAi);
     }
 
-    private Request.Builder authenticatedRequest(String url) {
+    private Request.Builder authenticatedRequest(String url, String token) {
         return new Request.Builder()
                 .url(url)
-                .addHeader("apikey", SUPABASE_KEY)
-                .addHeader("Authorization", "Bearer " + getAccessToken())
+                .addHeader("apikey", SupabaseConfig.ANON_KEY)
+                .addHeader("Authorization", "Bearer " + token)
                 .addHeader("Accept", "application/json");
     }
 
+    // ------------------------------------------------------------------
+    // Step 1: get a fresh token, then load the posts
+    // ------------------------------------------------------------------
     private void loadPosts() {
         if (binding == null) return;
 
-        String token = getAccessToken();
-
-        if (token.isEmpty()) {
+        if (!SessionManager.isSignedIn(requireContext())) {
             showMessage("Please log in to view posts.");
             return;
         }
 
-        binding.tvFeedStatus.setVisibility(View.VISIBLE);
-        binding.tvFeedStatus.setText("Loading posts...");
-        binding.rvFeed.setVisibility(View.GONE);
+        // Only show "Loading posts..." the first time. When pulling down to refresh,
+        // the posts stay on screen and the spinner shows instead.
+        if (feedPosts.isEmpty()) {
+            binding.tvFeedStatus.setVisibility(View.VISIBLE);
+            binding.tvFeedStatus.setText("Loading posts...");
+        }
 
-        HttpUrl url = HttpUrl.parse(SUPABASE_URL + "/rest/v1/posts");
+        final android.content.Context app = requireContext().getApplicationContext();
+
+        // Getting a fresh token can need the internet, so it runs off the main thread.
+        BACKGROUND.execute(() -> {
+            try {
+                String token = new SupabaseApi(app).getFreshAccessToken();
+                fetchPosts(token);
+            } catch (SupabaseApi.ApiException e) {
+                postMessage(e.getMessage());
+            } catch (Exception e) {
+                postMessage("Something went wrong. Pull down to try again.");
+            }
+        });
+    }
+
+    // ------------------------------------------------------------------
+    // Step 2: the posts
+    // ------------------------------------------------------------------
+    private void fetchPosts(String token) {
+        HttpUrl url = HttpUrl.parse(SupabaseConfig.PROJECT_URL + "/rest/v1/posts");
 
         if (url == null) {
-            showMessage("Invalid Supabase URL.");
+            postMessage("Invalid Supabase URL.");
             return;
         }
 
@@ -134,7 +175,7 @@ public class HomeFragment extends Fragment {
                 .addQueryParameter("order", "created_at.desc")
                 .build();
 
-        Request request = authenticatedRequest(url.toString())
+        Request request = authenticatedRequest(url.toString(), token)
                 .get()
                 .build();
 
@@ -143,7 +184,7 @@ public class HomeFragment extends Fragment {
             public void onFailure(
                     @NonNull Call call,
                     @NonNull IOException e) {
-                postMessage("Unable to connect. Check your internet.");
+                postMessage("Unable to connect. Check your internet and pull down to try again.");
             }
 
             @Override
@@ -159,8 +200,14 @@ public class HomeFragment extends Fragment {
                             ? res.body().string() : "";
                 }
 
+                if (code == 401) {
+                    postMessage("Your login has expired. Please log out and log in again.");
+                    return;
+                }
+
                 if (code < 200 || code >= 300) {
-                    postMessage("Couldn't load posts. HTTP " + code);
+                    postMessage("Couldn't load posts. HTTP " + code
+                            + ". Pull down to try again.");
                     return;
                 }
 
@@ -168,12 +215,11 @@ public class HomeFragment extends Fragment {
                     JSONArray posts = new JSONArray(body);
 
                     if (posts.length() == 0) {
-                        postMessage(
-                                "No published posts yet. Be the first to share!");
+                        displayPosts(new ArrayList<>());
                         return;
                     }
 
-                    fetchProfiles(posts);
+                    fetchProfiles(posts, token);
 
                 } catch (Exception e) {
                     postMessage("Couldn't read posts from Supabase.");
@@ -182,12 +228,17 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void fetchProfiles(JSONArray rawPosts) {
+    // ------------------------------------------------------------------
+    // Step 3: the creators' profiles
+    // ------------------------------------------------------------------
+    private void fetchProfiles(JSONArray rawPosts, String token) {
         Set<String> ids = new LinkedHashSet<>();
 
         for (int i = 0; i < rawPosts.length(); i++) {
-            String userId = rawPosts.optJSONObject(i)
-                    .optString("user_id", "");
+            JSONObject item = rawPosts.optJSONObject(i);
+            if (item == null) continue;
+
+            String userId = item.optString("user_id", "");
 
             if (!userId.isEmpty()) {
                 ids.add(userId);
@@ -210,7 +261,7 @@ public class HomeFragment extends Fragment {
         filter.append(")");
 
         HttpUrl url = HttpUrl.parse(
-                SUPABASE_URL + "/rest/v1/profiles");
+                SupabaseConfig.PROJECT_URL + "/rest/v1/profiles");
 
         if (url == null) {
             postMessage("Invalid profiles URL.");
@@ -224,7 +275,7 @@ public class HomeFragment extends Fragment {
                 .addQueryParameter("id", filter.toString())
                 .build();
 
-        Request request = authenticatedRequest(url.toString())
+        Request request = authenticatedRequest(url.toString(), token)
                 .get()
                 .build();
 
@@ -233,7 +284,7 @@ public class HomeFragment extends Fragment {
             public void onFailure(
                     @NonNull Call call,
                     @NonNull IOException e) {
-                postMessage("Unable to load creator profiles.");
+                postMessage("Unable to load creator profiles. Pull down to try again.");
             }
 
             @Override
@@ -251,7 +302,8 @@ public class HomeFragment extends Fragment {
 
                 if (code < 200 || code >= 300) {
                     postMessage(
-                            "Couldn't load profiles. HTTP " + code);
+                            "Couldn't load profiles. HTTP " + code
+                                    + ". Pull down to try again.");
                     return;
                 }
 
@@ -315,7 +367,7 @@ public class HomeFragment extends Fragment {
                                 mediaPath
                         );
 
-                        // Directly build and set the public URL correctly
+                        // Build and set the public URL for the post's picture or video
                         String publicUrl = buildPublicUrl(mediaPath);
                         if (publicUrl != null) {
                             post.setMediaUrl(publicUrl);
@@ -361,7 +413,7 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        String finalUrl = SUPABASE_URL + "/storage/v1/object/public/" + BUCKET + "/" + encoded;
+        String finalUrl = SupabaseConfig.PROJECT_URL + "/storage/v1/object/public/" + BUCKET + "/" + encoded;
         android.util.Log.d("AMPLIFY_IMAGE", "Constructed Public URL: " + finalUrl);
         return finalUrl;
     }
@@ -381,6 +433,9 @@ public class HomeFragment extends Fragment {
                 .toUpperCase();
     }
 
+    // ------------------------------------------------------------------
+    // Showing the result (always on the main thread)
+    // ------------------------------------------------------------------
     private void displayPosts(List<Post> posts) {
         if (!isAdded()) return;
 
@@ -391,8 +446,14 @@ public class HomeFragment extends Fragment {
             feedPosts.addAll(posts);
             adapter.notifyDataSetChanged();
 
-            binding.tvFeedStatus.setVisibility(View.GONE);
-            binding.rvFeed.setVisibility(View.VISIBLE);
+            binding.swipeRefresh.setRefreshing(false);
+
+            if (feedPosts.isEmpty()) {
+                binding.tvFeedStatus.setText("No published posts yet. Be the first to share!");
+                binding.tvFeedStatus.setVisibility(View.VISIBLE);
+            } else {
+                binding.tvFeedStatus.setVisibility(View.GONE);
+            }
         });
     }
 
@@ -402,12 +463,25 @@ public class HomeFragment extends Fragment {
         requireActivity().runOnUiThread(() -> showMessage(message));
     }
 
+    /**
+     * If posts are already on screen, a short pop-up message is shown and the posts stay.
+     * If the feed is empty, the message is shown in the middle of the screen instead.
+     */
     private void showMessage(String message) {
         if (binding == null) return;
 
+        binding.swipeRefresh.setRefreshing(false);
+
+        if (!feedPosts.isEmpty()) {
+            binding.tvFeedStatus.setVisibility(View.GONE);
+            if (getContext() != null) {
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
+
         binding.tvFeedStatus.setText(message);
         binding.tvFeedStatus.setVisibility(View.VISIBLE);
-        binding.rvFeed.setVisibility(View.GONE);
     }
 
     @Override
