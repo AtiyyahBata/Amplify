@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.amplify.app.data.ChatKeyManager;
 import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityLoginBinding;
 import com.amplify.app.ui.main.MainActivity;
@@ -26,10 +27,9 @@ import okhttp3.Response;
 /**
  * Log In screen (Use Case 2 in the reference document).
  *
- * This does not call Firebase Authentication yet - tapping "Log in" always
- * succeeds and opens MainActivity, so the rest of the app can be reviewed
- * without a real backend. Swap the button listener for a real sign-in call
- * once Firebase Auth is wired in.
+ * Signs in with Supabase, saves the login, and then sets up the person's private message
+ * keys with their password (ChatKeyManager.prepareAfterLogin). Without that second step
+ * private messages cannot be sent, so the main screen only opens once it has finished.
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -83,6 +83,33 @@ public class LoginActivity extends AppCompatActivity {
 
         startActivity(intent);
         finish();
+    }
+
+    /**
+     * Sets up secure messaging right after a successful login. The login is already saved,
+     * so if this fails the person still gets into the app (messaging stays off until the
+     * next login) and sees why.
+     */
+    private void setUpMessageKeys(String password, String accessToken) {
+        ChatKeyManager.prepareAfterLogin(this, password, new ChatKeyManager.Listener() {
+            @Override
+            public void onReady() {
+                openMain(accessToken);
+            }
+
+            @Override
+            public void onNeedsFreshStart(Runnable startFresh, Runnable skip) {
+                showFreshStartDialog(startFresh, skip);
+            }
+
+            @Override
+            public void onFailed(String message) {
+                if (!isFinishing() && !isDestroyed()) {
+                    Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+                openMain(accessToken);
+            }
+        });
     }
 
     /**
@@ -172,7 +199,10 @@ public class LoginActivity extends AppCompatActivity {
 
                     runOnUiThread(() -> {
 
-                        binding.btnLogIn.setEnabled(true);
+                        // On success the button stays off until the message keys are ready.
+                        if (!response.isSuccessful()) {
+                            binding.btnLogIn.setEnabled(true);
+                        }
 
                         if (response.isSuccessful()) {
 
@@ -191,6 +221,16 @@ public class LoginActivity extends AppCompatActivity {
                             } catch (Exception ignored) {
                             }
 
+                            if (accessToken.isEmpty() || refreshToken.isEmpty()) {
+                                binding.btnLogIn.setEnabled(true);
+                                Toast.makeText(
+                                        LoginActivity.this,
+                                        "Login problem. Please try again.",
+                                        Toast.LENGTH_LONG
+                                ).show();
+                                return;
+                            }
+
                             getSharedPreferences("app_prefs", MODE_PRIVATE)
                                     .edit()
                                     .putString("access_token", accessToken)
@@ -201,7 +241,8 @@ public class LoginActivity extends AppCompatActivity {
                             SessionManager.saveSession(
                                     LoginActivity.this, accessToken, refreshToken);
 
-                            openMain(accessToken);
+                            // Create or unlock the private message keys, then open the app.
+                            setUpMessageKeys(password, accessToken);
 
                         } else {
 
