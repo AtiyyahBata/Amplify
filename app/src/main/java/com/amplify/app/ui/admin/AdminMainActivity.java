@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityAdminMainBinding;
 import com.amplify.app.ui.admin.home.AdminHomeFragment;
 import com.amplify.app.ui.admin.verify.AdminVerifyFragment;
@@ -109,6 +110,7 @@ public class AdminMainActivity extends AppCompatActivity {
     }
 
     private void goToWelcome() {
+        SessionManager.clear(this);
 
         Intent intent = new Intent(
                 AdminMainActivity.this,

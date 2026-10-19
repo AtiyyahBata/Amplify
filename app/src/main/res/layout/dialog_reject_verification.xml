@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingTop="12dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reason (the user will see this)"
+        android:textSize="12.5sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="6dp" />
+
+    <EditText
+        android:id="@+id/etRejectReason"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_input_field"
+        android:hint="e.g. The certificate is not readable"
+        android:inputType="textMultiLine|textCapSentences"
+        android:gravity="top|start"
+        android:minLines="3"
+        android:maxLength="300"
+        android:textSize="14sp"
+        android:padding="12dp" />
+
+    <CheckBox
+        android:id="@+id/cbBlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Also block this user from applying again"
+        android:textSize="13sp" />
+</LinearLayout>

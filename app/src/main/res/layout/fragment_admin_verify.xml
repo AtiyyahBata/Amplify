@@ -1,71 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/paper"
-    android:paddingTop="20dp">
+    android:background="@color/paper">
 
-    <!-- VERIFY USERS HEADING -->
+    <!-- Filter chips -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:layout_marginBottom="8dp">
+        android:paddingTop="6dp"
+        android:layout_marginBottom="12dp">
 
         <TextView
-            android:id="@+id/tvVerifyTitle"
+            android:id="@+id/tvFilterPending"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Verify Users"
-            android:textSize="23sp"
+            android:text="Pending"
+            android:textSize="12.5sp"
             android:textStyle="bold"
-            android:textColor="@color/ink" />
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true" />
 
-        <!-- Pending Count Badge -->
         <TextView
-            android:id="@+id/tvPendingCount"
+            android:id="@+id/tvFilterApproved"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="3 pending"
-            android:textSize="12sp"
-            android:textColor="#E87900"
-            android:background="#FFF0DD"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp" />
+            android:text="Approved"
+            android:textSize="12.5sp"
+            android:textStyle="bold"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:focusable="true" />
 
+        <TextView
+            android:id="@+id/tvFilterDeclined"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Declined"
+            android:textSize="12.5sp"
+            android:textStyle="bold"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:clickable="true"
+            android:focusable="true" />
     </LinearLayout>
 
-    <!-- DESCRIPTION -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Certificates the AI check couldn't confidently approve or reject."
-        android:textSize="13sp"
-        android:textColor="@color/muted"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:layout_marginBottom="18dp" />
-
-    <!-- VERIFICATION REQUEST LIST -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvVerifyRequests"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="16dp"
-        android:clipToPadding="false"
-        tools:listitem="@layout/item_verify_request"
-        tools:itemCount="3" />
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVerifyRequests"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:clipToPadding="false" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvEmpty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/muted"
+            android:visibility="gone" />
+    </FrameLayout>
 
 </LinearLayout>

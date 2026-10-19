@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.amplify.app.R;
+import com.amplify.app.data.SessionManager;
 import com.amplify.app.ui.onboarding.WelcomeActivity;
 
 import org.json.JSONArray;
@@ -37,6 +38,8 @@ public class AdminLogin extends AppCompatActivity {
             MediaType.get("application/json; charset=utf-8");
 
     private final OkHttpClient client = new OkHttpClient();
+
+    private String refreshToken = "";
 
     private android.widget.EditText emailInput;
     private android.widget.EditText passwordInput;
@@ -133,6 +136,8 @@ public class AdminLogin extends AppCompatActivity {
 
                         String accessToken =
                                 result.getString("access_token");
+
+                        refreshToken = result.optString("refresh_token", "");
 
                         String userId = result
                                 .getJSONObject("user")
@@ -249,6 +254,8 @@ public class AdminLogin extends AppCompatActivity {
                     }
 
                     runOnUiThread(() -> {
+                        SessionManager.saveSession(AdminLogin.this, accessToken, refreshToken);
+
                         Intent intent = new Intent(
                                 AdminLogin.this,
                                 AdminMainActivity.class
