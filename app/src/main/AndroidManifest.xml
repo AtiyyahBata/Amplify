@@ -24,8 +24,6 @@
         <activity android:name=".ui.onboarding.ResetPasswordActivity" android:exported="false" />
         <activity android:name=".ui.onboarding.SetNewPasswordActivity" android:exported="false" />
 
-        <!-- Supabase sends the browser back to amplify://auth-callback/... (GitHub link,
-             email change, reset-password link). -->
         <activity android:name=".ui.onboarding.AuthCallbackActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -52,8 +50,6 @@
 
         <activity android:name=".ui.admin.AdminMainActivity" android:exported="false" />
         <activity android:name=".ui.admin.AdminVerificationDetailActivity" android:exported="false" />
-
-        <!-- AI chat screens -->
         <activity android:name=".ui.main.artificial_intelligence.Artificial_Intelligence" android:exported="false" />
         <activity android:name=".ui.main.artificial_intelligence.AiChatDetailActivity" android:exported="false" />
         <activity android:name=".ui.main.artificial_intelligence.AiChatHistoryActivity" android:exported="false" />
