@@ -1,45 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/Amplify.Card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="14dp"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="14dp">
+        android:padding="16dp">
 
+        <!-- USER DETAILS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="14dp">
 
+            <!-- User Avatar -->
             <TextView
                 android:id="@+id/tvAvatar"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/bg_avatar_circle"
                 android:gravity="center"
                 android:textColor="@color/accent"
                 android:textStyle="bold"
-                android:textSize="12sp"
-                android:layout_marginEnd="10dp" />
+                android:textSize="16sp"
+                android:layout_marginEnd="12dp"
+                tools:text="KP" />
 
-            <TextView
-                android:id="@+id/tvRequestLabel"
+            <!-- User Name and Certificate -->
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="13.5sp"
-                android:textStyle="bold"
-                android:textColor="@color/ink" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvRequestLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/ink"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    tools:text="Karabo Phiri" />
+
+                <TextView
+                    android:id="@+id/tvCertificateType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/muted"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp"
+                    tools:text="BSc IT certificate" />
+
+            </LinearLayout>
+
+            <!-- Pending Badge -->
+            <TextView
+                android:id="@+id/tvVerificationStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pending"
+                android:textColor="#F57C00"
+                android:backgroundTint="#FFF0DD"
+                android:background="@drawable/bg_avatar_circle"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:textSize="11sp"
+                android:layout_marginStart="6dp" />
+
         </LinearLayout>
 
+        <!-- ACTION BUTTONS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,13 +98,11 @@
                 android:layout_marginEnd="6dp"
                 android:backgroundTint="@color/teal_soft"
                 android:textColor="@color/teal"
-                app:cornerRadius="20dp"
+                android:text="✓  Approve"
                 android:textAllCaps="false"
                 android:textSize="12.5sp"
                 android:textStyle="bold"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="Approve" />
+                app:cornerRadius="20dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReject"
@@ -69,14 +112,14 @@
                 android:layout_marginStart="6dp"
                 android:backgroundTint="@color/coral_soft"
                 android:textColor="@color/coral"
-                app:cornerRadius="20dp"
+                android:text="✕  Reject"
                 android:textAllCaps="false"
                 android:textSize="12.5sp"
                 android:textStyle="bold"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="Reject" />
+                app:cornerRadius="20dp" />
 
         </LinearLayout>
+
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>
