@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/paper"
     android:orientation="vertical">
 
+    <!-- AMPLIFY HEADER + EXIT -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,17 +15,42 @@
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
         android:paddingTop="16dp"
-        android:paddingBottom="8dp">
+        android:paddingBottom="14dp">
 
-        <TextView
+        <!-- LOGO -->
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@mipmap/ic_launcher"
+            android:scaleType="fitCenter"
+            android:contentDescription="Amplify logo" />
+
+        <!-- BRAND NAME -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Admin"
-            android:textSize="17sp"
-            android:textStyle="bold"
-            android:textColor="@color/ink" />
+            android:orientation="vertical"
+            android:paddingStart="12dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AMPLIFY"
+                android:textColor="@color/accent"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Admin Portal"
+                android:textColor="@color/muted"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <!-- EXIT BUTTON -->
         <TextView
             android:id="@+id/btnExitAdmin"
             android:layout_width="wrap_content"
@@ -31,9 +58,11 @@
             android:text="Exit"
             android:textColor="@color/muted"
             android:textSize="13sp"
-            android:padding="6dp" />
+            android:padding="8dp" />
+
     </LinearLayout>
 
+    <!-- ADMIN NAVIGATION TABS -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,6 +110,7 @@
 
     </LinearLayout>
 
+    <!-- FRAGMENT CONTENT -->
     <FrameLayout
         android:id="@+id/adminFragmentContainer"
         android:layout_width="match_parent"

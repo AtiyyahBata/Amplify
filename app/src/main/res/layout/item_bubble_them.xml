@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:gravity="start"
-    android:layout_marginBottom="8dp">
+    android:layout_marginBottom="12dp">
 
+    <!-- Received message bubble -->
     <TextView
         android:id="@+id/tvBubbleText"
         android:layout_width="wrap_content"
@@ -17,5 +20,18 @@
         android:paddingBottom="9dp"
         android:textSize="13.5sp"
         android:textColor="@color/ink"
-        android:lineSpacingMultiplier="1.25" />
+        android:lineSpacingMultiplier="1.25"
+        android:maxWidth="280dp"
+        tools:text="Hey! Did you finish the assignment?" />
+
+    <!-- Message timestamp -->
+    <TextView
+        android:id="@+id/tvBubbleTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/muted"
+        android:textSize="10sp"
+        tools:text="10:38" />
+
 </LinearLayout>
