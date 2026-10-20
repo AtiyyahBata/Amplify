@@ -242,6 +242,7 @@ public class MessagingRepository {
                         preview = "🔒 Message can't be read";
                     }
                 }
+                preview = PostShareMessage.previewText(preview);
                 if (lastSender != null && lastSender.equals(me) && !preview.isEmpty()) {
                     preview = "You: " + preview;
                 }

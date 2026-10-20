@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -61,6 +62,7 @@ public class ProfileFragment extends Fragment {
     // ---- The list of your own posts ----
     private final List<Post> myPosts = new ArrayList<>();
     private final Set<String> myPostIds = new HashSet<>();
+    private final Set<String> deletingPostIds = new HashSet<>();
     private ProfilePostRowAdapter postAdapter;
     private SupabaseApi api;
 
@@ -125,7 +127,7 @@ public class ProfileFragment extends Fragment {
             Intent intent = new Intent(requireContext(), ViewPostActivity.class);
             intent.putExtra("post_id", post.getId());
             startActivity(intent);
-        });
+        }, this::confirmDeletePost);
 
         binding.rvMyPosts.setLayoutManager(
                 new LinearLayoutManager(requireContext()));
@@ -250,6 +252,152 @@ public class ProfileFragment extends Fragment {
 
         binding.progressMore.setVisibility(View.GONE);
         binding.tvNoMyPosts.setVisibility(myPosts.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
+    private void confirmDeletePost(Post post) {
+        Context context = getContext();
+        if (context == null) return;
+
+        new AlertDialog.Builder(context)
+                .setTitle("Delete this post?")
+                .setMessage("This will remove the post from your profile and feed.")
+                .setPositiveButton("Delete", (dialog, which) -> deletePost(post))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deletePost(Post post) {
+        Context context = getContext();
+        if (context == null || api == null || post == null
+                || post.getId() == null || post.getId().trim().isEmpty()) return;
+
+        String userId = SessionManager.getUserId(context);
+        if (userId == null || userId.isEmpty()) {
+            showMessage("Please log in again to delete your post.");
+            return;
+        }
+
+        final String postId = post.getId();
+        if (!deletingPostIds.add(postId)) return;
+
+        String deleteRowPath = "/rest/v1/posts?id=eq." + encodeQueryValue(postId)
+                + "&user_id=eq." + encodeQueryValue(userId);
+        api.delete(deleteRowPath, "return=representation",
+                new SupabaseApi.Callback<String>() {
+                    @Override
+                    public void onSuccess(String body) {
+                        try {
+                            JSONArray deletedRows = new JSONArray(body);
+                            if (deletedRows.length() == 0) {
+                                failDelete(postId,
+                                        "The post could not be deleted. Refresh and try again.");
+                                return;
+                            }
+                        } catch (Exception e) {
+                            failDelete(postId,
+                                    "Couldn't confirm that the post was deleted.");
+                            return;
+                        }
+
+                        String objectPath = storageObjectPath(post.getMediaPath());
+                        if (objectPath == null) {
+                            finishDelete(post);
+                            return;
+                        }
+
+                        api.delete("/storage/v1/object/" + BUCKET + "/" + objectPath,
+                                new SupabaseApi.Callback<String>() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        finishDelete(post);
+                                    }
+
+                                    @Override
+                                    public void onError(String message) {
+                                        finishDelete(post);
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        failDelete(postId, message);
+                    }
+                });
+    }
+
+    private void finishDelete(Post post) {
+        deletingPostIds.remove(post.getId());
+        int index = -1;
+        for (int i = 0; i < myPosts.size(); i++) {
+            if (post.getId().equals(myPosts.get(i).getId())) {
+                index = i;
+                break;
+            }
+        }
+        if (index >= 0) {
+            myPosts.remove(index);
+            myPostIds.remove(post.getId());
+            if (postAdapter != null) postAdapter.notifyItemRemoved(index);
+        }
+        if (binding != null) {
+            binding.tvNoMyPosts.setVisibility(myPosts.isEmpty() ? View.VISIBLE : View.GONE);
+        }
+        showMessage("Post deleted");
+    }
+
+    private void failDelete(String postId, String message) {
+        deletingPostIds.remove(postId);
+        showMessage(message);
+    }
+
+    private String storageObjectPath(String mediaPath) {
+        if (mediaPath == null || mediaPath.trim().isEmpty()) return null;
+        String path = mediaPath.trim();
+
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+            String publicMarker = "/storage/v1/object/public/" + BUCKET + "/";
+            String objectMarker = "/storage/v1/object/" + BUCKET + "/";
+            int marker = path.indexOf(publicMarker);
+            if (marker >= 0) {
+                path = path.substring(marker + publicMarker.length());
+            } else {
+                marker = path.indexOf(objectMarker);
+                if (marker < 0) return null;
+                path = path.substring(marker + objectMarker.length());
+            }
+            try {
+                path = java.net.URLDecoder.decode(path, "UTF-8");
+            } catch (Exception ignored) {
+                // Keep the extracted path if it is not URL encoded.
+            }
+        }
+
+        while (path.startsWith("/")) path = path.substring(1);
+        if (path.startsWith(BUCKET + "/")) {
+            path = path.substring(BUCKET.length() + 1);
+        }
+        if (path.isEmpty()) return null;
+
+        StringBuilder encoded = new StringBuilder();
+        for (String part : path.split("/")) {
+            if (encoded.length() > 0) encoded.append('/');
+            try {
+                encoded.append(java.net.URLEncoder.encode(part, "UTF-8")
+                        .replace("+", "%20"));
+            } catch (Exception e) {
+                encoded.append(part);
+            }
+        }
+        return encoded.toString();
+    }
+
+    private String encodeQueryValue(String value) {
+        try {
+            return java.net.URLEncoder.encode(value, "UTF-8");
+        } catch (Exception e) {
+            return value;
+        }
     }
 
     private void finishLoadingWithMessage(String message) {

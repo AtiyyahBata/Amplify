@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,15 +39,25 @@ public class ConversationActivity extends AppCompatActivity {
     public static final String EXTRA_CONVERSATION_ID = "conversation_id";
     public static final String EXTRA_OTHER_USER_ID = "other_user_id";
     public static final String EXTRA_OTHER_NAME = "other_name";
+    public static final String EXTRA_INITIAL_MESSAGE = "initial_message";
 
     private static final int MAX_LENGTH = 4000;
+    private static final String STATE_INITIAL_MESSAGE_SENT = "initial_message_sent";
 
     public static void open(Context context, String conversationId, String otherUserId,
                             String otherName) {
+        open(context, conversationId, otherUserId, otherName, null);
+    }
+
+    public static void open(Context context, String conversationId, String otherUserId,
+                            String otherName, String initialMessage) {
         Intent intent = new Intent(context, ConversationActivity.class);
         intent.putExtra(EXTRA_CONVERSATION_ID, conversationId);
         intent.putExtra(EXTRA_OTHER_USER_ID, otherUserId);
         intent.putExtra(EXTRA_OTHER_NAME, otherName);
+        if (initialMessage != null && !initialMessage.isEmpty()) {
+            intent.putExtra(EXTRA_INITIAL_MESSAGE, initialMessage);
+        }
         context.startActivity(intent);
     }
 
@@ -59,6 +70,8 @@ public class ConversationActivity extends AppCompatActivity {
     private String otherUserId;
     private String otherName;
     private String myId;
+    private String initialMessage;
+    private boolean initialMessageSent;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private boolean resumed = false;
@@ -83,6 +96,9 @@ public class ConversationActivity extends AppCompatActivity {
         conversationId = getIntent().getStringExtra(EXTRA_CONVERSATION_ID);
         otherUserId = getIntent().getStringExtra(EXTRA_OTHER_USER_ID);
         otherName = getIntent().getStringExtra(EXTRA_OTHER_NAME);
+        initialMessage = getIntent().getStringExtra(EXTRA_INITIAL_MESSAGE);
+        initialMessageSent = savedInstanceState != null
+                && savedInstanceState.getBoolean(STATE_INITIAL_MESSAGE_SENT, false);
         myId = SessionManager.getUserId(this);
 
         if (conversationId == null || otherUserId == null || myId == null) {
@@ -158,6 +174,12 @@ public class ConversationActivity extends AppCompatActivity {
         handler.removeCallbacksAndMessages(null);
     }
 
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean(STATE_INITIAL_MESSAGE_SENT, initialMessageSent);
+        super.onSaveInstanceState(outState);
+    }
+
     // ------------------------------------------------------------------
     // Loading
     // ------------------------------------------------------------------
@@ -178,6 +200,7 @@ public class ConversationActivity extends AppCompatActivity {
                     adapter.setMessages(result);
                     loadedOnce = true;
                     scrollToEnd();
+                    sendInitialMessageIfNeeded();
                 } else {
                     adapter.merge(result);
                     if (nearEnd) scrollToEnd();
@@ -198,6 +221,13 @@ public class ConversationActivity extends AppCompatActivity {
                 if (!loadedOnce) showStatus(message);
             }
         });
+    }
+
+    private void sendInitialMessageIfNeeded() {
+        if (initialMessageSent || initialMessage == null || initialMessage.isEmpty()) return;
+        initialMessageSent = true;
+        binding.etChatInput.setText(initialMessage);
+        send();
     }
 
     private void updateStatus() {

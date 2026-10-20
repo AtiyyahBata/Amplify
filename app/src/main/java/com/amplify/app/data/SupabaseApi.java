@@ -94,6 +94,11 @@ public class SupabaseApi {
         async("DELETE", pathAndQuery, null, null, callback);
     }
 
+    /** DELETE variant with a PostgREST Prefer header, such as return=representation. */
+    public void delete(String pathAndQuery, String prefer, Callback<String> callback) {
+        async("DELETE", pathAndQuery, null, prefer, callback);
+    }
+
     private void async(String method, String path, String json, String prefer,
                        Callback<String> callback) {
         POOL.execute(() -> {

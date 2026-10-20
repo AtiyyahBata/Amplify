@@ -1,8 +1,11 @@
 package com.amplify.app.adapters;
 
 import android.graphics.Typeface;
+import android.content.Intent;
+import android.view.View;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,7 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amplify.app.databinding.ItemDmMeBinding;
 import com.amplify.app.databinding.ItemDmThemBinding;
+import com.amplify.app.data.PostShareMessage;
 import com.amplify.app.models.DirectMessage;
+import com.amplify.app.ui.content.ViewPostActivity;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -189,41 +196,96 @@ public class DirectMessageAdapter extends RecyclerView.Adapter<DirectMessageAdap
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_ME) {
             ItemDmMeBinding b = ItemDmMeBinding.inflate(inflater, parent, false);
-            return new Holder(b.getRoot(), b.tvDmText, b.tvDmMeta);
+            return new Holder(b.getRoot(), b.tvDmText, b.tvDmMeta,
+                    b.cardDmPost, b.ivDmPostImage, b.tvDmPostTitle);
         }
         ItemDmThemBinding b = ItemDmThemBinding.inflate(inflater, parent, false);
-        return new Holder(b.getRoot(), b.tvDmText, b.tvDmMeta);
+        return new Holder(b.getRoot(), b.tvDmText, b.tvDmMeta,
+                b.cardDmPost, b.ivDmPostImage, b.tvDmPostTitle);
     }
 
     @Override
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         DirectMessage m = items.get(position);
+        holder.text.setOnClickListener(null);
+        holder.postCard.setOnClickListener(null);
 
         if (m.isDeleted()) {
+            holder.postCard.setVisibility(View.GONE);
+            holder.text.setVisibility(View.VISIBLE);
+            Glide.with(holder.postImage.getContext()).clear(holder.postImage);
             holder.text.setText(DELETED_TEXT);
             holder.text.setTypeface(null, Typeface.ITALIC);
             holder.text.setAlpha(0.7f);
         } else if (m.isUndecryptable()) {
+            holder.postCard.setVisibility(View.GONE);
+            holder.text.setVisibility(View.VISIBLE);
+            Glide.with(holder.postImage.getContext()).clear(holder.postImage);
             holder.text.setText(UNREADABLE_TEXT);
             holder.text.setTypeface(null, Typeface.ITALIC);
             holder.text.setAlpha(0.7f);
         } else {
-            holder.text.setText(m.getText());
+            String sharedPostId = PostShareMessage.postId(m.getText());
             holder.text.setTypeface(null, Typeface.NORMAL);
             holder.text.setAlpha(1f);
+            if (sharedPostId != null) {
+                holder.text.setVisibility(View.GONE);
+                holder.postCard.setVisibility(View.VISIBLE);
+                holder.postTitle.setText(PostShareMessage.title(m.getText()));
+                holder.postCard.setOnClickListener(v -> {
+                    Intent intent = new Intent(v.getContext(), ViewPostActivity.class);
+                    intent.putExtra("post_id", sharedPostId);
+                    v.getContext().startActivity(intent);
+                });
+                String mediaUrl = PostShareMessage.mediaUrl(m.getText());
+                if (mediaUrl == null || mediaUrl.trim().isEmpty()) {
+                    Glide.with(holder.postImage.getContext()).clear(holder.postImage);
+                    holder.postImage.setVisibility(View.GONE);
+                } else {
+                    holder.postImage.setVisibility(View.VISIBLE);
+                    String mediaType = PostShareMessage.mediaType(m.getText());
+                    if (mediaType.toLowerCase(java.util.Locale.ROOT).contains("video")) {
+                        Glide.with(holder.postImage.getContext())
+                                .asBitmap()
+                                .load(mediaUrl)
+                                .apply(new RequestOptions().frame(1_000_000))
+                                .centerCrop()
+                                .placeholder(com.amplify.app.R.color.ink)
+                                .error(com.amplify.app.R.color.ink)
+                                .into(holder.postImage);
+                    } else {
+                        Glide.with(holder.postImage.getContext())
+                                .load(mediaUrl)
+                                .centerCrop()
+                                .placeholder(com.amplify.app.R.color.paper)
+                                .error(com.amplify.app.R.color.paper)
+                                .into(holder.postImage);
+                    }
+                }
+            } else {
+                holder.postCard.setVisibility(View.GONE);
+                holder.text.setVisibility(View.VISIBLE);
+                Glide.with(holder.postImage.getContext()).clear(holder.postImage);
+                holder.text.setText(PostShareMessage.displayText(m.getText()));
+                holder.text.setOnClickListener(null);
+            }
         }
 
         holder.meta.setText(metaFor(m));
 
         boolean canDelete = m.isMine() && !m.isPending() && !m.isDeleted();
         if (canDelete) {
-            holder.text.setOnLongClickListener(v -> {
+            View.OnLongClickListener deleteListener = v -> {
                 if (longClickListener != null) longClickListener.onMessageLongClick(m);
                 return true;
-            });
+            };
+            holder.text.setOnLongClickListener(deleteListener);
+            holder.postCard.setOnLongClickListener(deleteListener);
         } else {
             holder.text.setOnLongClickListener(null);
             holder.text.setLongClickable(false);
+            holder.postCard.setOnLongClickListener(null);
+            holder.postCard.setLongClickable(false);
         }
     }
 
@@ -238,11 +300,18 @@ public class DirectMessageAdapter extends RecyclerView.Adapter<DirectMessageAdap
     static class Holder extends RecyclerView.ViewHolder {
         final TextView text;
         final TextView meta;
+        final View postCard;
+        final ImageView postImage;
+        final TextView postTitle;
 
-        Holder(android.view.View root, TextView text, TextView meta) {
+        Holder(android.view.View root, TextView text, TextView meta, View postCard,
+               ImageView postImage, TextView postTitle) {
             super(root);
             this.text = text;
             this.meta = meta;
+            this.postCard = postCard;
+            this.postImage = postImage;
+            this.postTitle = postTitle;
         }
     }
 }

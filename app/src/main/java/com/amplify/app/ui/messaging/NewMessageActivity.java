@@ -31,6 +31,7 @@ public class NewMessageActivity extends AppCompatActivity {
 
     public static final String EXTRA_USER_ID = "user_id";
     public static final String EXTRA_USER_NAME = "user_name";
+    public static final String EXTRA_INITIAL_MESSAGE = "initial_message";
 
     private static final int MIN_LETTERS = 2;
     private static final long DEBOUNCE_MS = 300;
@@ -136,7 +137,8 @@ public class NewMessageActivity extends AppCompatActivity {
             public void onSuccess(String conversationId) {
                 if (isFinishing()) return;
                 ConversationActivity.open(NewMessageActivity.this, conversationId,
-                        userId, displayName);
+                        userId, displayName,
+                        getIntent().getStringExtra(EXTRA_INITIAL_MESSAGE));
                 finish();
             }
 

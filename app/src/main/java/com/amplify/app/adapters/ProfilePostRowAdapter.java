@@ -3,6 +3,7 @@ package com.amplify.app.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -31,12 +32,23 @@ public class ProfilePostRowAdapter
         void onPostClick(Post post);
     }
 
+    public interface OnPostDeleteListener {
+        void onDeletePost(Post post);
+    }
+
     private final List<Post> posts;
     private final OnPostClickListener listener;
+    private final OnPostDeleteListener deleteListener;
 
     public ProfilePostRowAdapter(List<Post> posts, OnPostClickListener listener) {
+        this(posts, listener, null);
+    }
+
+    public ProfilePostRowAdapter(List<Post> posts, OnPostClickListener listener,
+                                 OnPostDeleteListener deleteListener) {
         this.posts = posts;
         this.listener = listener;
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -107,6 +119,16 @@ public class ProfilePostRowAdapter
         b.getRoot().setOnClickListener(v -> {
             if (listener != null) listener.onPostClick(post);
         });
+        b.btnRowOptions.setOnClickListener(v -> {
+            PopupMenu menu = new PopupMenu(v.getContext(), b.btnRowOptions);
+            menu.getMenu().add("Delete post");
+            menu.setOnMenuItemClickListener(item -> {
+                if (deleteListener != null) deleteListener.onDeletePost(post);
+                return true;
+            });
+            menu.show();
+        });
+        b.btnRowOptions.setVisibility(deleteListener == null ? View.GONE : View.VISIBLE);
     }
 
     @Override

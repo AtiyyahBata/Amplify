@@ -29,8 +29,10 @@ import com.amplify.app.databinding.ActivityViewPostBinding;
 import com.amplify.app.databinding.ItemCommentBinding;
 import com.amplify.app.models.Comment;
 import com.amplify.app.data.MessagingRepository;
+import com.amplify.app.data.PostShareMessage;
 import com.amplify.app.data.SupabaseApi;
 import com.amplify.app.ui.messaging.ConversationActivity;
+import com.amplify.app.ui.messaging.NewMessageActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -84,6 +86,8 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private boolean isVerifiedCreator;
     private String mediaUrl;
+    private String postTitle;
+    private String postMediaType;
 
     private final List<Comment> comments = new ArrayList<>();
 
@@ -157,6 +161,10 @@ public class ViewPostActivity extends AppCompatActivity {
         PopupMenu popup = new PopupMenu(this, anchor);
         popup.getMenuInflater().inflate(R.menu.menu_post_options, popup.getMenu());
         popup.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_share_post) {
+                onSharePostClicked();
+                return true;
+            }
             if (item.getItemId() == R.id.action_report_post) {
                 onReportPostClicked();
                 return true;
@@ -164,6 +172,19 @@ public class ViewPostActivity extends AppCompatActivity {
             return false;
         });
         popup.show();
+    }
+
+    private void onSharePostClicked() {
+        if (postTitle == null || postTitle.trim().isEmpty()) {
+            Toast.makeText(this, "The post is still loading. Try again in a moment.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Intent intent = new Intent(this, NewMessageActivity.class);
+        intent.putExtra(NewMessageActivity.EXTRA_INITIAL_MESSAGE,
+                PostShareMessage.create(postId, postTitle, postMediaType, mediaUrl));
+        startActivity(intent);
     }
 
     /** Checks the post is ready, then (in the next step) opens the report form. */
@@ -310,7 +331,9 @@ public class ViewPostActivity extends AppCompatActivity {
                     String type = post.optString("media_type", "");
                     String path = post.optString("media_path", "");
 
+                    postMediaType = type;
                     mediaUrl = buildPublicUrl(path);
+                    postTitle = title;
 
                     runOnUiThread(() -> {
                         binding.tvPostTitle.setText(title);
