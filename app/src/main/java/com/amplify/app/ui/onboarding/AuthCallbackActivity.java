@@ -14,6 +14,7 @@ import java.util.Map;
 /**
  * Catches the amplify://auth-callback/... links that Supabase sends the browser back to:
  *   /github    after linking GitHub
+ *   /signup    after confirming the email used to register
  *   /email     after confirming a new email
  *   /recovery  after tapping the reset-password email link
  *
@@ -50,6 +51,20 @@ public class AuthCallbackActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
+            return;
+        }
+
+        // Link from the "Confirm email address" email after registering.
+        // The tokens in the link are ignored on purpose: the person logs in with their
+        // password so their private message keys can be set up (see LoginActivity).
+        if (path.startsWith("/signup")) {
+            toast(error != null ? error
+                    : "Email confirmed! You can now log in.");
+            Intent intent = new Intent(this, error != null
+                    ? WelcomeActivity.class : LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
             return;
         }
 

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.amplify.app.data.ChatKeyManager;
 import com.amplify.app.data.SessionManager;
+import com.amplify.app.data.SupabaseConfig;
 import com.amplify.app.databinding.ActivityLoginBinding;
 import com.amplify.app.ui.main.MainActivity;
 
@@ -34,14 +35,6 @@ import okhttp3.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
-
-    // Supabase project URL
-    private static final String SUPABASE_URL =
-            "https://pggwokpdcqtigxmcrtxh.supabase.co";
-
-    // Supabase publishable key
-    private static final String SUPABASE_KEY =
-            "sb_publishable_yoqGxzzEd6H2iRWyWckd-g_RkHgxhqC";
 
     private static final MediaType JSON =
             MediaType.get("application/json; charset=utf-8");
@@ -166,8 +159,8 @@ public class LoginActivity extends AppCompatActivity {
                     RequestBody.create(body.toString(), JSON);
 
             Request request = new Request.Builder()
-                    .url(SUPABASE_URL + "/auth/v1/token?grant_type=password")
-                    .addHeader("apikey", SUPABASE_KEY)
+                    .url(SupabaseConfig.PROJECT_URL + "/auth/v1/token?grant_type=password")
+                    .addHeader("apikey", SupabaseConfig.ANON_KEY)
                     .addHeader("Content-Type", "application/json")
                     .post(requestBody)
                     .build();
@@ -254,7 +247,14 @@ public class LoginActivity extends AppCompatActivity {
                                 JSONObject error =
                                         new JSONObject(responseBody);
 
-                                if (error.has("msg")) {
+                                if ("email_not_confirmed".equals(
+                                        error.optString("error_code"))) {
+                                    errorMessage =
+                                            "Please confirm your email first. "
+                                                    + "Check your inbox for the "
+                                                    + "confirmation link.";
+
+                                } else if (error.has("msg")) {
                                     errorMessage =
                                             error.getString("msg");
 

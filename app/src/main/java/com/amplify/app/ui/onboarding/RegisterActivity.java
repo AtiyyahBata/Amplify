@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.amplify.app.data.AccountRepository;
+import com.amplify.app.data.SupabaseConfig;
 import com.amplify.app.databinding.ActivityRegisterBinding;
 
 import org.json.JSONException;
@@ -25,14 +28,6 @@ import okhttp3.Response;
 public class RegisterActivity extends AppCompatActivity {
 
     private ActivityRegisterBinding binding;
-
-    // Supabase project URL
-    private static final String SUPABASE_URL =
-            "https://pggwokpdcqtigxmcrtxh.supabase.co";
-
-    // Supabase publishable key
-    private static final String SUPABASE_KEY =
-            "sb_publishable_yoqGxzzEd6H2iRWyWckd-g_RkHgxhqC";
 
     private static final MediaType JSON =
             MediaType.get("application/json; charset=utf-8");
@@ -141,8 +136,14 @@ public class RegisterActivity extends AppCompatActivity {
             // SUPABASE SIGNUP URL
             // =========================
 
-            String url = SUPABASE_URL +
-                    "/auth/v1/signup";
+            // redirect_to makes the "Confirm email address" link open the app
+            // (AuthCallbackActivity handles /signup) instead of a web page.
+            String url = SupabaseConfig.PROJECT_URL +
+                    "/auth/v1/signup?redirect_to=" +
+                    java.net.URLEncoder.encode(
+                            AccountRepository.REDIRECT_BASE + "/signup",
+                            "UTF-8"
+                    );
 
 
             RequestBody requestBody =
@@ -157,7 +158,7 @@ public class RegisterActivity extends AppCompatActivity {
                             .url(url)
                             .addHeader(
                                     "apikey",
-                                    SUPABASE_KEY
+                                    SupabaseConfig.ANON_KEY
                             )
                             .addHeader(
                                     "Content-Type",
@@ -221,22 +222,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             if (res.isSuccessful()) {
 
-                                Toast.makeText(
-                                        RegisterActivity.this,
-                                        "Registration successful!",
-                                        Toast.LENGTH_LONG
-                                ).show();
-
-
-                                Intent intent =
-                                        new Intent(
-                                                RegisterActivity.this,
-                                                LoginActivity.class
-                                        );
-
-                                startActivity(intent);
-
-                                finish();
+                                showCheckEmailDialog(email);
 
                             }
 
@@ -293,7 +279,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             });
 
-        } catch (JSONException e) {
+        } catch (JSONException | java.io.UnsupportedEncodingException e) {
 
             binding.btnRegister.setEnabled(true);
 
@@ -303,5 +289,34 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT
             ).show();
         }
+    }
+
+    /**
+     * Tells the person to confirm their email before they can log in.
+     * Pressing OK takes them to the Log In screen.
+     */
+    private void showCheckEmailDialog(String email) {
+
+        if (isFinishing() || isDestroyed()) return;
+
+        new AlertDialog.Builder(this)
+                .setTitle("Check your email \u2709\uFE0F")
+                .setMessage(
+                        "We sent a confirmation link to:\n\n"
+                                + email
+                                + "\n\nOpen that email and tap \"Confirm email address\" "
+                                + "before you log in. You won't be able to use Amplify "
+                                + "until your email is confirmed.\n\n"
+                                + "Can't see it? Check your spam or junk folder."
+                )
+                .setCancelable(false)
+                .setPositiveButton("OK", (dialog, which) -> {
+
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+
+                })
+                .show();
     }
 }

@@ -46,8 +46,8 @@ public class SetNewPasswordActivity extends AppCompatActivity {
         String password = binding.etNewPassword.getText().toString();
         String confirm = binding.etConfirmPassword.getText().toString();
 
-        if (password.length() < 6) {
-            binding.etNewPassword.setError("Use at least 6 characters");
+        if (password.length() < 8) {
+            binding.etNewPassword.setError("Use at least 8 characters");
             binding.etNewPassword.requestFocus();
             return;
         }
