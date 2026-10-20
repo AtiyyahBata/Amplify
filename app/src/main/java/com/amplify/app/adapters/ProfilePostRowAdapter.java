@@ -12,6 +12,7 @@ import com.amplify.app.R;
 import com.amplify.app.databinding.ItemProfilePostRowBinding;
 import com.amplify.app.models.Post;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 import java.util.Locale;
@@ -90,6 +91,14 @@ public class ProfilePostRowAdapter
             b.cardRowMedia.setCardBackgroundColor(
                     ContextCompat.getColor(b.getRoot().getContext(), R.color.ink));
             b.ivRowPlay.setVisibility(View.VISIBLE);
+            Glide.with(b.ivRowMedia.getContext())
+                    .asBitmap()
+                    .load(url)
+                    .apply(new RequestOptions().frame(1_000_000))
+                    .centerCrop()
+                    .placeholder(R.color.ink)
+                    .error(R.color.ink)
+                    .into(b.ivRowMedia);
 
         } else {
             b.cardRowMedia.setVisibility(View.GONE);

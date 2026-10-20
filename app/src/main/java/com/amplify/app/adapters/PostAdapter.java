@@ -14,6 +14,7 @@ import com.amplify.app.R;
 import com.amplify.app.databinding.ItemPostBinding;
 import com.amplify.app.models.Post;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 import java.util.Locale;
@@ -120,6 +121,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private void bindMedia(ItemPostBinding b, Post post) {
         ImageView iv = b.ivPostMedia;
         String mediaUrl = post.getMediaUrl();
+        b.ivPostPlay.setVisibility(View.GONE);
 
         if (mediaUrl == null || mediaUrl.isEmpty()) {
             Glide.with(iv.getContext()).clear(iv);
@@ -134,11 +136,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 ? "" : post.getMediaType().toLowerCase(Locale.ROOT);
 
         if (type.contains("video")) {
-            // A feed card can't grab a frame from a video link, so show a play box.
-            Glide.with(iv.getContext()).clear(iv);
+            // Show a frame from the uploaded video as its feed preview.
             iv.setBackgroundColor(Color.BLACK);
-            iv.setScaleType(ImageView.ScaleType.CENTER);
-            iv.setImageResource(android.R.drawable.ic_media_play);
+            iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            b.ivPostPlay.setVisibility(View.VISIBLE);
+            Glide.with(iv.getContext())
+                    .asBitmap()
+                    .load(mediaUrl)
+                    .apply(new RequestOptions().frame(1_000_000))
+                    .centerCrop()
+                    .placeholder(android.R.color.black)
+                    .error(android.R.color.black)
+                    .into(iv);
         } else {
             iv.setBackgroundColor(ContextCompat.getColor(iv.getContext(), R.color.paper));
             iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
