@@ -35,7 +35,8 @@
             android:contentDescription="Settings" />
     </LinearLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollProfile"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -46,71 +47,89 @@
             android:orientation="vertical"
             android:padding="20dp">
 
+            <!-- Header: avatar on the left, details on the right -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:layout_marginBottom="16dp">
 
                 <TextView
                     android:id="@+id/tvProfileInitials"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:background="@drawable/bg_avatar_circle"
                     android:gravity="center"
                     android:text="AB"
                     android:textColor="@color/accent"
                     android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:layout_marginBottom="10dp" />
-
-                <TextView
-                    android:id="@+id/tvProfileName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Loading profile..."
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/ink" />
-
-                <TextView
-                    android:id="@+id/tvFieldOfStudy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Loading field of study..."
-                    android:textSize="12.5sp"
-                    android:textColor="@color/muted"
-                    android:layout_marginBottom="6dp" />
+                    android:textSize="26sp" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:layout_width="14dp"
-                        android:layout_height="10dp"
-                        android:src="@drawable/ic_verified_mark"
-                        android:layout_marginEnd="4dp" />
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tvVerificationLabel"
+                        android:id="@+id/tvProfileName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Loading profile..."
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/ink" />
+
+                    <TextView
+                        android:id="@+id/tvFieldOfStudy"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Loading field of study..."
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:textSize="13sp"
+                        android:textColor="@color/muted" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Checking status..."
-                        android:textSize="12sp"
-                        android:textColor="@color/teal"
-                        android:textStyle="bold" />
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_verified_chip"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="5dp">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="10dp"
+                            android:src="@drawable/ic_verified_mark"
+                            android:layout_marginEnd="5dp"
+                            android:contentDescription="Verification status" />
+
+                        <TextView
+                            android:id="@+id/tvVerificationLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Checking status..."
+                            android:textSize="12sp"
+                            android:textColor="@color/teal"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="18dp">
+                android:orientation="horizontal">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnGithub"
@@ -137,59 +156,59 @@
                     android:text="LinkedIn ↗" />
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Your posts"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:textColor="@color/ink"
-                android:layout_marginBottom="8dp" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardMyPost"
-                style="@style/Amplify.Card"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:clickable="true"
-                android:focusable="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="14dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Setting up a CI pipeline for a student project"
-                        android:textSize="13.5sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/ink" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="14 messages started from this post"
-                        android:textSize="12sp"
-                        android:textColor="@color/muted"
-                        android:layout_marginTop="3dp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
+            <!-- Only shown when the user is NOT verified (ProfileFragment turns it on).
+                 Sits above the posts so an unverified user actually sees it. -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnVerificationStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
                 android:backgroundTint="@color/teal_soft"
                 android:textColor="@color/teal"
                 app:cornerRadius="28dp"
                 android:textAllCaps="false"
                 android:textStyle="bold"
-                android:text="Verification status" />
+                android:text="Get verified"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your posts"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/ink"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="10dp" />
+
+            <TextView
+                android:id="@+id/tvNoMyPosts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="You haven't posted anything yet."
+                android:textSize="12.5sp"
+                android:textColor="@color/muted"
+                android:paddingTop="6dp"
+                android:paddingBottom="14dp"
+                android:visibility="gone" />
+
+            <!-- Vertical list of posts. The page around it does the scrolling. -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMyPosts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:clipToPadding="false" />
+
+            <ProgressBar
+                android:id="@+id/progressMore"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:visibility="gone" />
 
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

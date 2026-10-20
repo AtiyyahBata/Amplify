@@ -11,10 +11,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.amplify.app.adapters.ProfilePostRowAdapter;
 import com.amplify.app.data.LinkUtils;
+import com.amplify.app.data.SessionManager;
+import com.amplify.app.data.SupabaseApi;
+import com.amplify.app.data.SupabaseConfig;
 import com.amplify.app.databinding.FragmentProfileBinding;
+import com.amplify.app.models.Post;
 import com.amplify.app.ui.content.ViewPostActivity;
 import com.amplify.app.ui.settings.GetVerifiedActivity;
 import com.amplify.app.ui.settings.ProfileSettingsActivity;
@@ -23,6 +30,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -40,7 +51,24 @@ public class ProfileFragment extends Fragment {
     private static final String SUPABASE_KEY =
             "sb_publishable_yoqGxzzEd6H2iRWyWckd-g_RkHgxhqC";
 
+    private static final String BUCKET = "Amplify-media";
+
+    /** How many posts are loaded per page. */
+    private static final int PAGE_SIZE = 10;
+
     private final OkHttpClient client = new OkHttpClient();
+
+    // ---- The list of your own posts ----
+    private final List<Post> myPosts = new ArrayList<>();
+    private final Set<String> myPostIds = new HashSet<>();
+    private ProfilePostRowAdapter postAdapter;
+    private SupabaseApi api;
+
+    private boolean loadingPosts = false;
+    private boolean endReached = false;
+
+    /** Goes up on every fresh load, so an old answer arriving late gets ignored. */
+    private int generation = 0;
 
     @Nullable
     @Override
@@ -62,6 +90,8 @@ public class ProfileFragment extends Fragment {
 
         super.onViewCreated(view, savedInstanceState);
 
+        api = new SupabaseApi(requireContext());
+
         binding.btnSettings.setOnClickListener(v ->
                 startActivity(new Intent(
                         requireContext(),
@@ -72,19 +102,201 @@ public class ProfileFragment extends Fragment {
                         requireContext(),
                         GetVerifiedActivity.class)));
 
-        binding.cardMyPost.setOnClickListener(v ->
-                startActivity(new Intent(
-                        requireContext(),
-                        ViewPostActivity.class)));
-
+        setUpPostGrid();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        // Reload every time the screen is shown, so changes made in Settings show up.
-        if (binding != null) loadUserProfile();
+        // Reload every time the screen is shown, so changes made in Settings
+        // (and posts added or removed) show up.
+        if (binding != null) {
+            loadUserProfile();
+            loadMyPosts(true);
+        }
     }
+
+    // ------------------------------------------------------------------
+    // Your posts: a list that loads more as you scroll down
+    // ------------------------------------------------------------------
+
+    private void setUpPostGrid() {
+        postAdapter = new ProfilePostRowAdapter(myPosts, post -> {
+            Intent intent = new Intent(requireContext(), ViewPostActivity.class);
+            intent.putExtra("post_id", post.getId());
+            startActivity(intent);
+        });
+
+        binding.rvMyPosts.setLayoutManager(
+                new LinearLayoutManager(requireContext()));
+        binding.rvMyPosts.setAdapter(postAdapter);
+
+        // When you get close to the bottom of the page, load the next posts.
+        binding.scrollProfile.setOnScrollChangeListener(
+                (NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldX, oldY) -> {
+                    View content = v.getChildAt(0);
+                    if (content == null) return;
+
+                    int distanceToBottom = content.getBottom() - (v.getHeight() + scrollY);
+                    if (distanceToBottom < dp(300)) {
+                        loadMyPosts(false);
+                    }
+                });
+    }
+
+    /**
+     * reset = true: start again from the newest post (used when the screen opens).
+     * reset = false: load the next page (used when scrolling down).
+     */
+    private void loadMyPosts(boolean reset) {
+        Context context = getContext();
+        if (binding == null || context == null || api == null) return;
+
+        final String userId = SessionManager.getUserId(context);
+        if (userId == null || userId.isEmpty()) return;
+
+        if (reset) {
+            generation++;
+            loadingPosts = false;
+            endReached = false;
+        }
+
+        if (loadingPosts || endReached) return;
+
+        loadingPosts = true;
+        final int myGeneration = generation;
+        final int offset = reset ? 0 : myPosts.size();
+
+        // Spinner only when there is nothing on screen yet, or when paging.
+        if (!reset || myPosts.isEmpty()) {
+            binding.progressMore.setVisibility(View.VISIBLE);
+        }
+
+        String path = "/rest/v1/posts"
+                + "?select=id,user_id,title,caption,media_type,media_path,status,created_at"
+                + "&user_id=eq." + userId
+                + "&status=eq.published"
+                + "&order=created_at.desc"
+                + "&limit=" + PAGE_SIZE
+                + "&offset=" + offset;
+
+        api.get(path, new SupabaseApi.Callback<String>() {
+            @Override
+            public void onSuccess(String body) {
+                if (binding == null || myGeneration != generation) return;
+
+                try {
+                    JSONArray rows = new JSONArray(body);
+                    List<Post> page = new ArrayList<>();
+
+                    for (int i = 0; i < rows.length(); i++) {
+                        JSONObject item = rows.optJSONObject(i);
+                        if (item == null) continue;
+
+                        String mediaType = item.optString("media_type", "");
+                        String mediaPath = item.optString("media_path", "");
+
+                        Post post = new Post(
+                                item.optString("id", ""),
+                                item.optString("user_id", ""),
+                                "", "", false, "",
+                                item.optString("title", "Untitled post"),
+                                item.optString("caption", ""),
+                                mediaType,
+                                "community",
+                                mediaType,
+                                mediaPath);
+
+                        String publicUrl = buildPublicUrl(mediaPath);
+                        if (publicUrl != null) post.setMediaUrl(publicUrl);
+
+                        page.add(post);
+                    }
+
+                    showPage(page, reset, rows.length());
+
+                } catch (Exception e) {
+                    finishLoadingWithMessage("Couldn't read your posts.");
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (binding == null || myGeneration != generation) return;
+                finishLoadingWithMessage(message);
+            }
+        });
+    }
+
+    private void showPage(List<Post> page, boolean reset, int rawCount) {
+        if (reset) {
+            myPosts.clear();
+            myPostIds.clear();
+            for (Post post : page) {
+                if (myPostIds.add(post.getId())) myPosts.add(post);
+            }
+            postAdapter.notifyDataSetChanged();
+        } else {
+            int start = myPosts.size();
+            for (Post post : page) {
+                if (myPostIds.add(post.getId())) myPosts.add(post);
+            }
+            int added = myPosts.size() - start;
+            if (added > 0) postAdapter.notifyItemRangeInserted(start, added);
+        }
+
+        endReached = rawCount < PAGE_SIZE;
+        loadingPosts = false;
+
+        binding.progressMore.setVisibility(View.GONE);
+        binding.tvNoMyPosts.setVisibility(myPosts.isEmpty() ? View.VISIBLE : View.GONE);
+    }
+
+    private void finishLoadingWithMessage(String message) {
+        loadingPosts = false;
+        binding.progressMore.setVisibility(View.GONE);
+        binding.tvNoMyPosts.setVisibility(myPosts.isEmpty() ? View.VISIBLE : View.GONE);
+        showMessage(message);
+    }
+
+    private String buildPublicUrl(String path) {
+        if (path == null || path.trim().isEmpty()) {
+            return null;
+        }
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+            return path;
+        }
+
+        String cleanPath = path.startsWith("/") ? path.substring(1) : path;
+        if (cleanPath.startsWith(BUCKET + "/")) {
+            cleanPath = cleanPath.substring(BUCKET.length() + 1);
+        }
+
+        String[] parts = cleanPath.split("/");
+        StringBuilder encoded = new StringBuilder();
+
+        for (String part : parts) {
+            if (encoded.length() > 0) {
+                encoded.append("/");
+            }
+            try {
+                encoded.append(java.net.URLEncoder.encode(part, "UTF-8").replace("+", "%20"));
+            } catch (Exception e) {
+                encoded.append(part);
+            }
+        }
+
+        return SupabaseConfig.PROJECT_URL + "/storage/v1/object/public/"
+                + BUCKET + "/" + encoded;
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    // ------------------------------------------------------------------
+    // Your profile (name, field, links). Unchanged.
+    // ------------------------------------------------------------------
 
     private void openSettings() {
         Context c = getContext();
@@ -247,6 +459,13 @@ public class ProfileFragment extends Fragment {
                                                     ? "Field of study not provided"
                                                     : study);
 
+                                    // The "Get verified" button is only for people who are
+                                    // not verified yet. Verified users and admins never see it.
+                                    boolean alreadyVerified = type.equalsIgnoreCase("Verified")
+                                            || type.equalsIgnoreCase("Admin");
+                                    binding.btnVerificationStatus.setVisibility(
+                                            alreadyVerified ? View.GONE : View.VISIBLE);
+
                                     if (type.equalsIgnoreCase("Verified")) {
                                         binding.tvVerificationLabel.setText("Verified");
                                     } else if (type.equalsIgnoreCase("Admin")) {
@@ -318,6 +537,10 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        // Makes any answer that is still on its way get ignored.
+        generation++;
+        loadingPosts = false;
+        postAdapter = null;
         binding = null;
     }
 }

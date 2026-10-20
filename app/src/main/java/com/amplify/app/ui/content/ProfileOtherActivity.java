@@ -2,27 +2,32 @@ package com.amplify.app.ui.content;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.amplify.app.adapters.ProfilePostRowAdapter;
 import com.amplify.app.data.LinkUtils;
-import com.amplify.app.data.SessionManager;
-import com.amplify.app.databinding.ActivityProfileOtherBinding;
-import com.amplify.app.databinding.ItemPostBinding;
 import com.amplify.app.data.MessagingRepository;
+import com.amplify.app.data.SessionManager;
 import com.amplify.app.data.SupabaseApi;
+import com.amplify.app.databinding.ActivityProfileOtherBinding;
+import com.amplify.app.models.Post;
 import com.amplify.app.ui.messaging.ConversationActivity;
-import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -33,8 +38,8 @@ import okhttp3.Response;
 
 /**
  * Profile screen when viewing someone else (Use Case: View a User Profile).
- * Loads the profile and published posts of the user_id passed in the Intent,
- * and shows each post with the same card (item_post) used in the feed.
+ * Looks like your own profile: avatar and details, links, then a list of
+ * the person's published posts (picture on the right). Tapping a tile opens the full post.
  */
 public class ProfileOtherActivity extends AppCompatActivity {
 
@@ -44,12 +49,23 @@ public class ProfileOtherActivity extends AppCompatActivity {
             "sb_publishable_yoqGxzzEd6H2iRWyWckd-g_RkHgxhqC";
     private static final String BUCKET = "Amplify-media";
 
+    /** How many posts are loaded per page. */
+    private static final int PAGE_SIZE = 10;
+
     private ActivityProfileOtherBinding binding;
     private final OkHttpClient client = new OkHttpClient();
 
     private String userId;
     private String displayName = "Amplify user";
-    private boolean isVerified;
+
+    // ---- The list of this person's posts ----
+    private final List<Post> userPosts = new ArrayList<>();
+    private final Set<String> userPostIds = new HashSet<>();
+    private ProfilePostRowAdapter postAdapter;
+    private SupabaseApi api;
+
+    private boolean loadingPosts = false;
+    private boolean endReached = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +83,8 @@ public class ProfileOtherActivity extends AppCompatActivity {
             return;
         }
 
+        api = new SupabaseApi(this);
+
         // You can't message yourself, so hide the button on your own profile.
         String me = SessionManager.getUserId(this);
         if (me != null && me.equals(userId)) {
@@ -79,9 +97,151 @@ public class ProfileOtherActivity extends AppCompatActivity {
         LinkUtils.bindSocialButton(binding.btnGithub, null, "github.com", null);
         LinkUtils.bindSocialButton(binding.btnLinkedIn, null, "linkedin.com", null);
 
+        setUpPostGrid();
         loadProfile();
         loadPosts();
     }
+
+    // ------------------------------------------------------------------
+    // Posts: a list that loads more as you scroll down
+    // ------------------------------------------------------------------
+
+    private void setUpPostGrid() {
+        postAdapter = new ProfilePostRowAdapter(userPosts, post -> {
+            Intent intent = new Intent(this, ViewPostActivity.class);
+            intent.putExtra("post_id", post.getId());
+            intent.putExtra("access_token", getToken());
+            startActivity(intent);
+        });
+
+        binding.rvPosts.setLayoutManager(new LinearLayoutManager(this));
+        binding.rvPosts.setAdapter(postAdapter);
+
+        // When you get close to the bottom of the page, load the next posts.
+        binding.scrollProfile.setOnScrollChangeListener(
+                (NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldX, oldY) -> {
+                    View content = v.getChildAt(0);
+                    if (content == null) return;
+
+                    int distanceToBottom = content.getBottom() - (v.getHeight() + scrollY);
+                    if (distanceToBottom < dp(300)) {
+                        loadPosts();
+                    }
+                });
+    }
+
+    /** Loads the next page of this person's published posts. */
+    private void loadPosts() {
+        if (loadingPosts || endReached) return;
+
+        loadingPosts = true;
+        final int offset = userPosts.size();
+        binding.progressMore.setVisibility(View.VISIBLE);
+
+        String path = "/rest/v1/posts"
+                + "?select=id,user_id,title,caption,media_type,media_path,status,created_at"
+                + "&user_id=eq." + userId
+                + "&status=eq.published"
+                + "&order=created_at.desc"
+                + "&limit=" + PAGE_SIZE
+                + "&offset=" + offset;
+
+        api.get(path, new SupabaseApi.Callback<String>() {
+            @Override
+            public void onSuccess(String body) {
+                if (isFinishing() || isDestroyed()) return;
+
+                try {
+                    JSONArray rows = new JSONArray(body);
+                    int start = userPosts.size();
+
+                    for (int i = 0; i < rows.length(); i++) {
+                        JSONObject item = rows.optJSONObject(i);
+                        if (item == null) continue;
+
+                        String mediaType = item.optString("media_type", "");
+                        String mediaPath = item.optString("media_path", "");
+
+                        Post post = new Post(
+                                item.optString("id", ""),
+                                item.optString("user_id", ""),
+                                "", "", false, "",
+                                item.optString("title", "Untitled post"),
+                                item.optString("caption", ""),
+                                mediaType,
+                                "community",
+                                mediaType,
+                                mediaPath);
+
+                        String publicUrl = buildPublicUrl(mediaPath);
+                        if (publicUrl != null) post.setMediaUrl(publicUrl);
+
+                        if (userPostIds.add(post.getId())) userPosts.add(post);
+                    }
+
+                    int added = userPosts.size() - start;
+                    if (added > 0) postAdapter.notifyItemRangeInserted(start, added);
+
+                    endReached = rows.length() < PAGE_SIZE;
+                    loadingPosts = false;
+                    binding.progressMore.setVisibility(View.GONE);
+                    binding.tvNoPosts.setVisibility(
+                            userPosts.isEmpty() ? View.VISIBLE : View.GONE);
+
+                } catch (Exception e) {
+                    loadingPosts = false;
+                    binding.progressMore.setVisibility(View.GONE);
+                    showToast("Couldn't read posts.");
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                if (isFinishing() || isDestroyed()) return;
+                loadingPosts = false;
+                binding.progressMore.setVisibility(View.GONE);
+                showToast(message);
+            }
+        });
+    }
+
+    private String buildPublicUrl(String path) {
+        if (path == null || path.trim().isEmpty()) {
+            return null;
+        }
+        if (path.startsWith("http://") || path.startsWith("https://")) {
+            return path;
+        }
+
+        String cleanPath = path.startsWith("/") ? path.substring(1) : path;
+        if (cleanPath.startsWith(BUCKET + "/")) {
+            cleanPath = cleanPath.substring(BUCKET.length() + 1);
+        }
+
+        String[] parts = cleanPath.split("/");
+        StringBuilder encoded = new StringBuilder();
+
+        for (String part : parts) {
+            if (encoded.length() > 0) {
+                encoded.append("/");
+            }
+            try {
+                encoded.append(java.net.URLEncoder.encode(part, "UTF-8").replace("+", "%20"));
+            } catch (Exception e) {
+                encoded.append(part);
+            }
+        }
+
+        return SUPABASE_URL + "/storage/v1/object/public/" + BUCKET + "/" + encoded;
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
+    }
+
+    // ------------------------------------------------------------------
+    // Message button
+    // ------------------------------------------------------------------
 
     /** Finds (or creates) the private chat with this person and opens it. */
     private void startChat() {
@@ -114,6 +274,10 @@ public class ProfileOtherActivity extends AppCompatActivity {
                 }
         );
     }
+
+    // ------------------------------------------------------------------
+    // Profile details (name, field, links). Unchanged.
+    // ------------------------------------------------------------------
 
     private String getToken() {
         String token = SessionManager.getAccessToken(this);
@@ -195,7 +359,6 @@ public class ProfileOtherActivity extends AppCompatActivity {
                             : "Not verified";
 
                     displayName = finalName;
-                    isVerified = verified;
 
                     runOnUiThread(() -> {
                         binding.tvProfileName.setText(finalName);
@@ -216,97 +379,6 @@ public class ProfileOtherActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void loadPosts() {
-        HttpUrl base = HttpUrl.parse(SUPABASE_URL + "/rest/v1/posts");
-        if (base == null) return;
-
-        HttpUrl url = base.newBuilder()
-                .addQueryParameter("select",
-                        "id,title,caption,media_type,media_path")
-                .addQueryParameter("user_id", "eq." + userId)
-                .addQueryParameter("status", "eq.published")
-                .addQueryParameter("order", "created_at.desc")
-                .build();
-
-        client.newCall(authRequest(url).get().build()).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                showToast("Unable to load posts.");
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response)
-                    throws IOException {
-                String body;
-                int code;
-                try (Response res = response) {
-                    code = res.code();
-                    body = res.body() != null ? res.body().string() : "";
-                }
-
-                if (code < 200 || code >= 300) {
-                    showToast("Unable to load posts. HTTP " + code);
-                    return;
-                }
-
-                try {
-                    JSONArray arr = new JSONArray(body);
-                    runOnUiThread(() -> showPosts(arr));
-                } catch (Exception e) {
-                    showToast("Couldn't read posts.");
-                }
-            }
-        });
-    }
-
-    private void showPosts(JSONArray arr) {
-        binding.postsContainer.removeAllViews();
-
-        if (arr.length() == 0) {
-            binding.tvNoPosts.setVisibility(View.VISIBLE);
-            return;
-        }
-        binding.tvNoPosts.setVisibility(View.GONE);
-
-        for (int i = 0; i < arr.length(); i++) {
-            JSONObject p = arr.optJSONObject(i);
-            if (p == null) continue;
-
-            final String postId = p.optString("id", "");
-            String type = p.optString("media_type", "");
-            String path = p.optString("media_path", "");
-
-            ItemPostBinding item = ItemPostBinding.inflate(
-                    LayoutInflater.from(this), binding.postsContainer, false);
-
-            item.tvAuthorName.setText(displayName);
-            item.tvAvatar.setText(initials(displayName));
-            item.verifiedContainer.setVisibility(
-                    isVerified ? View.VISIBLE : View.GONE);
-            item.tvPostTitle.setText(p.optString("title", "Untitled post"));
-            item.tvPostBody.setText(p.optString("caption", ""));
-            item.tvTagOne.setText(type.isEmpty() ? "community" : type);
-            item.tvTagTwo.setText("community");
-
-            if (type.toLowerCase(Locale.ROOT).contains("image") && !path.isEmpty()) {
-                item.ivPostMedia.setVisibility(View.VISIBLE);
-                Glide.with(this)
-                        .load(SUPABASE_URL + "/storage/v1/object/public/"
-                                + BUCKET + "/" + path)
-                        .into(item.ivPostMedia);
-            }
-
-            item.getRoot().setOnClickListener(v -> {
-                Intent intent = new Intent(this, ViewPostActivity.class);
-                intent.putExtra("post_id", postId);
-                intent.putExtra("access_token", getToken());
-                startActivity(intent);
-            });
-
-            binding.postsContainer.addView(item.getRoot());
-        }
     }
 
     private String initials(String name) {

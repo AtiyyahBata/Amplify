@@ -1,21 +1,30 @@
 package com.amplify.app.adapters;
 
+import android.graphics.Color;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplify.app.R;
 import com.amplify.app.databinding.ItemPostBinding;
 import com.amplify.app.models.Post;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Feeds Post objects into the Home feed and (with minor reuse) anywhere else
  * a list of posts needs to be shown. Tapping a row fires the click listener
  * passed in from the fragment/activity, which decides where to navigate.
+ *
+ * Every card is the same size: fixed media box, title max 2 lines,
+ * description max 3 lines with "Read more" when it is cut off.
  */
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
@@ -60,24 +69,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             b.tvAuthorField.setVisibility(View.GONE);
         }
 
-        // Post media image
-        String mediaUrl = post.getMediaUrl();
-        if (mediaUrl != null && !mediaUrl.isEmpty()) {
-            b.ivPostMedia.setVisibility(View.VISIBLE);
-
-            Glide.with(b.ivPostMedia.getContext())
-                    .load(mediaUrl)
-                    .placeholder(android.R.color.darker_gray)
-                    .error(android.R.drawable.ic_menu_report_image)
-                    .centerCrop()
-                    .into(b.ivPostMedia);
-        } else {
-            Glide.with(b.ivPostMedia.getContext()).clear(b.ivPostMedia);
-            b.ivPostMedia.setImageDrawable(null);
-            b.ivPostMedia.setVisibility(View.GONE);
-        }
-
-        // Title
+        // Title (max 2 lines, set in the XML)
         String title = post.getTitle();
         if (title != null && !title.trim().isEmpty()) {
             b.tvPostTitle.setVisibility(View.VISIBLE);
@@ -86,13 +78,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             b.tvPostTitle.setVisibility(View.GONE);
         }
 
-        // Body / Caption
+        // Post media: whole picture visible inside a fixed-size box
+        bindMedia(b, post);
+
+        // Body / Caption (max 3 lines, set in the XML)
         String body = post.getBody();
         if (body != null && !body.trim().isEmpty()) {
             b.tvPostBody.setVisibility(View.VISIBLE);
             b.tvPostBody.setText(body);
+            showReadMoreIfCutOff(b, body);
         } else {
             b.tvPostBody.setVisibility(View.GONE);
+            b.tvReadMore.setVisibility(View.GONE);
         }
 
         // Tags
@@ -117,6 +114,62 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             if (listener != null) {
                 listener.onPostClick(post);
             }
+        });
+    }
+
+    private void bindMedia(ItemPostBinding b, Post post) {
+        ImageView iv = b.ivPostMedia;
+        String mediaUrl = post.getMediaUrl();
+
+        if (mediaUrl == null || mediaUrl.isEmpty()) {
+            Glide.with(iv.getContext()).clear(iv);
+            iv.setImageDrawable(null);
+            iv.setVisibility(View.GONE);
+            return;
+        }
+
+        iv.setVisibility(View.VISIBLE);
+
+        String type = post.getMediaType() == null
+                ? "" : post.getMediaType().toLowerCase(Locale.ROOT);
+
+        if (type.contains("video")) {
+            // A feed card can't grab a frame from a video link, so show a play box.
+            Glide.with(iv.getContext()).clear(iv);
+            iv.setBackgroundColor(Color.BLACK);
+            iv.setScaleType(ImageView.ScaleType.CENTER);
+            iv.setImageResource(android.R.drawable.ic_media_play);
+        } else {
+            iv.setBackgroundColor(ContextCompat.getColor(iv.getContext(), R.color.paper));
+            iv.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
+            Glide.with(iv.getContext())
+                    .load(mediaUrl)
+                    .placeholder(android.R.color.darker_gray)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .fitCenter()
+                    .into(iv);
+        }
+    }
+
+    /**
+     * Waits until the text has been laid out, then checks whether the last
+     * visible line ends in "...". If it does, "Read more" is shown.
+     * INVISIBLE (not GONE) keeps every card the same height.
+     */
+    private void showReadMoreIfCutOff(ItemPostBinding b, String body) {
+        b.tvReadMore.setVisibility(View.INVISIBLE);
+
+        b.tvPostBody.post(() -> {
+            Layout layout = b.tvPostBody.getLayout();
+            if (layout == null || layout.getLineCount() == 0) return;
+
+            // Guard against a recycled card getting an old result.
+            if (!body.equals(b.tvPostBody.getText().toString())) return;
+
+            int last = layout.getLineCount() - 1;
+            boolean cutOff = layout.getEllipsisCount(last) > 0;
+            b.tvReadMore.setVisibility(cutOff ? View.VISIBLE : View.INVISIBLE);
         });
     }
 

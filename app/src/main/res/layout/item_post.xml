@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- Creator information -->
+        <!-- 1. Creator information -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -85,40 +85,61 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Actual uploaded image -->
+        <!-- 2. Title (max 2 lines) -->
+        <TextView
+            android:id="@+id/tvPostTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="14dp"
+            android:layout_marginBottom="10dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/ink"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- 3. Image or video: fixed height, whole picture visible -->
         <ImageView
             android:id="@+id/ivPostMedia"
             android:layout_width="match_parent"
-            android:layout_height="230dp"
+            android:layout_height="240dp"
             android:background="@color/paper"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:contentDescription="Uploaded post image"
             android:visibility="gone" />
 
-        <!-- Post text -->
+        <!-- 4. Description, Read more and tags -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="14dp">
 
-            <TextView
-                android:id="@+id/tvPostTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/ink"
-                android:layout_marginBottom="6dp" />
-
+            <!-- Always reserves 3 lines so every card is the same size -->
             <TextView
                 android:id="@+id/tvPostBody"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textColor="@color/muted"
+                android:ellipsize="end"
                 android:lineSpacingMultiplier="1.2"
-                android:layout_marginBottom="12dp" />
+                android:maxLines="3"
+                android:minLines="3"
+                android:textColor="@color/muted"
+                android:textSize="13sp" />
+
+            <!-- Shown by PostAdapter only when the text is cut off -->
+            <TextView
+                android:id="@+id/tvReadMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="10dp"
+                android:text="Read more"
+                android:textColor="@color/accent"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
