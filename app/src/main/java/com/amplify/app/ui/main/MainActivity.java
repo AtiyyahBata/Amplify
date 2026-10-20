@@ -10,6 +10,7 @@ import com.amplify.app.R;
 import com.amplify.app.data.MessagingRealtime;
 import com.amplify.app.data.MessagingRepository;
 import com.amplify.app.data.SupabaseApi;
+import com.amplify.app.data.SystemMessageRepository;
 import com.amplify.app.databinding.ActivityMainBinding;
 import com.amplify.app.ui.main.home.HomeFragment;
 import com.amplify.app.ui.main.messages.MessagesFragment;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private MessagingRepository messagingRepository;
+    private SystemMessageRepository systemMessageRepository;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final Runnable refreshBadgeRunnable = this::refreshUnreadBadge;
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         messagingRepository = new MessagingRepository(this);
+        systemMessageRepository = new SystemMessageRepository(this);
 
         // Start on Home
         openFragment(new HomeFragment());
@@ -100,9 +103,23 @@ public class MainActivity extends AppCompatActivity {
     private void refreshUnreadBadge() {
         messagingRepository.loadUnreadTotal(new SupabaseApi.Callback<Integer>() {
             @Override
-            public void onSuccess(Integer count) {
+            public void onSuccess(Integer chatCount) {
                 if (isFinishing() || isDestroyed()) return;
-                showUnreadBadge(count);
+
+                // Add Lexi's unread messages to the chat count.
+                systemMessageRepository.loadUnreadCount(new SupabaseApi.Callback<Integer>() {
+                    @Override
+                    public void onSuccess(Integer lexiCount) {
+                        if (isFinishing() || isDestroyed()) return;
+                        showUnreadBadge(chatCount + lexiCount);
+                    }
+
+                    @Override
+                    public void onError(String message) {
+                        if (isFinishing() || isDestroyed()) return;
+                        showUnreadBadge(chatCount);
+                    }
+                });
             }
 
             @Override

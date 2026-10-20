@@ -168,7 +168,7 @@ public class AdminReportRepository {
         });
     }
 
-    private static String buildPublicUrl(String path) {
+    public static String buildPublicUrl(String path) {
         if (path == null || path.trim().isEmpty()) return null;
         if (path.startsWith("http://") || path.startsWith("https://")) return path;
 

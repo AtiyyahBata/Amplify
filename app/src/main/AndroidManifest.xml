@@ -44,6 +44,7 @@
 
         <activity android:name=".ui.messaging.NewMessageActivity" android:exported="false" />
         <activity android:name=".ui.messaging.ConversationActivity" android:exported="false" />
+        <activity android:name=".ui.messaging.LexiMessagesActivity" android:exported="false" />
 
         <activity android:name=".ui.settings.ProfileSettingsActivity" android:exported="false" />
         <activity android:name=".ui.settings.GetVerifiedActivity" android:exported="false" />

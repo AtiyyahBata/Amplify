@@ -1,5 +1,6 @@
 package com.amplify.app.ui.main.messages;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,9 +19,11 @@ import com.amplify.app.adapters.MessagePreviewAdapter;
 import com.amplify.app.data.MessagingRealtime;
 import com.amplify.app.data.MessagingRepository;
 import com.amplify.app.data.SupabaseApi;
+import com.amplify.app.data.SystemMessageRepository;
 import com.amplify.app.databinding.FragmentMessagesBinding;
 import com.amplify.app.models.MessagePreview;
 import com.amplify.app.ui.messaging.ConversationActivity;
+import com.amplify.app.ui.messaging.LexiMessagesActivity;
 import com.amplify.app.ui.messaging.NewMessageActivity;
 
 import org.json.JSONObject;
@@ -39,6 +42,7 @@ public class MessagesFragment extends Fragment {
     private FragmentMessagesBinding binding;
     private MessagePreviewAdapter adapter;
     private MessagingRepository repository;
+    private SystemMessageRepository systemRepository;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private int loadCounter = 0;
@@ -68,6 +72,7 @@ public class MessagesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         repository = new MessagingRepository(requireContext());
+        systemRepository = new SystemMessageRepository(requireContext());
 
         adapter = new MessagePreviewAdapter(null, preview ->
                 ConversationActivity.open(requireContext(), preview.getConversationId(),
@@ -79,6 +84,9 @@ public class MessagesFragment extends Fragment {
 
         binding.btnNewMessage.setOnClickListener(v ->
                 startActivity(new android.content.Intent(getActivity(), NewMessageActivity.class)));
+
+        binding.lexiRow.setOnClickListener(v ->
+                LexiMessagesActivity.open(requireContext()));
     }
 
     @Override
@@ -86,6 +94,7 @@ public class MessagesFragment extends Fragment {
         super.onStart();
         MessagingRealtime.get(requireContext()).addListener(realtimeListener);
         reload();
+        loadLexi();
     }
 
     @Override
@@ -115,6 +124,41 @@ public class MessagesFragment extends Fragment {
                 if (adapter.isEmpty()) {
                     showEmpty(loadedOnce ? EMPTY_TEXT : message);
                 }
+            }
+        });
+    }
+
+    /** Shows or hides the Lexi row, with its latest message and unread count. */
+    private void loadLexi() {
+        if (binding == null || !isAdded()) return;
+
+        systemRepository.loadSummary(new SupabaseApi.Callback<SystemMessageRepository.Summary>() {
+            @Override
+            public void onSuccess(SystemMessageRepository.Summary s) {
+                if (binding == null) return;
+
+                if (!s.hasAny) {
+                    binding.lexiRow.setVisibility(View.GONE);
+                    return;
+                }
+
+                binding.lexiRow.setVisibility(View.VISIBLE);
+                binding.tvLexiLastMessage.setText(s.preview);
+                binding.tvLexiTime.setText(s.timeAgo);
+
+                if (s.unread > 0) {
+                    binding.tvLexiUnread.setText(s.unread > 99 ? "99+" : String.valueOf(s.unread));
+                    binding.tvLexiUnread.setVisibility(View.VISIBLE);
+                    binding.tvLexiLastMessage.setTypeface(null, Typeface.BOLD);
+                } else {
+                    binding.tvLexiUnread.setVisibility(View.GONE);
+                    binding.tvLexiLastMessage.setTypeface(null, Typeface.NORMAL);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                // Keep whatever is on screen. It tries again next time the tab opens.
             }
         });
     }
