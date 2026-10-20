@@ -31,6 +31,36 @@ public final class PostShareMessage {
             }
         } catch (Exception ignored) {
         }
+
+        // Earlier app builds stored the post ID, media type, and URL in a marker line.
+        // Keep those existing chat messages renderable after upgrading to the JSON format.
+        String marker = "[AMPLIFY_POST:";
+        if (text.startsWith(marker)) {
+            int markerEnd = text.indexOf(']', marker.length());
+            if (markerEnd > marker.length()) {
+                try {
+                    String[] fields = text.substring(marker.length(), markerEnd)
+                            .split("\\|", -1);
+                    String body = text.substring(markerEnd + 1).trim();
+                    if (body.startsWith("\n")) body = body.substring(1);
+                    int nextLine = body.indexOf('\n');
+                    String title = nextLine < 0 ? body : body.substring(0, nextLine);
+                    String titlePrefix = "Shared a post: ";
+                    if (title.startsWith(titlePrefix)) {
+                        title = title.substring(titlePrefix.length());
+                    }
+
+                    JSONObject legacy = new JSONObject();
+                    legacy.put("type", "post_share");
+                    legacy.put("postId", fields[0]);
+                    legacy.put("title", title);
+                    legacy.put("mediaType", fields.length > 1 ? fields[1] : "");
+                    legacy.put("mediaUrl", fields.length > 2 ? fields[2] : "");
+                    return legacy;
+                } catch (JSONException ignored) {
+                }
+            }
+        }
         return null;
     }
 
