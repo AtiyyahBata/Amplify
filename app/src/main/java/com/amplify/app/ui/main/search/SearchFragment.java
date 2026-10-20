@@ -258,7 +258,7 @@ public class SearchFragment extends Fragment {
             throws Exception {
         HttpUrl url = HttpUrl.parse(SupabaseConfig.PROJECT_URL + "/rest/v1/profiles")
                 .newBuilder()
-                .addQueryParameter("select", "id,full_name,field_of_study")
+                .addQueryParameter("select", "id,full_name,field_of_study,avatar_url")
                 .addQueryParameter("or",
                         "(full_name.ilike.*" + term + "*,field_of_study.ilike.*" + term + "*)")
                 .addQueryParameter("order", "full_name.asc")
@@ -276,7 +276,8 @@ public class SearchFragment extends Fragment {
             if (id.isEmpty() || name.isEmpty()) continue;
             if (id.equals(myId)) continue;   // no need to find yourself
 
-            people.add(new PersonResult(id, name, o.optString("field_of_study", "")));
+            String avatarUrl = o.isNull("avatar_url") ? "" : o.optString("avatar_url", "");
+            people.add(new PersonResult(id, name, o.optString("field_of_study", ""), avatarUrl));
         }
         return people;
     }

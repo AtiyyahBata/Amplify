@@ -5,6 +5,7 @@ public class MessagePreview {
 
     private String name;
     private String initials;
+    private String avatarUrl;
     private String lastMessage;
     private String timeAgo;
     private String conversationId;
@@ -13,13 +14,19 @@ public class MessagePreview {
 
     /** Old constructor, kept so any leftover dummy data still compiles. */
     public MessagePreview(String name, String initials, String lastMessage, String timeAgo) {
-        this(name, initials, lastMessage, timeAgo, null, null, 0);
+        this(name, initials, "", lastMessage, timeAgo, null, null, 0);
     }
 
     public MessagePreview(String name, String initials, String lastMessage, String timeAgo,
                           String conversationId, String otherUserId, int unreadCount) {
+        this(name, initials, "", lastMessage, timeAgo, conversationId, otherUserId, unreadCount);
+    }
+
+    public MessagePreview(String name, String initials, String avatarUrl, String lastMessage, String timeAgo,
+                          String conversationId, String otherUserId, int unreadCount) {
         this.name = name;
         this.initials = initials;
+        this.avatarUrl = avatarUrl != null ? avatarUrl : "";
         this.lastMessage = lastMessage;
         this.timeAgo = timeAgo;
         this.conversationId = conversationId;
@@ -29,6 +36,7 @@ public class MessagePreview {
 
     public String getName() { return name; }
     public String getInitials() { return initials; }
+    public String getAvatarUrl() { return avatarUrl != null ? avatarUrl : ""; }
     public String getLastMessage() { return lastMessage; }
     public String getTimeAgo() { return timeAgo; }
     public String getConversationId() { return conversationId; }

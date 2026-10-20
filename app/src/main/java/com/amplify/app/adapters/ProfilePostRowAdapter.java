@@ -3,7 +3,8 @@ package com.amplify.app.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.PopupMenu;
+
+import androidx.appcompat.widget.PopupMenu;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -13,7 +14,6 @@ import com.amplify.app.R;
 import com.amplify.app.databinding.ItemProfilePostRowBinding;
 import com.amplify.app.models.Post;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 import java.util.Locale;
@@ -32,20 +32,23 @@ public class ProfilePostRowAdapter
         void onPostClick(Post post);
     }
 
-    public interface OnPostDeleteListener {
-        void onDeletePost(Post post);
+    /** Called after you pick "Delete post" from the three-dots menu. */
+    public interface OnDeleteListener {
+        void onDeleteRequested(Post post);
     }
 
     private final List<Post> posts;
     private final OnPostClickListener listener;
-    private final OnPostDeleteListener deleteListener;
+    private final OnDeleteListener deleteListener;
 
+    /** Other people's profiles: no three dots. */
     public ProfilePostRowAdapter(List<Post> posts, OnPostClickListener listener) {
         this(posts, listener, null);
     }
 
+    /** Your own profile: pass a delete listener to show the three dots. */
     public ProfilePostRowAdapter(List<Post> posts, OnPostClickListener listener,
-                                 OnPostDeleteListener deleteListener) {
+                                 OnDeleteListener deleteListener) {
         this.posts = posts;
         this.listener = listener;
         this.deleteListener = deleteListener;
@@ -103,14 +106,6 @@ public class ProfilePostRowAdapter
             b.cardRowMedia.setCardBackgroundColor(
                     ContextCompat.getColor(b.getRoot().getContext(), R.color.ink));
             b.ivRowPlay.setVisibility(View.VISIBLE);
-            Glide.with(b.ivRowMedia.getContext())
-                    .asBitmap()
-                    .load(url)
-                    .apply(new RequestOptions().frame(1_000_000))
-                    .centerCrop()
-                    .placeholder(R.color.ink)
-                    .error(R.color.ink)
-                    .into(b.ivRowMedia);
 
         } else {
             b.cardRowMedia.setVisibility(View.GONE);
@@ -119,16 +114,22 @@ public class ProfilePostRowAdapter
         b.getRoot().setOnClickListener(v -> {
             if (listener != null) listener.onPostClick(post);
         });
-        b.btnRowOptions.setOnClickListener(v -> {
-            PopupMenu menu = new PopupMenu(v.getContext(), b.btnRowOptions);
-            menu.getMenu().add("Delete post");
-            menu.setOnMenuItemClickListener(item -> {
-                if (deleteListener != null) deleteListener.onDeletePost(post);
-                return true;
+
+        // Three dots (own profile only)
+        if (deleteListener != null) {
+            b.btnRowMore.setVisibility(View.VISIBLE);
+            b.btnRowMore.setOnClickListener(v -> {
+                PopupMenu popup = new PopupMenu(v.getContext(), v);
+                popup.getMenu().add(0, 1, 0, "Delete post");
+                popup.setOnMenuItemClickListener(item -> {
+                    deleteListener.onDeleteRequested(post);
+                    return true;
+                });
+                popup.show();
             });
-            menu.show();
-        });
-        b.btnRowOptions.setVisibility(deleteListener == null ? View.GONE : View.VISIBLE);
+        } else {
+            b.btnRowMore.setVisibility(View.GONE);
+        }
     }
 
     @Override

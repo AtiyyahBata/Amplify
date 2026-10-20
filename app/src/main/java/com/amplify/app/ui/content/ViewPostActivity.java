@@ -24,10 +24,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import com.amplify.app.R;
 
+import com.amplify.app.data.AvatarLoader;
 import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityViewPostBinding;
 import com.amplify.app.databinding.ItemCommentBinding;
 import com.amplify.app.models.Comment;
+import com.amplify.app.models.PersonResult;
 import com.amplify.app.data.MessagingRepository;
 import com.amplify.app.data.PostShareMessage;
 import com.amplify.app.data.SupabaseApi;
@@ -86,6 +88,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
     private boolean isVerifiedCreator;
     private String mediaUrl;
+    private String postMediaPath;
     private String postTitle;
     private String postMediaType;
 
@@ -160,6 +163,11 @@ public class ViewPostActivity extends AppCompatActivity {
     private void showPostOptionsMenu(View anchor) {
         PopupMenu popup = new PopupMenu(this, anchor);
         popup.getMenuInflater().inflate(R.menu.menu_post_options, popup.getMenu());
+
+        boolean mine = creatorUserId != null && creatorUserId.equals(currentUserId);
+        popup.getMenu().findItem(R.id.action_report_post).setVisible(!mine);
+        popup.getMenu().findItem(R.id.action_delete_post).setVisible(mine);
+
         popup.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.action_share_post) {
                 onSharePostClicked();
@@ -167,6 +175,10 @@ public class ViewPostActivity extends AppCompatActivity {
             }
             if (item.getItemId() == R.id.action_report_post) {
                 onReportPostClicked();
+                return true;
+            }
+            if (item.getItemId() == R.id.action_delete_post) {
+                PostDeleter.confirmAndDelete(this, postId, postMediaPath, this::finish);
                 return true;
             }
             return false;
@@ -330,12 +342,16 @@ public class ViewPostActivity extends AppCompatActivity {
                     String caption = post.optString("caption", "");
                     String type = post.optString("media_type", "");
                     String path = post.optString("media_path", "");
+                    postMediaPath = path;
 
                     postMediaType = type;
                     mediaUrl = buildPublicUrl(path);
                     postTitle = title;
 
                     runOnUiThread(() -> {
+                        boolean mine = creatorUserId != null && creatorUserId.equals(currentUserId);
+                        binding.btnMessageCreator.setVisibility(mine ? View.GONE : View.VISIBLE);
+
                         binding.tvPostTitle.setText(title);
                         binding.tvPostBody.setText(caption);
 
@@ -374,7 +390,7 @@ public class ViewPostActivity extends AppCompatActivity {
         HttpUrl url = baseUrl.newBuilder()
                 .addQueryParameter(
                         "select",
-                        "id,full_name,user_type,field_of_study"
+                        "id,full_name,user_type,field_of_study,avatar_url"
                 )
                 .addQueryParameter("id", "eq." + userId)
                 .build();
@@ -430,6 +446,7 @@ public class ViewPostActivity extends AppCompatActivity {
                     }
 
                     String userType = profile.optString("user_type", "");
+                    String avatarUrl = profile.isNull("avatar_url") ? "" : profile.optString("avatar_url", "");
 
                     boolean verified =
                             "Verified".equalsIgnoreCase(userType);
@@ -445,6 +462,7 @@ public class ViewPostActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         binding.tvAuthorName.setText(finalName);
                         binding.tvAvatar.setText(initials);
+                        AvatarLoader.bind(avatarUrl, binding.cardAvatar, binding.ivAvatar);
 
                         isVerifiedCreator = verified;
 
@@ -767,7 +785,7 @@ public class ViewPostActivity extends AppCompatActivity {
         }
 
         HttpUrl url = baseUrl.newBuilder()
-                .addQueryParameter("select", "id,full_name")
+                .addQueryParameter("select", "id,full_name,avatar_url")
                 .addQueryParameter("id", ids.toString())
                 .build();
 
@@ -799,6 +817,8 @@ public class ViewPostActivity extends AppCompatActivity {
                             : "";
                 }
 
+                Map<String, String> userAvatars = new HashMap<>();
+
                 if (code >= 200 && code < 300) {
                     try {
                         JSONArray profiles = new JSONArray(body);
@@ -810,10 +830,12 @@ public class ViewPostActivity extends AppCompatActivity {
                             String name = profile.optString(
                                     "full_name", "Amplify user"
                             );
+                            String avatar = profile.isNull("avatar_url") ? "" : profile.optString("avatar_url", "");
 
                             if (!name.trim().isEmpty()) {
                                 userNames.put(id, name);
                             }
+                            userAvatars.put(id, avatar);
                         }
                     } catch (Exception ignored) {
                         // Display comments with fallback names.
@@ -826,12 +848,16 @@ public class ViewPostActivity extends AppCompatActivity {
                     String name = userNames.getOrDefault(
                             comment.getUserId(), "Amplify user"
                     );
+                    String avatarUrl = userAvatars.getOrDefault(
+                            comment.getUserId(), ""
+                    );
 
                     namedComments.add(new Comment(
                             comment.getId(),
                             comment.getPostId(),
                             comment.getUserId(),
                             name,
+                            avatarUrl,
                             comment.getBody(),
                             comment.getCreatedAt()
                     ));
@@ -873,6 +899,10 @@ public class ViewPostActivity extends AppCompatActivity {
                 itemBinding.tvCommentAuthor.setText(
                         comment.getAuthorName()
                 );
+
+                String initials = PersonResult.initialsOf(comment.getAuthorName());
+                itemBinding.tvCommentInitials.setText(initials);
+                AvatarLoader.bind(comment.getAuthorAvatarUrl(), itemBinding.cardCommentAvatar, itemBinding.ivCommentAvatar);
 
                 itemBinding.tvCommentTime.setText(
                         formatTimestamp(comment.getCreatedAt())

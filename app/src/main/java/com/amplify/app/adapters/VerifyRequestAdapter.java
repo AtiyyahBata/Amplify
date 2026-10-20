@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplify.app.data.AvatarLoader;
 import com.amplify.app.databinding.ItemVerifyRequestBinding;
 import com.amplify.app.models.VerifyRequest;
 
@@ -51,6 +52,7 @@ public class VerifyRequestAdapter
         VerifyRequest request = requests.get(position);
 
         holder.binding.tvAvatar.setText(request.getInitials());
+        AvatarLoader.bind(request.getAvatarUrl(), holder.binding.cardAvatar, holder.binding.ivAvatar);
         holder.binding.tvRequestLabel.setText(
                 request.getUserName() + " — " + request.getUniversity());
         holder.binding.tvRequestMeta.setText(request.getMetaText());

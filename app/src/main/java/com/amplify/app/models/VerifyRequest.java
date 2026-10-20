@@ -21,6 +21,7 @@ public class VerifyRequest {
     private String id = "";
     private String userId = "";
     private String email = "";
+    private String avatarUrl = "";
     private String reason = "";
     private String university = "";
     private String certificatePath = "";
@@ -41,11 +42,20 @@ public class VerifyRequest {
                          String university, String reason, String certificatePath,
                          String status, String adminNote, boolean blocked,
                          long createdAtMillis, long reviewedAtMillis) {
+        this(id, userId, userName, email, "", university, reason, certificatePath,
+                status, adminNote, blocked, createdAtMillis, reviewedAtMillis);
+    }
+
+    public VerifyRequest(String id, String userId, String userName, String email,
+                         String avatarUrl, String university, String reason,
+                         String certificatePath, String status, String adminNote,
+                         boolean blocked, long createdAtMillis, long reviewedAtMillis) {
         this.id = id;
         this.userId = userId;
         this.userName = userName;
         this.initials = makeInitials(userName);
         this.email = email;
+        this.avatarUrl = avatarUrl != null ? avatarUrl : "";
         this.university = university;
         this.documentLabel = university;
         this.reason = reason;
@@ -66,6 +76,7 @@ public class VerifyRequest {
     public String getId() { return id; }
     public String getUserId() { return userId; }
     public String getEmail() { return email; }
+    public String getAvatarUrl() { return avatarUrl != null ? avatarUrl : ""; }
     public String getReason() { return reason; }
     public String getUniversity() { return university; }
     public String getCertificatePath() { return certificatePath; }

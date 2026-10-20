@@ -271,7 +271,7 @@ public class HomeFragment extends Fragment {
         url = url.newBuilder()
                 .addQueryParameter(
                         "select",
-                        "id,full_name,user_type,field_of_study")
+                        "id,full_name,user_type,field_of_study,avatar_url")
                 .addQueryParameter("id", filter.toString())
                 .build();
 
@@ -340,6 +340,8 @@ public class HomeFragment extends Fragment {
                         String field = profile == null
                                 ? "" : profile.optString("field_of_study", "");
 
+                        String avatarUrl = profile == null ? "" : (profile.isNull("avatar_url") ? "" : profile.optString("avatar_url", ""));
+
                         String initials = makeInitials(name);
 
                         String title = item.optString(
@@ -366,6 +368,8 @@ public class HomeFragment extends Fragment {
                                 mediaType,
                                 mediaPath
                         );
+
+                        post.setAuthorAvatarUrl(avatarUrl);
 
                         // Build and set the public URL for the post's picture or video
                         String publicUrl = buildPublicUrl(mediaPath);

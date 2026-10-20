@@ -44,7 +44,7 @@ public class AdminVerificationRepository {
         // (the table has two links to profiles, so we say which one).
         String path = "/rest/v1/verification_requests"
                 + "?select=id,user_id,reason,university,certificate_path,status,"
-                + "admin_note,blocked,created_at,reviewed_at,profiles!user_id(full_name,email)"
+                + "admin_note,blocked,created_at,reviewed_at,profiles!user_id(full_name,email,avatar_url)"
                 + "&status=eq." + status
                 + "&order=" + order
                 + "&limit=100";
@@ -78,12 +78,15 @@ public class AdminVerificationRepository {
             if (name.trim().isEmpty()) name = "Unknown user";
             String email = (profile != null && !profile.isNull("email"))
                     ? profile.optString("email", "") : "";
+            String avatarUrl = (profile != null && !profile.isNull("avatar_url"))
+                    ? profile.optString("avatar_url", "") : "";
 
             list.add(new VerifyRequest(
                     row.optString("id", ""),
                     row.optString("user_id", ""),
                     name.trim(),
                     email,
+                    avatarUrl,
                     row.optString("university", ""),
                     row.optString("reason", ""),
                     row.optString("certificate_path", ""),

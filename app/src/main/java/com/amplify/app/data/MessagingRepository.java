@@ -181,7 +181,7 @@ public class MessagingRepository {
             for (int i = 0; i < rows.length(); i++) {
                 JSONObject r = rows.getJSONObject(i);
                 out.add(new PersonResult(str(r, "id"), str(r, "full_name"),
-                        str(r, "field_of_study")));
+                        str(r, "field_of_study"), str(r, "avatar_url")));
             }
             return out;
         }, callback);
@@ -249,9 +249,13 @@ public class MessagingRepository {
                 preview = preview.replace('\n', ' ');
 
                 long when = parseTime(lastAt);
+                String avatarUrl = str(r, "other_avatar_url");
+                if (avatarUrl == null || avatarUrl.isEmpty()) {
+                    avatarUrl = str(r, "avatar_url");
+                }
                 Row row = new Row();
                 row.sortKey = when;
-                row.preview = new MessagePreview(name, PersonResult.initialsOf(name), preview,
+                row.preview = new MessagePreview(name, PersonResult.initialsOf(name), avatarUrl, preview,
                         timeAgo(when, now), convId, otherId,
                         (int) Math.min(r.optLong("unread_count", 0), 999));
                 list.add(row);

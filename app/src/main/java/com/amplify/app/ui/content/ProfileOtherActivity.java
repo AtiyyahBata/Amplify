@@ -11,6 +11,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.amplify.app.adapters.ProfilePostRowAdapter;
+import com.amplify.app.data.AvatarLoader;
 import com.amplify.app.data.LinkUtils;
 import com.amplify.app.data.MessagingRepository;
 import com.amplify.app.data.SessionManager;
@@ -306,7 +307,7 @@ public class ProfileOtherActivity extends AppCompatActivity {
 
         HttpUrl url = base.newBuilder()
                 .addQueryParameter("select",
-                        "id,full_name,field_of_study,user_type,github_url,linkedin_url")
+                        "id,full_name,field_of_study,user_type,github_url,linkedin_url,avatar_url")
                 .addQueryParameter("id", "eq." + userId)
                 .build();
 
@@ -351,6 +352,8 @@ public class ProfileOtherActivity extends AppCompatActivity {
                     final String linkedin = p.isNull("linkedin_url")
                             ? "" : p.optString("linkedin_url", "");
                     String type = p.optString("user_type", "").trim();
+                    final String avatar = p.isNull("avatar_url")
+                            ? "" : p.optString("avatar_url", "");
 
                     final String finalName = name;
                     final boolean verified = "Verified".equalsIgnoreCase(type);
@@ -363,6 +366,8 @@ public class ProfileOtherActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         binding.tvProfileName.setText(finalName);
                         binding.tvProfileInitials.setText(initials(finalName));
+                        AvatarLoader.bind(avatar, binding.cardProfileAvatar,
+                                binding.ivProfileAvatar);
                         binding.tvFieldOfStudy.setText(study.isEmpty()
                                 ? "Field of study not provided" : study);
                         binding.tvVerificationLabel.setText(label);

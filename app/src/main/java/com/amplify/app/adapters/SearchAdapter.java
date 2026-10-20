@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplify.app.data.AvatarLoader;
 import com.amplify.app.databinding.ItemPersonBinding;
 import com.amplify.app.databinding.ItemSearchHeaderBinding;
 import com.amplify.app.databinding.ItemSearchResultBinding;
@@ -122,6 +123,7 @@ public class SearchAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             PersonResult p = (PersonResult) row;
             ItemPersonBinding b = ((PersonHolder) holder).binding;
             b.tvPersonAvatar.setText(p.getInitials());
+            AvatarLoader.bind(p.getAvatarUrl(), b.cardPersonAvatar, b.ivPersonAvatar);
             b.tvPersonName.setText(p.getFullName());
             b.tvPersonField.setText(p.getFieldOfStudy());
             b.tvPersonField.setVisibility(

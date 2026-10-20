@@ -6,11 +6,17 @@ public class PersonResult {
     private final String id;
     private final String fullName;
     private final String fieldOfStudy;
+    private final String avatarUrl;
 
     public PersonResult(String id, String fullName, String fieldOfStudy) {
+        this(id, fullName, fieldOfStudy, "");
+    }
+
+    public PersonResult(String id, String fullName, String fieldOfStudy, String avatarUrl) {
         this.id = id;
         this.fullName = fullName == null ? "" : fullName;
         this.fieldOfStudy = fieldOfStudy == null ? "" : fieldOfStudy;
+        this.avatarUrl = avatarUrl == null ? "" : avatarUrl;
     }
 
     public String getId() { return id; }
@@ -18,6 +24,8 @@ public class PersonResult {
     public String getFullName() { return fullName; }
 
     public String getFieldOfStudy() { return fieldOfStudy; }
+
+    public String getAvatarUrl() { return avatarUrl; }
 
     public String getInitials() { return initialsOf(fullName); }
 

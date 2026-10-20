@@ -16,14 +16,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.amplify.app.adapters.DirectMessageAdapter;
+import com.amplify.app.data.AvatarLoader;
 import com.amplify.app.data.MessagingRealtime;
 import com.amplify.app.data.MessagingRepository;
 import com.amplify.app.data.SessionManager;
 import com.amplify.app.data.SupabaseApi;
+import com.amplify.app.data.SupabaseConfig;
 import com.amplify.app.databinding.ActivityConversationBinding;
 import com.amplify.app.models.DirectMessage;
 import com.amplify.app.models.PersonResult;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -112,6 +115,7 @@ public class ConversationActivity extends AppCompatActivity {
 
         binding.tvContactName.setText(otherName);
         binding.tvAvatar.setText(PersonResult.initialsOf(otherName));
+        loadOtherUserProfile();
         binding.btnBack.setOnClickListener(v -> finish());
         binding.btnChatMenu.setOnClickListener(this::showMenu);
 
@@ -387,6 +391,31 @@ public class ConversationActivity extends AppCompatActivity {
                                 }))
                 .setNegativeButton("Cancel", null)
                 .show();
+    }
+
+    private void loadOtherUserProfile() {
+        if (otherUserId == null || otherUserId.isEmpty()) return;
+        SupabaseApi api = new SupabaseApi(this);
+        String url = SupabaseConfig.PROJECT_URL + "/rest/v1/profiles?select=avatar_url&id=eq." + otherUserId;
+        api.get(url, new SupabaseApi.Callback<String>() {
+            @Override
+            public void onSuccess(String body) {
+                if (isFinishing()) return;
+                try {
+                    JSONArray arr = new JSONArray(body);
+                    if (arr.length() > 0) {
+                        JSONObject obj = arr.getJSONObject(0);
+                        String avatarUrl = obj.isNull("avatar_url") ? "" : obj.optString("avatar_url", "");
+                        runOnUiThread(() -> {
+                            AvatarLoader.bind(avatarUrl, binding.cardAvatar, binding.ivAvatar);
+                        });
+                    }
+                } catch (Exception ignored) {}
+            }
+
+            @Override
+            public void onError(String message) {}
+        });
     }
 
     private void showMenu(View anchor) {

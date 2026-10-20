@@ -16,6 +16,7 @@ public class Post {
     private String mediaType;
     private String mediaPath;
     private String mediaUrl;
+    private String authorAvatarUrl;
 
     // Keep compatibility with DummyData.java.
     public Post(String authorName, String authorInitials,
@@ -57,8 +58,13 @@ public class Post {
     public String getMediaType() { return mediaType; }
     public String getMediaPath() { return mediaPath; }
     public String getMediaUrl() { return mediaUrl; }
+    public String getAuthorAvatarUrl() { return authorAvatarUrl; }
 
     public void setMediaUrl(String mediaUrl) {
         this.mediaUrl = mediaUrl;
+    }
+
+    public void setAuthorAvatarUrl(String authorAvatarUrl) {
+        this.authorAvatarUrl = authorAvatarUrl;
     }
 }

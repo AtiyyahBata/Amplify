@@ -8,6 +8,7 @@ import android.graphics.Typeface;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplify.app.data.AvatarLoader;
 import com.amplify.app.databinding.ItemMessagePreviewBinding;
 import com.amplify.app.models.MessagePreview;
 
@@ -60,6 +61,7 @@ public class MessagePreviewAdapter extends RecyclerView.Adapter<MessagePreviewAd
     public void onBindViewHolder(@NonNull PreviewViewHolder holder, int position) {
         MessagePreview preview = conversations.get(position);
         holder.binding.tvAvatar.setText(preview.getInitials());
+        AvatarLoader.bind(preview.getAvatarUrl(), holder.binding.cardAvatar, holder.binding.ivAvatar);
         holder.binding.tvName.setText(preview.getName());
         holder.binding.tvLastMessage.setText(preview.getLastMessage());
         holder.binding.tvTime.setText(preview.getTimeAgo());

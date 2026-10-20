@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amplify.app.R;
+import com.amplify.app.data.AvatarLoader;
 import com.amplify.app.databinding.ItemPostBinding;
 import com.amplify.app.models.Post;
 import com.bumptech.glide.Glide;
@@ -56,6 +57,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // Creator avatar initials and name
         b.tvAvatar.setText(post.getAuthorInitials() != null ? post.getAuthorInitials() : "");
+        AvatarLoader.bind(post.getAuthorAvatarUrl(), b.cardAvatar, b.ivAvatar);
         b.tvAuthorName.setText(post.getAuthorName() != null ? post.getAuthorName() : "");
 
         // Verified status

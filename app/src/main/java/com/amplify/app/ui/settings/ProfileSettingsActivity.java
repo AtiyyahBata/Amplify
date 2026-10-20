@@ -1,14 +1,19 @@
 package com.amplify.app.ui.settings;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.amplify.app.data.AccountRepository;
+import com.amplify.app.data.AvatarLoader;
+import com.amplify.app.data.AvatarRepository;
 import com.amplify.app.data.LinkUtils;
 import com.amplify.app.data.SessionManager;
 import com.amplify.app.data.SupabaseApi;
@@ -37,6 +42,12 @@ public class ProfileSettingsActivity extends AppCompatActivity {
     private AccountRepository repo;
     private AccountRepository.Account account; // null until the first load finishes
 
+    // Profile photo
+    private AvatarRepository avatarRepo;
+    private ActivityResultLauncher<String> pickPhoto;
+    private String currentName = "";
+    private String currentAvatarUrl = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +64,23 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         binding.btnLinkGithub.setOnClickListener(v -> onGithubClicked());
         binding.btnLinkLinkedin.setOnClickListener(v -> onLinkedinClicked());
         binding.btnLogOut.setOnClickListener(v -> confirmLogOut());
+
+        // Profile photo: the system picker needs no storage permission.
+        avatarRepo = new AvatarRepository(this);
+        pickPhoto = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) uploadPhoto(uri);
+                });
+        binding.btnChangePhoto.setOnClickListener(v -> pickPhoto.launch("image/*"));
+        binding.btnRemovePhoto.setOnClickListener(v -> confirmRemovePhoto());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         loadAccount();
+        loadPhoto();
     }
 
     private boolean alive() {
@@ -244,6 +266,64 @@ public class ProfileSettingsActivity extends AppCompatActivity {
         repo.removeLinkedin(ui(
                 ok -> loadAccount(),
                 () -> binding.btnLinkLinkedin.setEnabled(true)));
+    }
+
+    // ------------------------------------------------------------------
+    // Profile photo
+    // ------------------------------------------------------------------
+
+    private void loadPhoto() {
+        avatarRepo.fetch(ui(info -> {
+            currentName = info[0];
+            currentAvatarUrl = info[1];
+            showPhoto();
+        }, null));
+    }
+
+    private void showPhoto() {
+        binding.tvSettingsInitials.setText(initialsOf(currentName));
+        AvatarLoader.bind(currentAvatarUrl, binding.cardSettingsAvatar, binding.ivSettingsAvatar);
+
+        boolean has = !currentAvatarUrl.isEmpty();
+        binding.btnChangePhoto.setText(has ? "Change photo" : "Add photo");
+        binding.btnRemovePhoto.setVisibility(has
+                ? android.view.View.VISIBLE : android.view.View.GONE);
+    }
+
+    private void uploadPhoto(Uri uri) {
+        binding.btnChangePhoto.setEnabled(false);
+        binding.btnChangePhoto.setText("Uploading…");
+        avatarRepo.upload(uri, ui(url -> {
+            currentAvatarUrl = url;
+            showPhoto();
+            toast("Profile photo updated.");
+        }, () -> {
+            binding.btnChangePhoto.setEnabled(true);
+            showPhoto();
+        }));
+    }
+
+    private void confirmRemovePhoto() {
+        new AlertDialog.Builder(this)
+                .setTitle("Remove profile photo?")
+                .setMessage("Your initials will show instead.")
+                .setPositiveButton("Remove", (dialog, which) -> {
+                    binding.btnRemovePhoto.setEnabled(false);
+                    avatarRepo.remove(ui(ok -> {
+                        currentAvatarUrl = "";
+                        showPhoto();
+                    }, () -> binding.btnRemovePhoto.setEnabled(true)));
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private String initialsOf(String name) {
+        if (name == null || name.trim().isEmpty()) return "U";
+        String[] parts = name.trim().split("\\s+");
+        if (parts.length == 1) return parts[0].substring(0, 1).toUpperCase();
+        return (parts[0].substring(0, 1) + parts[parts.length - 1].substring(0, 1))
+                .toUpperCase();
     }
 
     // ------------------------------------------------------------------

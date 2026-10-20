@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.amplify.app.data.AvatarLoader;
 import com.amplify.app.databinding.ItemPersonBinding;
 import com.amplify.app.models.PersonResult;
 
@@ -43,6 +44,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.Holder> {
     public void onBindViewHolder(@NonNull Holder holder, int position) {
         PersonResult p = people.get(position);
         holder.binding.tvPersonAvatar.setText(p.getInitials());
+        AvatarLoader.bind(p.getAvatarUrl(), holder.binding.cardPersonAvatar, holder.binding.ivPersonAvatar);
         holder.binding.tvPersonName.setText(p.getFullName());
         holder.binding.tvPersonField.setText(p.getFieldOfStudy());
         holder.binding.tvPersonField.setVisibility(
