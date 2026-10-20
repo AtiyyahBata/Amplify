@@ -5,8 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="start"
-    android:paddingTop="3dp"
-    android:paddingBottom="3dp">
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardDmPost"
@@ -73,7 +73,7 @@
         android:id="@+id/tvDmMeta"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="3dp"
         android:layout_marginStart="4dp"
         android:textColor="@color/muted"
         android:textSize="10.5sp" />
