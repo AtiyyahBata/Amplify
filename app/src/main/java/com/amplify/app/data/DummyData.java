@@ -4,7 +4,7 @@ import com.amplify.app.models.ChatMessage;
 import com.amplify.app.models.Comment;
 import com.amplify.app.models.MessagePreview;
 import com.amplify.app.models.Post;
-import com.amplify.app.models.Report;
+
 import com.amplify.app.models.SearchResult;
 import com.amplify.app.models.VerifyRequest;
 
@@ -82,10 +82,5 @@ public class DummyData {
         return list;
     }
 
-    public static List<Report> getOpenReports() {
-        List<Report> list = new ArrayList<>();
-        list.add(new Report("Post flagged: \"Quick JS trick\"", "Reported for: misleading content", "Remove post"));
-        list.add(new Report("User flagged: @coder_x99", "Reported for: spam messages", "Suspend user"));
-        return list;
-    }
+
 }

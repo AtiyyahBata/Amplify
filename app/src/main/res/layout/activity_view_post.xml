@@ -94,6 +94,15 @@
                     android:text="Message"
                     android:textSize="12sp" />
 
+                <ImageButton
+                    android:id="@+id/btnPostOptions"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="4dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="More options"
+                    android:src="@drawable/ic_more_vert" />
+
             </LinearLayout>
 
             <!-- Post title -->

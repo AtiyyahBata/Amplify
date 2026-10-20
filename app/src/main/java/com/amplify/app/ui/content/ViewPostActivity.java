@@ -21,6 +21,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
+import com.amplify.app.R;
 
 import com.amplify.app.data.SessionManager;
 import com.amplify.app.databinding.ActivityViewPostBinding;
@@ -119,6 +121,8 @@ public class ViewPostActivity extends AppCompatActivity {
             startChatWithCreator();
         });
 
+        binding.btnPostOptions.setOnClickListener(v -> showPostOptionsMenu(v));
+
         binding.btnSubmitComment.setOnClickListener(v -> submitComment());
 
         String token = getAccessToken();
@@ -146,6 +150,37 @@ public class ViewPostActivity extends AppCompatActivity {
                 "app_prefs",
                 Context.MODE_PRIVATE
         ).getString("access_token", "");
+    }
+
+    /** Opens the small ⋮ menu under the button. */
+    private void showPostOptionsMenu(View anchor) {
+        PopupMenu popup = new PopupMenu(this, anchor);
+        popup.getMenuInflater().inflate(R.menu.menu_post_options, popup.getMenu());
+        popup.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_report_post) {
+                onReportPostClicked();
+                return true;
+            }
+            return false;
+        });
+        popup.show();
+    }
+
+    /** Checks the post is ready, then (in the next step) opens the report form. */
+    private void onReportPostClicked() {
+        if (creatorUserId == null || creatorUserId.isEmpty()) {
+            Toast.makeText(this, "The post is still loading. Try again in a moment.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (creatorUserId.equals(currentUserId)) {
+            Toast.makeText(this, "You can't report your own post.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        ReportPostSheet.show(this, postId);
     }
 
     private void initUserId() {

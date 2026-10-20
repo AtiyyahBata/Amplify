@@ -50,6 +50,7 @@
 
         <activity android:name=".ui.admin.AdminMainActivity" android:exported="false" />
         <activity android:name=".ui.admin.AdminVerificationDetailActivity" android:exported="false" />
+        <activity android:name=".ui.admin.AdminReportDetailActivity" android:exported="false" />
         <activity android:name=".ui.main.artificial_intelligence.Artificial_Intelligence" android:exported="false" />
         <activity android:name=".ui.main.artificial_intelligence.AiChatDetailActivity" android:exported="false" />
         <activity android:name=".ui.main.artificial_intelligence.AiChatHistoryActivity" android:exported="false" />

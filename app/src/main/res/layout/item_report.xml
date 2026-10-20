@@ -7,119 +7,78 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
+    android:clickable="true"
+    android:focusable="true"
     app:cardCornerRadius="18dp"
     app:cardElevation="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:gravity="top"
+        android:orientation="horizontal"
         android:padding="14dp">
 
-        <!-- REPORT DETAILS -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Reason badge -->
+        <TextView
+            android:id="@+id/tvSeverity"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="top"
-            android:layout_marginBottom="14dp">
+            android:layout_marginEnd="12dp"
+            android:background="@drawable/bg_report_severity"
+            android:paddingStart="10dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="7dp"
+            android:textColor="#F02561"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            tools:text="Spam" />
 
-            <!-- Severity Badge -->
+        <!-- Report information -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
             <TextView
-                android:id="@+id/tvSeverity"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvSubject"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="High"
+                android:layout_marginBottom="4dp"
+                android:textColor="@color/ink"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="Post flagged: &quot;Quick JS trick&quot;" />
+
+            <TextView
+                android:id="@+id/tvReason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:textColor="@color/muted"
+                android:textSize="11.5sp"
+                tools:text="Reported for: misleading content" />
+
+            <TextView
+                android:id="@+id/tvReportUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/muted"
                 android:textSize="11sp"
-                android:textStyle="bold"
-                android:textColor="#F02561"
-                android:background="@drawable/bg_report_severity"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="7dp"
-                android:paddingBottom="7dp"
-                android:layout_marginEnd="12dp" />
-
-            <!-- Report Information -->
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvSubject"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/ink"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="4dp"
-                    tools:text="Post flagged: &quot;Quick JS trick&quot;" />
-
-                <TextView
-                    android:id="@+id/tvReason"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/muted"
-                    android:textSize="11.5sp"
-                    android:layout_marginBottom="4dp"
-                    tools:text="Reported for: misleading content" />
-
-                <TextView
-                    android:id="@+id/tvReportUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/muted"
-                    android:textSize="11sp"
-                    tools:text="User: @coder_x99  •  2h ago" />
-
-            </LinearLayout>
-
-            <!-- Arrow -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="›"
-                android:textSize="24sp"
-                android:textColor="@color/accent"
-                android:layout_marginStart="6dp" />
+                tools:text="Reported by Almero  •  2h ago" />
 
         </LinearLayout>
 
-        <!-- ACTION BUTTONS -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Arrow -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDismiss"
-                style="@style/Amplify.Button.Outline"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:text="Dismiss"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                app:cornerRadius="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnTakeAction"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                android:backgroundTint="@color/coral_soft"
-                android:textColor="@color/coral"
-                android:text="Remove post"
-                android:textAllCaps="false"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                app:cornerRadius="16dp" />
-
-        </LinearLayout>
+            android:layout_marginStart="6dp"
+            android:text="›"
+            android:textColor="@color/accent"
+            android:textSize="24sp" />
 
     </LinearLayout>
 

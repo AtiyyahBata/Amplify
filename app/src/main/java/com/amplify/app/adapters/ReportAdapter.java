@@ -2,31 +2,38 @@ package com.amplify.app.adapters;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.amplify.app.databinding.ItemReportBinding;
 import com.amplify.app.models.Report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Admin > Reports list. Dismiss/Take action only removes the row locally -
- * a real implementation would update the report's status in Firestore and,
- * for "take action", remove the offending post or suspend the user.
+ * Admin > Reports list. Each card shows the reason, what was reported and who reported it.
+ * Tapping a card opens the detail screen, where the admin takes action.
  */
 public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportViewHolder> {
 
-    public interface OnResolveListener {
-        void onResolve(Report report, boolean actioned);
+    public interface OnReportClickListener {
+        void onReportClick(Report report);
     }
 
-    private final List<Report> reports;
-    private final OnResolveListener listener;
+    private final List<Report> reports = new ArrayList<>();
+    private final OnReportClickListener listener;
 
-    public ReportAdapter(List<Report> reports, OnResolveListener listener) {
-        this.reports = reports;
+    public ReportAdapter(OnReportClickListener listener) {
         this.listener = listener;
+    }
+
+    /** Replaces everything in the list. */
+    public void setItems(List<Report> items) {
+        reports.clear();
+        reports.addAll(items);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -40,20 +47,15 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ReportView
     @Override
     public void onBindViewHolder(@NonNull ReportViewHolder holder, int position) {
         Report report = reports.get(position);
+
+        holder.binding.tvSeverity.setText(report.getReasonLabel());
         holder.binding.tvSubject.setText(report.getSubjectLabel());
         holder.binding.tvReason.setText(report.getReason());
-        holder.binding.btnTakeAction.setText(report.getActionLabel());
+        holder.binding.tvReportUser.setText(report.getMetaText());
 
-        holder.binding.btnDismiss.setOnClickListener(v -> removeRow(holder, report, false));
-        holder.binding.btnTakeAction.setOnClickListener(v -> removeRow(holder, report, true));
-    }
-
-    private void removeRow(ReportViewHolder holder, Report report, boolean actioned) {
-        int position = holder.getBindingAdapterPosition();
-        if (position == RecyclerView.NO_POSITION) return;
-        reports.remove(position);
-        notifyItemRemoved(position);
-        if (listener != null) listener.onResolve(report, actioned);
+        holder.binding.getRoot().setOnClickListener(v -> {
+            if (listener != null) listener.onReportClick(report);
+        });
     }
 
     @Override

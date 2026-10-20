@@ -90,10 +90,23 @@ public class AdminHomeFragment extends Fragment {
                 binding.tvVerifiedUsers
         );
 
-        // These statistics will be connected to their
-        // database tables in a later step.
-        binding.tvPendingVerifications.setText("—");
-        binding.tvOpenReports.setText("—");
+        // Load pending verification requests.
+        loadCount(
+                accessToken,
+                "verification_requests",
+                "&status=eq.pending",
+                binding.tvPendingVerifications
+        );
+
+        // Load open reports.
+        loadCount(
+                accessToken,
+                "reports",
+                "&status=eq.open",
+                binding.tvOpenReports
+        );
+
+        // Posts today will be connected in a later step.
         binding.tvPostsToday.setText("—");
     }
 
@@ -102,8 +115,17 @@ public class AdminHomeFragment extends Fragment {
             String filter,
             TextView target) {
 
+        loadCount(accessToken, "profiles", filter, target);
+    }
+
+    private void loadCount(
+            String accessToken,
+            String table,
+            String filter,
+            TextView target) {
+
         String url = SUPABASE_URL
-                + "/rest/v1/profiles?select=id"
+                + "/rest/v1/" + table + "?select=id"
                 + filter;
 
         Request request = new Request.Builder()
