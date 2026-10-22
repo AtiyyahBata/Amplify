@@ -134,21 +134,38 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="7dp" />
 
-            <EditText
-                android:id="@+id/etPassword"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:layout_marginBottom="16dp"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:background="@drawable/bg_admin_input"
-                android:hint="Create a password"
-                android:textColor="#29213D"
-                android:textColorHint="#9993A8"
-                android:textSize="14sp"
-                android:singleLine="true"
-                android:inputType="textPassword"
-                android:autofillHints="newPassword" />
+                android:layout_marginBottom="16dp">
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="48dp"
+                    android:background="@drawable/bg_admin_input"
+                    android:hint="Create a password"
+                    android:textColor="#29213D"
+                    android:textColorHint="#9993A8"
+                    android:textSize="14sp"
+                    android:singleLine="true"
+                    android:inputType="textPassword"
+                    android:autofillHints="newPassword" />
+
+                <ImageView
+                    android:id="@+id/ivPasswordToggle"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="4dp"
+                    android:padding="12dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_visibility_off"
+                    android:contentDescription="Show password" />
+
+            </FrameLayout>
 
             <!-- Field of study -->
             <TextView

@@ -57,6 +57,8 @@ public class LoginActivity extends AppCompatActivity {
         binding.tvGoRegister.setOnClickListener(v ->
                 startActivity(new Intent(this, RegisterActivity.class)));
 
+        PasswordToggle.setup(binding.etPassword, binding.ivPasswordToggle);
+
         binding.btnLogIn.setOnClickListener(v -> loginUser());
         }
 

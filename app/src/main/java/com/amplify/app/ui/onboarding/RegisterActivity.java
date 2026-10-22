@@ -48,6 +48,8 @@ public class RegisterActivity extends AppCompatActivity {
         binding.tvGoLogin.setOnClickListener(v ->
                 startActivity(new Intent(this, LoginActivity.class)));
 
+        PasswordToggle.setup(binding.etPassword, binding.ivPasswordToggle);
+
         binding.btnRegister.setOnClickListener(v -> registerUser());
     }
 

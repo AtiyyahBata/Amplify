@@ -132,21 +132,38 @@
                 android:textSize="13sp"
                 android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/etPassword"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="54dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_admin_input"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:hint="Enter your password"
-                android:textColor="#29213D"
-                android:textColorHint="#A09AAC"
-                android:textSize="14sp"
-                android:inputType="textPassword"
-                android:autofillHints="password"
-                android:singleLine="true" />
+                android:layout_marginTop="8dp">
+
+                <EditText
+                    android:id="@+id/etPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_admin_input"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="48dp"
+                    android:hint="Enter your password"
+                    android:textColor="#29213D"
+                    android:textColorHint="#A09AAC"
+                    android:textSize="14sp"
+                    android:inputType="textPassword"
+                    android:autofillHints="password"
+                    android:singleLine="true" />
+
+                <ImageView
+                    android:id="@+id/ivPasswordToggle"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:layout_marginEnd="4dp"
+                    android:padding="12dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_visibility_off"
+                    android:contentDescription="Show password" />
+
+            </FrameLayout>
 
             <!-- Forgot password -->
             <TextView

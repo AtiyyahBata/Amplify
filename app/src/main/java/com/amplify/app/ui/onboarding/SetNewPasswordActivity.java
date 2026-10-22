@@ -39,6 +39,9 @@ public class SetNewPasswordActivity extends AppCompatActivity {
             return;
         }
 
+        PasswordToggle.setup(binding.etNewPassword, binding.ivNewPasswordToggle);
+        PasswordToggle.setup(binding.etConfirmPassword, binding.ivConfirmPasswordToggle);
+
         binding.btnSavePassword.setOnClickListener(v -> save());
     }
 
